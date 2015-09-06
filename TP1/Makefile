@@ -1,5 +1,5 @@
-CC=c99
-CFLAGS=-Wall -Wextra -pedantic -O0 -ggdb -lm
+#CC=c99
+CFLAGS=-Wall -Wextra -pedantic -O0 -ggdb -lm -std=c99 #-std=c99
 OBJS=lista_c.o lista_asm.o
 TESTOBJS=tester.o
 NASM=nasm
