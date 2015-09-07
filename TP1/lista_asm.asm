@@ -374,32 +374,29 @@ section .text
         push r13
         push r14
         push r15
-        mov r12, rdi                            ;r12 va a iterar sobre la lista
-        cmp qword[r12+OFFSET_PRIMERO], NULL     ;Si la lista esta vacia no hay nada que remover
-        je .end                                 ;sino
-        mov r14, rsi                            ;muevo a r14 el puntero a la funcion que compara
-        mov r15, rdx                            ;muevo a r15 la palabra a comparar
+        mov r12, rdi                                    ;r12 va a iterar sobre la lista
+        cmp qword[r12+OFFSET_PRIMERO], NULL             ;Si la lista esta vacia no hay nada que remover
+        je .end                                         ;sino
+        mov r14, rsi                                    ;muevo a r14 el puntero a la funcion que compara
+        mov r15, rdx                                    ;muevo a r15 la palabra a comparar
         mov r13, r12
         .recorrido:
-            ;r12 apunta al siguiente, notar que era el puntero a la lista al principio
-            ;y por lo tanto OFFSET_SIGUIENTE es el mismo offset que OFFSET_PRIMERO, 
-            ;también uso esto en insertarOrdenado cuando la lista esta vacia y agrega al final
-            mov r12, [r13+OFFSET_SIGUIENTE]     
-            mov rdi, [r12+OFFSET_PALABRA]       
-            mov rsi, r15                                        
-            call r14                            ;comparo las 2 palabras 
-            cmp rax, FALSE
+            mov r12, [r13+OFFSET_SIGUIENTE]             ;r12 apunta al siguiente, notar que era el puntero a la lista al principio
+            mov rdi, [r12+OFFSET_PALABRA]               ;y por lo tanto OFFSET_SIGUIENTE es el mismo offset que OFFSET_PRIMERO,   
+            mov rsi, r15                                ;también uso esto en insertarOrdenado cuando la lista esta vacia y agrega al final                
+            call r14                                    ;comparo las 2 palabras 
+            cmp rax, FALSE                              ;si la comparacion no es verdadera nos movemos al siguiente nodo
             jne .siguiente
                 mov rcx, [r12+OFFSET_SIGUIENTE]
-                mov [r13+OFFSET_SIGUIENTE], rcx     ;r13 apunta al siguiente de r12
+                mov [r13+OFFSET_SIGUIENTE], rcx         ;r13 apunta al siguiente de r12
                 mov rdi, r12
                 call nodoBorrar 
-                cmp qword[r13+OFFSET_SIGUIENTE], NULL
-                jne .recorrido
-                je .end
+                cmp qword[r13+OFFSET_SIGUIENTE], NULL   ;Si el siguiente no es null seguimos recorriendo la lista
+                jne .recorrido                          ;sino terminamos notar que al borrar r13 ya apuntaba al siguiente es decir 
+                je .end                                 ; a->-b->null si borramos b entonces a esta altura ya estamos con a->null
         .siguiente:
-            mov r13, r12                        ;r13 siempre apunta al nodo anterior de forma que al borrar podamos mantener la lista
-            cmp qword[r12+OFFSET_SIGUIENTE], NULL
+            mov r13, r12                                ;r13 siempre apunta al nodo anterior de forma que al borrar podamos mantener la lista
+            cmp qword[r12+OFFSET_SIGUIENTE], NULL       ;si es null terminamos ya que no quedan mas elementos a comparar
             jne .recorrido
         .end:
         pop r15
@@ -408,9 +405,6 @@ section .text
         pop r12
         pop rbp
         ret 
-
-    
-
 
 
     ; void descifrarMensajeDiabolico( lista *l, char *archivo, void (*funcImpPbr)(char*,FILE* ) );
