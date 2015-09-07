@@ -62,12 +62,12 @@ section .text
 		mov rbp, rsp
 		xor rax, rax			;Ponemos rax en 0, ya que vamos a devolver el resultado en la parte baja de rax
 		.ciclo:
-			inc al				;Entramos sumando de una, si nos pasan "" vamos a restar al final asi que no importa
+			inc al			;Entramos sumando de una, si nos pasan "" vamos a restar al final asi que no importa
 			cmp byte[rdi], 0	;comparamos para ver si a donde apuntamos es '\0'
 			lea rdi, [rdi+1]	;Incrementamos la dirección de memoria a donde apuntabamos
-			jnz .ciclo			;salta mientras el char sea distinto de \0
+			jnz .ciclo		;salta mientras el char sea distinto de \0
 		dec al	
-		pop rbp					;Decrementa una vez al final porque siempre cuenta \0
+		pop rbp				;Decrementa una vez al final porque siempre cuenta \0
 		ret
 
 	; bool palabraMenor( char *p1, char *p2 );
