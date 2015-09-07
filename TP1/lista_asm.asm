@@ -422,42 +422,41 @@ section .text
 		push r14
 		push r15
 		mov r12, rdi
-		;mov r13, rsi
 		mov r14, rdx
 		mov rdi, rsi
-		mov rsi, appendMode  
-		call fopen
-		mov r15, rax
-		cmp qword[r12+OFFSET_PRIMERO],NULL
-		je .endVacio 					;No imprimo nada	
-		xor  r13, r13
-		mov r12, [r12+OFFSET_PRIMERO]	
-		.cicloPush:
-			mov rdi, [r12+OFFSET_PALABRA]
-			push rdi
-			sub rsp, 8
-			inc r13
-			mov r12, [r12+OFFSET_SIGUIENTE]
-			cmp r12, NULL
-			jne .cicloPush
+		mov rsi, appendMode  							;elejimos modo append para escribir al final 
+		call fopen										;abrimos el archivo
+		mov r15, rax									;guardamos en rax el puntero a file
+		cmp qword[r12+OFFSET_PRIMERO],NULL				;checkeamos si la lista esta vacia 
+		je .endVacio 									;Si lo esta saltamos a endNoVacio e imprimos el mensaje diabólico
+		xor  r13, r13									;r13 es 0, lo vamos a usar de contador par ael ciclo
+		mov r12, [r12+OFFSET_PRIMERO]					;r12 apunta al primer nodo, que existe pués no seria vacia la lista
+		.cicloPush:										;
+			mov rdi, [r12+OFFSET_PALABRA]				;rdi tiene la primer palabra 
+			push rdi									;la pusheamos al stack 
+			sub rsp, 8									;y alineamos los 8 bytes restantes
+			inc r13										;incrementamos r13 por cada palabra 
+			mov r12, [r12+OFFSET_SIGUIENTE]				;adelantamos r12 a apuntar al nodo siguiente (puede ser null)
+			cmp r12, NULL								;si lo es terminamos el ciclo 
+			jne .cicloPush								;sino repetimos y agregamos la proxima palabra al stack
 		.cicloPop:
-			add rsp, 8
-			pop rdi
-			mov rsi, r15
-			call r14									;llamada a la funcion dada por parametro 
-			dec r13
-			cmp r13, NULL
-			jne .cicloPop	
+			add rsp, 8									;nos preparamos para hacer un pop a rdi y obtener la palabra 
+			pop rdi										;pop rdi, esto nos permite obtener la lista en orden inverso
+			mov rsi, r15								;gracias al stack. Ahora preparamos la llamada a la función imprimir
+			call r14									;llamamos a funcImpPbr
+			dec r13										;le restamos a r13 que tenia el total de las palabras 
+			cmp r13, NULL								;Si r13 es 0 (NULL), entonces terminamos el ciclo y vamos al final
+			jne .cicloPop								
 			jmp .endNoVacio
-		.endVacio:
-		mov rdi, sinMensajeDiabolico
-		mov rsi, r15
-		call r14
+		.endVacio:										
+		mov rdi, sinMensajeDiabolico                    ;Si la lista esta vacia imprimo el sinMensajeDiabolico con 
+		mov rsi, r15									;funcImpPbr
+		call r14	
 		.endNoVacio:
 		mov rdi, r15
 		call fclose
-		pop r15
-		pop r14
+		pop r15											;desarmamos el stackframe y ponemos
+		pop r14											;los valores que correspondian a los registros que hay que mantener
 		pop r13
 		pop r12
 		pop rbp
