@@ -62,8 +62,8 @@ section .text
 		mov rbp, rsp
 		xor rax, rax			;Ponemos rax en 0, ya que vamos a devolver el resultado en la parte baja de rax
 		.ciclo:
-			inc al		 		;Entramos sumando de una, si nos pasan "" vamos a restar al final asi que no importa
-			cmp byte[rdi], 0 	;comparamos para ver si a donde apuntamos es '\0'
+			inc al				;Entramos sumando de una, si nos pasan "" vamos a restar al final asi que no importa
+			cmp byte[rdi], 0	;comparamos para ver si a donde apuntamos es '\0'
 			lea rdi, [rdi+1]	;Incrementamos la dirección de memoria a donde apuntabamos
 			jnz .ciclo			;salta mientras el char sea distinto de \0
 		dec al	
@@ -251,7 +251,7 @@ section .text
 		mov rbp, rsp
 		push r12
 		push r13
-		push r14							;vamos a guardar los valores pasados por la funcion en r12 r13 y r14 respectivamente 
+		push r14							 ;vamos a guardar los valores pasados por la funcion en r12 r13 y r14 respectivamente 
 		sub rsp, 8
 		mov r12, rdi
 		mov r14, rdx
