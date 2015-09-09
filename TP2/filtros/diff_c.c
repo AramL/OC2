@@ -27,15 +27,15 @@ void diff_c (unsigned char *src, unsigned char *src_2, unsigned char *dst, int m
     unsigned char (*dst_matrix)[dst_row_size] = (unsigned char (*)[dst_row_size]) dst;
 
 
-    for(int x = 0; x < n; x++){
-        for(int y = 0; y < m; y++){
+    for(int y = 0; y < n; y++){
+        for(int x = 0; x < m; x++){
             unsigned char inf = 
-                        infNorm(src_matrix[x][y*4], src_matrix[x][y*4+1], src_matrix[x][y*4+2],
-                                src_2_matrix[x][y*4], src_2_matrix[x][y*4+1], src_2_matrix[x][y*4+2]);
-            dst_matrix[x][y*4] = inf;                           //blue
-            dst_matrix[x][y*4+1] = inf;                     //red
-            dst_matrix[x][y*4+2] = inf;                     //green
-            dst_matrix[x][y*4+3]= 255;                      //alpha
+                        infNorm(src_matrix[y][x*4], src_matrix[y][x*4+1], src_matrix[y][x*4+2],
+                                src_2_matrix[y][x*4], src_2_matrix[y][x*4+1], src_2_matrix[y][x*4+2]);
+            dst_matrix[y][x*4] = inf;                           //blue
+            dst_matrix[y][x*4+1] = inf;                     //red
+            dst_matrix[y][x*4+2] = inf;                     //green
+            dst_matrix[y][x*4+3]= 255;                      //alpha
 
         }
     }
