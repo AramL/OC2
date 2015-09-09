@@ -19,8 +19,8 @@ void blur_c    (unsigned char *src, unsigned char *dst, int cols, int filas, flo
     unsigned char (*src_matrix)[cols*4] = (unsigned char (*)[cols*4]) src;
     unsigned char (*dst_matrix)[cols*4] = (unsigned char (*)[cols*4]) dst;
 
-    for(int y = 1; y < cols-1; y++){
-        for(int x = 1; x < filas-1; x++){
+    for(int y = radius; y < cols-radius; y++){
+        for(int x = radius; x < filas-radius; x++){
             float tempB = 0;
             float tempR = 0;
             float tempG = 0;
@@ -28,7 +28,7 @@ void blur_c    (unsigned char *src, unsigned char *dst, int cols, int filas, flo
                 for(int k = -radius; k<= radius; k++){
                     tempB += src_matrix[y+j][(x+k)*4] * Kernel(radius - j, radius - k, sigma);
                     tempR += src_matrix[y+j][(x+k)*4+1] * Kernel(radius - j, radius - k, sigma);
-                    tempG += src_matrix[y+j][(x+k)*4+1] * Kernel(radius - j, radius - k, sigma);
+                    tempG += src_matrix[y+j][(x+k)*4+2] * Kernel(radius - j, radius - k, sigma);
                 }
             }
             dst_matrix[y][x*4] = tempB;
