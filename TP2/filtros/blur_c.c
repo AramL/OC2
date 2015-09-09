@@ -10,7 +10,7 @@ float Kernel(short x, short y, float sigma){
     x = x*x;
     y = y*y;
     float sigmasq = sigma*sigma;
-    float ret = exp((-1)*(x+y)/(2*sigmasq))/(2* pi * sigmasq);
+    float ret = exp((x+y)/((-2)*sigmasq))/(2* pi * sigmasq);
 
     return ret;        
 }
@@ -31,9 +31,9 @@ void blur_c    (unsigned char *src, unsigned char *dst, int cols, int filas, flo
                     tempG += src_matrix[y+j][(x+k)*4+2] * Kernel(radius - j, radius - k, sigma);
                 }
             }
-            dst_matrix[y][x*4] = tempB;
-            dst_matrix[y][x*4+1] = tempR;
-            dst_matrix[y][x*4+2] = tempG;
+            dst_matrix[y][x*4] = (unsigned char)tempB;
+            dst_matrix[y][x*4+1] = (unsigned char)tempR;
+            dst_matrix[y][x*4+2] = (unsigned char)tempG;
             dst_matrix[x][x*4+3]= 255;                      //alpha
         }
     }
