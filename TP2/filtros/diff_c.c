@@ -5,14 +5,14 @@
 
 #include <stdio.h>
 
-unsigned int max2(unsigned char x, unsigned char y){
+unsigned short max2(unsigned char x, unsigned char y){
     return x > y ? x : y;
 }
 
-unsigned int infNorm(unsigned char x1, unsigned char y1, unsigned char z1, unsigned char x2, unsigned char y2, unsigned char z2 ){
-    int x = abs(x1-x2);
-    int y = abs(y1-y2);
-    int z = abs(z1-z2);
+unsigned short infNorm(unsigned char x1, unsigned char y1, unsigned char z1, unsigned char x2, unsigned char y2, unsigned char z2 ){
+    short x = abs(x1-x2);
+    short y = abs(y1-y2);
+    short z = abs(z1-z2);
     if(x <= y){
         max2(y,z);
     }else{
