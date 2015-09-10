@@ -14,11 +14,10 @@ unsigned short infNorm(unsigned char x1, unsigned char y1, unsigned char z1, uns
     short y = abs(y1-y2);
     short z = abs(z1-z2);
     if(x <= y){
-        max2(y,z);
+        return max2(y,z);
     }else{
-        max2(x,z);
+        return max2(x,z);
     }
-
 }
 
 void diff_c (unsigned char *src, unsigned char *src_2, unsigned char *dst, int m, int n, int src_row_size, int src_2_row_size, int dst_row_size) {
