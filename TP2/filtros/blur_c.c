@@ -12,7 +12,7 @@ void blur_c  (unsigned char *src, unsigned char *dst, int cols, int filas, float
     unsigned char (*dst_matrix)[cols*4] = (unsigned char (*)[cols*4]) dst;
 
     float sigmasq = sigma*sigma;
-    
+
     float *convolutionMatrix = (float *) malloc(sizeof(float) * ((2*radius)+1) * ((2*radius)+1) ); 
 
     for(int h = -radius; h <= radius; h++)
@@ -45,5 +45,5 @@ void blur_c  (unsigned char *src, unsigned char *dst, int cols, int filas, float
     }
 
     free(convolutionMatrix);
- }
+}
 
