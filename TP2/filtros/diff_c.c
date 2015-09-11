@@ -5,20 +5,17 @@
 
 #include <stdio.h>
 
-unsigned short max2(unsigned char x, unsigned char y){
-    return x > y ? x : y;
-}
-
 unsigned short infNorm(unsigned char x1, unsigned char y1, unsigned char z1, unsigned char x2, unsigned char y2, unsigned char z2 ){
     short x = abs(x1-x2);
     short y = abs(y1-y2);
     short z = abs(z1-z2);
     if(x <= y){
-        return max2(y,z);
+        return x > y ? x : y;
     }else{
-        return max2(x,z);
+        return x > z ? x : y;
     }
 }
+
 
 void diff_c (unsigned char *src, unsigned char *src_2, unsigned char *dst, int m, int n, int src_row_size, int src_2_row_size, int dst_row_size) {
     unsigned char (*src_matrix)[src_row_size]       = (unsigned char (*)[src_row_size]) src;
@@ -39,5 +36,6 @@ void diff_c (unsigned char *src, unsigned char *src_2, unsigned char *dst, int m
         }
     }
 }
+
 
 
