@@ -10,12 +10,11 @@ unsigned short infNorm(unsigned char x1, unsigned char y1, unsigned char z1, uns
     short y = abs(y1-y2);
     short z = abs(z1-z2);
     if(x <= y){
-        return x > y ? x : y;
+        return y > z ? y : z;
     }else{
         return x > z ? x : y;
     }
 }
-
 
 void diff_c (unsigned char *src, unsigned char *src_2, unsigned char *dst, int m, int n, int src_row_size, int src_2_row_size, int dst_row_size) {
     unsigned char (*src_matrix)[src_row_size]       = (unsigned char (*)[src_row_size]) src;
