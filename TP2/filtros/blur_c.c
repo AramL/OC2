@@ -8,7 +8,7 @@
 
 
 void blur_c  (unsigned char *src, unsigned char *dst, int cols, int filas, float sigma, int radius){  
-  z  unsigned char (*src_matrix)[cols*4] = (unsigned char (*)[cols*4]) src;
+    unsigned char (*src_matrix)[cols*4] = (unsigned char (*)[cols*4]) src;
     unsigned char (*dst_matrix)[cols*4] = (unsigned char (*)[cols*4]) dst;
 
     float sigmasq = sigma*sigma;
