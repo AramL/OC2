@@ -104,7 +104,7 @@ XOR R15,R15
 	PMAXUB XMM6, XMM4 		;XMM6=[max(R0,G0)|@@|@@|@@|max(R1,G1)|@@|@@|@@|max(R2,G2)|@@|@@|@@|max(R3,G3)|@@|@@|@@]_0      @@ = basura
 	PMAXUB XMM6, XMM3 		;XMM6=[max(R0,G0,B0)|+@@|+@@|+@@|max(R1,G1,B1)|+@@|+@@|+@@|max(R2,G2,B2)|+@@|+@@|+@@|max(R3,G3,B3)|+@@|+@@|+@@]_0  +@@ = màs basura :D
 	PSHUFB XMM6,[mask_1] 
-	;PADDSB XMM6,[trans_4]
+	PADDSB XMM6,[trans_2]
 	MOVDQU  [R12 +  R15*4], XMM6
 	add  R15d, 4
 	jmp .ciclo
