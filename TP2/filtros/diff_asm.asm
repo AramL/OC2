@@ -49,8 +49,10 @@ POP RAX
 %endmacro
 section .rodata:
 ALIGN 16
-mask_2 DB 15,15,15,15,11,11,11,11,7,7,7,7,5,5,5,5
-mask_1 DB 5,5,5,5,7,7,7,7,11,11,11,11,15,15,15,15
+mask_2 DB 15,15,15,15,11,11,11,11,7,7,7,7,3,3,3,3
+mask_1 DB 3,3,3,3,7,7,7,7,11,11,11,11,15,15,15,15
+mask_3 DB 12,12,12,12,8,8,8,8,4,4,4,4,0,0,0,0
+mask_4 DB 0,0,0,0,4,4,4,4,8,8,8,8,12,12,12,12
 
 trans DB 255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0
 trans_2 DB 0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255
@@ -74,7 +76,9 @@ section .text
 diff_asm:
 PUSH RBP				 
 MOV RBP, RSP
-
+PUSH R15
+PUSH R12
+PUSH R13
 XOR RAX,RAX
 MOV R12, RDX
 
@@ -95,7 +99,7 @@ XOR R15,R15
 	PMINUB XMM15,XMM3				;aca tiene minimo entre R_src1 y R_src2 para cada uno
 	PMAXUB XMM3,XMM14				; aca el maximo
 	PSUBB XMM3,	XMM15				;max(a,b)	 - min(a,b) = mod(a-b)
-
+									;XMM3=[]
 	MOVDQU XMM4, XMM3 
 	MOVDQU XMM5, XMM3 		
 	PSLLDQ XMM4, 1			;XMM4= [-G0-|B0|A0|R1|-G1-|B1|A1|R2|-G2-|B2|A2|R3|-G3-|B3|A3|0]_0
@@ -104,11 +108,14 @@ XOR R15,R15
 	PMAXUB XMM6, XMM4 		;XMM6=[max(R0,G0)|@@|@@|@@|max(R1,G1)|@@|@@|@@|max(R2,G2)|@@|@@|@@|max(R3,G3)|@@|@@|@@]_0      @@ = basura
 	PMAXUB XMM6, XMM3 		;XMM6=[max(R0,G0,B0)|+@@|+@@|+@@|max(R1,G1,B1)|+@@|+@@|+@@|max(R2,G2,B2)|+@@|+@@|+@@|max(R3,G3,B3)|+@@|+@@|+@@]_0  +@@ = màs basura :D
 	PSHUFB XMM6,[mask_1] 
-	PADDSB XMM6,[trans_2]
+;	PADDSB XMM6,[trans_2]
 	MOVDQU  [R12 +  R15*4], XMM6
 	add  R15d, 4
 	jmp .ciclo
 
 .fin:
+POP R13
+POP R12
+POP R15
 POP RBP
 RET

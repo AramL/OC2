@@ -53,7 +53,7 @@ int main (void){
     printf("hola, holb, true ");
     printf("%d\n", palabraMenor("hola", "holb") );
     assert(palabraMenor("hola", "holb"));
-
+printf "puchanga \n");
 
     /**  TESTS FUNCMODIFICARSTRING  **/
     printf("p = ");
@@ -105,11 +105,11 @@ int main (void){
 
     insertarAtras(lista_test, palabraCopiar("testOracionCrear"));
     printf("%s%s\n", "(lista_test->primero)->palabra: ", (lista_test->primero)->palabra );
-
+    printf "puchanga \n");
     insertarAtras(lista_test, palabraCopiar("Segunda Palabra"));
     printf("%s%s%s%s\n", "(lista_test->primero)->palabra: ", (lista_test->primero)->palabra , 
      " (((lista_test->primero)->palabra)->siguiente)->palabra: ", ((lista_test->primero)->siguiente)->palabra );
-    
+    printf "puchanga \n");    
     /**  TESTS ORACION BORRAR  **/
 
     if(lista_test != NULL)
