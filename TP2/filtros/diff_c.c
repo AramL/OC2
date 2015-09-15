@@ -12,7 +12,7 @@ unsigned short infNorm(unsigned char x1, unsigned char y1, unsigned char z1, uns
     if(x <= y){
         return y > z ? y : z;
     }else{
-        return x > z ? x : y;
+        return x > z ? x : z;
     }
 }
 
