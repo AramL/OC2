@@ -21,14 +21,20 @@ xor rax,rax
 mov eax,r8d
 inc rcx
 mul rcx
-add rdi,r12
+shl rax,2
+add rdi,rax
+;estoy parado en el elemento primero a calcular en rdi
+
+
+;--------------------------------;
+
+
 
 
 ;ciclo
 
 
-
-	movdqu xmm0,[rdi] ;levanto 4 pixeles
+movdqu xmm0,[rdi] ;levanto 4 pixeles
 	;XMM0= [-R0-|G0|B0|A0|-R1-|G1|B1|A1|-R2-|G2|B2|A2|-R3-|G3|B3|A3]	
 	pxor   xmm11,xmm11 ;xmm11 va a ser una mascara de 0, para extender el signo	
 	;XMM11= [0000-0000-0000-0000]	
@@ -74,4 +80,7 @@ add rdi,r12
     movdqu [rsi],xmm0
     
     ;fin ciclo
-    ret
+    
+
+
+	ret
