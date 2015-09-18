@@ -297,7 +297,9 @@ section .text
         push r13                                        ;r13 va a guardar el valor de la suma de las longitudes  
         push r14                                        ;y r14 va a contar la cantidad de palabras en la lista
         sub rsp, 8                                      ;stackframe
+        pxor xmm0, xmm0                                 ;fuk
         ;xor rax, rax                                   ;Ponemos rax en 0
+
         mov rdi, [rdi+OFFSET_PRIMERO]
         cmp rdi, NULL                                   ;Si el primero de la lista es null el promedio es 0
         je .end                                         ;Sino vamos a contar la longitudMedia
