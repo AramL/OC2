@@ -16,8 +16,16 @@ blur_asm:
 
 ;rdi=src rsi = dst rdx = filas rcx = cols r8 = radius xmm0 = sigma
 
+;primer elemento = rdi + radio * (rcx + 1)
+xor rax,rax
+mov eax,r8d
+inc rcx
+mul rcx
+add rdi,r12
+
 
 ;ciclo
+
 
 
 	movdqu xmm0,[rdi] ;levanto 4 pixeles
@@ -60,10 +68,10 @@ blur_asm:
     cvttps2dq xmm3,xmm3
     ;convierto de dw int a w int
     packusdw xmm0,xmm2
-    packusdw xmm1,xmmm3
+    packusdw xmm1,xmm3
     packuswb xmm0,xmm1
     
-    movdq [rsi],xmm0
+    movdqu [rsi],xmm0
     
     ;fin ciclo
     ret
