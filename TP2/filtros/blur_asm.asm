@@ -28,7 +28,7 @@ blur_asm:
 	;XMM1= [-R0-|G0|B0|A0|-R1-|G1|B1|A1|-R2-|G2|B2|A2|-R3-|G3|B3|A3]	
 	punpcklbw xmm0,xmm11 ;muevo los bytes bajos de xmm0, y les extendiendo los 0 a dw
 	;XMM0= 0|x|0|x|----|0|x|0|x|----|0|x|0|x|----|0|x|0|x	
-	punpcklhw xmm1,xmm11 ;muevo los bytes altos de xmm1, y les extendiendo los 0 a dw
+	punpckhbw xmm1,xmm11 ;muevo los bytes altos de xmm1, y les extendiendo los 0 a dw
 	;XMM1= 0|x|0|x|----|0|x|0|x|----|0|x|0|x|----|0|x|0|x	
 	movdqu xmm2,xmm0 ;duplico lo que tengo en xmm0
 	;XMM2= 0|x|0|x|----|0|x|0|x|----|0|x|0|x|----|0|x|0|x	
