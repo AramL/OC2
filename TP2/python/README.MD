@@ -26,7 +26,7 @@ asmval1 asmval2 asmval3
 
 Una vez que tenemos el archivo este podemos llamar a nuestra funcion graficar (hay que fijarse bien que vamos a medir, mediana, desviación estandar, etc. Para esto hacer el llamado (en este caso sigue el ejemplo de dif c vs asm):
 
-python graficar.py "Nombre del archivo" "Nombre del gráfico" "Nombre del eje Y" "Nombre de la primer barra" "Nombre de la segunda barra"
+    python graficar.py "Nombre del archivo" "Nombre del gráfico" "Nombre del eje Y" "Nombre de la primer barra" "Nombre de la segunda barra"
 
 Esto deberia dejarles en donde hicieron el llamado una imagen llamada "Nombre del archivo.png"
 
