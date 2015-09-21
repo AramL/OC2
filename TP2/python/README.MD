@@ -4,7 +4,7 @@ Se necesita python 2.7.x y matplotlib
 
 La idea es llamar varias veces a grabar.py de la siguiente forma
 
-    python grabar.py 0 nombreDeArchivoAgrabar Valor
+    python grabar.py guardar "Nombre del archivo" Valor
 
 El 0 significa que va a seguir pegando valores en la misma linea, cuando hay un 1, clava un newline, la idea es tener 2 lineas una con los resultados de C y la otra con los de ASM por ej.
 
@@ -12,15 +12,15 @@ Ejemplo más concreto.
 
 Se llaman 100 tests de diferencia en C cada uno da una llamada a
 
-    python grabar.py 0 nombreDeArchivoAgrabar Valor
+    python grabar.py guardar "Nombre del archivo" Valor
 
 Luego se llama **UNA SOLA VEZ** a
 
-    python grabar.py 1 nombreDeArchivoAgrabar Valor
+    python grabar.py newline nombreDeArchivoAgrabar Valor
 
-Aca "Valor" **NO IMPORTA PERO ES NECESARIO.** Y despues se llamaria 100 veces con los tests en ASM cada uno dando una llamada a
+Aca "Valor"  **NO IMPORTA PERO ES NECESARIO.** (newline tampoco podrian escribir pepito o sarasa siempre que sea un string). Y despues se llamaria 100 veces con los tests en ASM cada uno dando una llamada a
 
-    python grabar.py 0 "Nombre del archivo"
+    python grabar.py guardar "Nombre del archivo" Valor
 
 Esto dejaria un archivo con nombre "Nombre del archivo" de la forma:
 cval1 cval2 cval3..

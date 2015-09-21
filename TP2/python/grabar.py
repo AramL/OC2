@@ -1,7 +1,7 @@
 import sys
 
 def grabar(first, filename, towrite):
-  if int(first) == 0:
+  if first == 'guardar':
     with open(filename, 'a') as f:
       f.write(str(towrite))
       f.write(" ")
