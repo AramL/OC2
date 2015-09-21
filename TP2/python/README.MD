@@ -1,22 +1,24 @@
 #Como usar
 
+Se necesita python 2.7.x y matplotlib
+
 La idea es llamar varias veces a grabar.py de la siguiente forma
 
     python grabar.py 0 nombreDeArchivoAgrabar Valor
 
-El 0 significa que va a seguir pegando valores en la misma linea, cuando hay un 1, clava un newline, la idea es tener 2 lineas una con los resultados de C y la otra con los de ASM por ej (después hay que modificar para 3 si hacemos lo de gcc icc y clang)
+El 0 significa que va a seguir pegando valores en la misma linea, cuando hay un 1, clava un newline, la idea es tener 2 lineas una con los resultados de C y la otra con los de ASM por ej.
 
 Ejemplo más concreto.
 
-**Se llama a diferencia 100 veces con**
+Se llama a diferencia 100 veces con
 
 python grabar.py 0 nombreDeArchivoAgrabar Valor
 
-**Luego se llama UNA SOLA VEZ a**
+Luego se llama **UNA SOLA VEZ** a
 
     python grabar.py 1 nombreDeArchivoAgrabar Valor
 
-**Aca el valor NO IMPORTA PERO ES NECESARIO. Y despues llamaria 100 veces a**
+Aca "Valor" **NO IMPORTA PERO ES NECESARIO.** Y despues se llamaria 100 veces a
 
     python grabar.py 0 "Nombre del archivo" Valor pero con los tests de ASM
 
