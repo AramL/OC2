@@ -10,7 +10,7 @@ El 0 significa que va a seguir pegando valores en la misma linea, cuando hay un 
 
 Ejemplo más concreto.
 
-Se llama a diferencia 100 veces con
+Se llaman 100 tests de diferencia en C cada uno da una llamada a
 
     python grabar.py 0 nombreDeArchivoAgrabar Valor
 
@@ -18,9 +18,9 @@ Luego se llama **UNA SOLA VEZ** a
 
     python grabar.py 1 nombreDeArchivoAgrabar Valor
 
-Aca "Valor" **NO IMPORTA PERO ES NECESARIO.** Y despues se llamaria 100 veces a
+Aca "Valor" **NO IMPORTA PERO ES NECESARIO.** Y despues se llamaria 100 veces con los tests en ASM cada uno dando una llamada a
 
-    python grabar.py 0 "Nombre del archivo" Valor pero con los tests de ASM
+    python grabar.py 0 "Nombre del archivo" 
 
 Esto dejaria un archivo con nombre "Nombre del archivo" de la forma:
 cval1 cval2 cval3..
