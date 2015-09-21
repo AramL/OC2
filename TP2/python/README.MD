@@ -20,7 +20,7 @@ Luego se llama **UNA SOLA VEZ** a
 
 Aca "Valor" **NO IMPORTA PERO ES NECESARIO.** Y despues se llamaria 100 veces con los tests en ASM cada uno dando una llamada a
 
-    python grabar.py 0 "Nombre del archivo" 
+    python grabar.py 0 "Nombre del archivo"
 
 Esto dejaria un archivo con nombre "Nombre del archivo" de la forma:
 cval1 cval2 cval3..
@@ -28,7 +28,7 @@ asmval1 asmval2 asmval3
 
 Una vez que tenemos el archivo este podemos llamar a nuestra funcion graficar (hay que fijarse bien que vamos a medir, mediana, desviación estandar, etc. Para esto hacer el llamado (en este caso sigue el ejemplo de dif c vs asm):
 
-    python graficar.py "Nombre del archivo" "Nombre del gráfico" "Nombre del eje Y" "Nombre de la primer barra" "Nombre de la segunda barra"
+    python graficar.py "Nombre del archivo" "Nombre del gráfico" "Valor a contar (CPU Ticks por ejemplo)" "Nombre de la primer barra" "Nombre de la segunda barra"
 
 Esto deberia dejarles en donde hicieron el llamado una imagen llamada "Nombre del archivo.png"
 
@@ -41,8 +41,8 @@ Peguen lo siguiente en un archivo de texto plano llamado 'test':
 
 Y luego llamen
 
-    python graficar.py test "C vs ASM" "ticks mean"  Assembly C
+    python graficar.py test "C vs ASM" "CPU Ticks"  Assembly C
 
-Les deberia dejar un imagen llamada test.png con un gráfico de barras de titulo C vs ASM con una barra llamada C y la otra ASM con el eje y nombrado como 'ticks mean'
+Les deberia dejar 3 imagenes llamadas test desviacion, test mediana y test promedio con gráficos de barras de titulo C vs ASM con una barra llamada C y la otra ASM con el eje y nombrado respectivamente con CPU Ticks + promedio/mediana/desviacion
 
 ![](http://i.imgur.com/wVLPxID.png)
