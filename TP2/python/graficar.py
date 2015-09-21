@@ -4,21 +4,18 @@ import numpy as np
 
 
 
-def levantar(filename, titulo, nombre1, nombre2):
+def levantar(filename, titulo, yaxis, nombre1, nombre2):
   with open(filename, 'r') as f:
     comp1 = []
     comp1 = [int(x) for x in f.readline().split()]
     comp2 = []
     comp2 = [int(x) for x in f.readline().split()]
-  graficar(filename, titulo, nombre1, nombre2, comp1,comp2 )
+  graficar(filename, titulo, yaxis, nombre1, nombre2, comp1,comp2 )
 
 
-def graficar(filename, titulo, nombre1, nombre2, arg1, arg2,):
+def graficar(filename, titulo, yaxis, nombre1, nombre2, arg1, arg2,):
   plt.switch_backend('Qt4Agg')
   fig = plt.figure(figsize=(10,6))
-
-
-  #plt.legend((), (nombre1,nombre2))
   ax = fig.add_subplot(1,2,1)
   arg1mean = np.mean(arg1)
   arg2mean = np.mean(arg2)
@@ -31,10 +28,11 @@ def graficar(filename, titulo, nombre1, nombre2, arg1, arg2,):
   labels = []
   labels.append(nombre1)
   labels.append(nombre2)
+  plt.ylabel(yaxis)
   plt.xticks([1,2], labels)
 
   plt.savefig(filename+'.png')
   plt.xticks()
 
 if __name__ == "__main__":
-  levantar(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+  levantar(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
