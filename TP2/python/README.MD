@@ -28,10 +28,11 @@ asmval1 asmval2 asmval3
 
 Una vez que tenemos el archivo este podemos llamar a nuestra funcion graficar (hay que fijarse bien que vamos a medir, mediana, desviación estandar, etc. Para esto hacer el llamado (en este caso sigue el ejemplo de dif c vs asm):
 
-    python graficar.py "Nombre del archivo" "Nombre del gráfico" "Valor a contar (CPU Ticks por ejemplo)" "Nombre de la primer barra" "Nombre de la segunda barra"
+    python graficar.py type "Nombre del archivo" "Nombre del gráfico" "Eje Y" "Nombre de la primer barra" "Nombre de la segunda barra" "nombre de la tercer barra"
 
+Donde type puede ser compare_two o compare_three  (2 barras o 3)
 Esto deberia dejarles en donde hicieron el llamado una imagen llamada "Nombre del archivo.png"
-
+**IMPORTANTE** (Por ahora) Aunque quieran hacer un gráfico dos barras hay que escribir el tercer nombre (se descarta en tal caso).
 
 
 Para probar que les anda
@@ -41,8 +42,11 @@ Peguen lo siguiente en un archivo de texto plano llamado 'test':
 
 Y luego llamen
 
-    python graficar.py test "C vs ASM" "CPU Ticks"  Assembly C
+    python graficar.py compare_two test "C vs ASM" "CPU Ticks"  Assembly C
 
 Les deberia dejar 3 imagenes llamadas test desviacion, test mediana y test promedio con gráficos de barras de titulo C vs ASM con una barra llamada C y la otra ASM con el eje y nombrado respectivamente con CPU Ticks + promedio/mediana/desviacion
+
+Para un test de 3 barras es lo mismo es decir (archivo con 3 lineas en vez de dos)
+    python graficar.py compare_three testthree "GCC vs CLANG vs ICC" "CPU Ticks" GCC CLANG ICC
 
 ![](http://i.imgur.com/wVLPxID.png)
