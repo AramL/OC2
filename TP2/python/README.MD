@@ -12,7 +12,7 @@ Ejemplo más concreto.
 
 Se llama a diferencia 100 veces con
 
-python grabar.py 0 nombreDeArchivoAgrabar Valor
+    python grabar.py 0 nombreDeArchivoAgrabar Valor
 
 Luego se llama **UNA SOLA VEZ** a
 
