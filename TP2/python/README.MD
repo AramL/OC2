@@ -44,3 +44,5 @@ Y luego llamen
     python graficar.py test "C vs ASM" "ticks mean"  Assembly C
 
 Les deberia dejar un imagen llamada test.png con un gráfico de barras de titulo C vs ASM con una barra llamada C y la otra ASM con el eje y nombrado como 'ticks mean'
+
+![](http://i.imgur.com/wVLPxID.png)
