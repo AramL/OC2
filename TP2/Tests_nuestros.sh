@@ -13,18 +13,27 @@ fi
 
 
 echo " "
-echo "**Corriendo mediciones"
+echo "**Corriendo mediciones ASM vs C"
 
-./build/tp2 -i c diff img/scene0.bmp img/scene40ut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a test1
-echo -n " " >> test1
+for j in 1 ..100
+do
+  ./build/tp2 -i c diff img/scene0.bmp img/scene400.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a testASM_C
+  echo -n " " >> testASM_C
+  echo -n j 
+done
 
-echo " " >> test1
+echo " " >> testASM_C
 
-./build/tp2 -i c diff img/scene0.bmp img/scene40ut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a test
-echo -n " " >> test1
+for j in 1 .. 100
+do
+  ./build/tp2 -i c diff img/scene0.bmp img/scene400.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a testASM_C
+  echo -n " " >> testASM_C
+done
 
-º
 echo " "
 echo "**graficando"
 
-#./python/graficar.py salida
+./python/graficar.py "compare_two" testASM_C "C vs ASM" "CPU Ticks"  "Assembly" "gcc" "lpm" 
+
+echo " "
+echo "gracias uriel :D"
