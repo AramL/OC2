@@ -83,7 +83,8 @@ void correr_filtro_imagen(configuracion_t *config, aplicador_fn_t aplicador)
 	{
 		imagenes_abrir(config);
 		unsigned long long start, end;
-		MEDIR_TIEMPO_START(start)
+		
+		TIEMPO_START(start)
 		for (int i = 0; i < config->cant_iteraciones; i++) {
 				aplicador(config);
 		}
