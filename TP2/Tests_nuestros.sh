@@ -32,7 +32,7 @@ done
 echo " "
 echo "**graficando"
 
-./python/graficar.py "compare_two" testASM_C "C vs ASM" "CPU Ticks"  Assembly gcc a 
+python ./python/graficar.py "compare_two" ./python/testASM_C "C vs ASM" "CPU Ticks"  Assembly gcc asdd
 
 echo " "
 echo "gracias uriel :D"
