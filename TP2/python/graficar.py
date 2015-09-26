@@ -67,10 +67,9 @@ def drawPlot(ctype, filename, titulo, yaxis, comp, *args):
     fig = plt.figure(figsize=(10,6))
     ax = fig.add_subplot(1,2,1)
     toplot = []
-    for v in comp:
-        toplot.append(v)
     col = ['r','b','g','y','c','m']
-    ax.plot( range(1, (int(ctype))+1), toplot )
+    ax.plot( range(1, (int(ctype))+1), comp, '-', lw=2 )
+    ax.set_yscale('log')
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis)
