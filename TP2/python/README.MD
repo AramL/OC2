@@ -10,7 +10,7 @@ python graficar.py cantidad_de_elementos nombre_de_archivo nombre_grafico y_axis
 
 Por ejemplo:
 
-    python graficar.py 5 la_barra barras.txt grafico_de_barras cantidad  barra1 barra2 barra3
+    python graficar.py 3 la_barra barras.txt grafico_de_barras cantidad  barra1 barra2 barra3
 
 A partir de y_axis pueden poner una cantidad de nombres variables, siempre que sean en cantidad equivalente a la cantidad_de_elementos
 
