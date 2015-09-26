@@ -75,9 +75,9 @@ def drawPlotMean(ctype, filename, titulo, yaxis, comp, *args):
     ax.set_yscale('log')
     plt.title(titulo)
     labels = [i for i in args]
-    plt.ylabel(yaxis)
+    plt.ylabel(yaxis + ' promedio')
     plt.xticks(range(1, (int(ctype)) + 1), labels)
-    plt.savefig(filename+' (plot).png', bbox_inches = 'tight')
+    plt.savefig(filename+' (plot mean).png', bbox_inches = 'tight')
     plt.xticks()
 
 if __name__ == "__main__":
