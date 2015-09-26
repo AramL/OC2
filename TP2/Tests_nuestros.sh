@@ -31,7 +31,7 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/graficar.py "compare_two" ./python/test_difrencia_ASM_C "diferencia (C vs ASM)" "CPU Ticks"  Assembly gcc asdd
+python ./python/graficar.py 2 ./python/test_difrencia_ASM_C "diferencia (C vs ASM)" "CPU Ticks"  Assembly gcc 
 
 echo " "
 echo "vago uriel :D"
