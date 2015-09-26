@@ -4,7 +4,12 @@ Se necesita python 2.7.x y matplotlib ('lo lei che')
 
 EL formato del archivo deben ser números separados por espacios (siempre que se mida la misma funcion) y un newline por cada funcion nueva
 
-Llamar
+Ejemplo:
+test.txt = 
+	11 15 423
+	19 38 291
+
+Luego llamar a 
 
 python graficar.py cantidad_de_elementos nombre_de_archivo nombre_grafico y_axis (nombres de las barras en argumentos separados)
 

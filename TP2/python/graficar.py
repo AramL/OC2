@@ -6,9 +6,13 @@ import numpy as np
 def liftData(ctype, filename, titulo, yaxis, *args):
     with open(filename, 'r') as f:
         comp = [[int(x) for x in line.split()] for line in f]
-        drawMedian(ctype, filename, titulo, yaxis, comp, *args)
-        drawStdDev(ctype, filename, titulo, yaxis, comp, *args)
-        drawMean(ctype, filename, titulo, yaxis, comp, *args)
+        if int(ctype) <= 6:
+            drawMedian(ctype, filename, titulo, yaxis, comp, *args)
+            drawMean(ctype, filename, titulo, yaxis, comp, *args)
+            drawStdDev(ctype, filename, titulo, yaxis, comp, *args)
+            drawPlot(ctype, filename, titulo, yaxis, comp, *args)
+        else:
+            drawPlot(ctype, filename, titulo, yaxis, comp, *args)
 
 def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
@@ -54,11 +58,11 @@ def drawMean(ctype, filename, titulo, yaxis, comp, *args):
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis+' (promedio)')
-    plt.xticks([1,2,3], labels)
-
+    plt.xticks(range(1, (int(ctype)) + 1), labels)
     plt.savefig(filename+' (promedio).png', bbox_inches = 'tight')
     plt.xticks()
 
+def drawPlot(ctype, filename, titulo, yaxis, comp, *args):
 
 if __name__ == "__main__":
     liftData(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], *sys.argv[5:])
