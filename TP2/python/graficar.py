@@ -10,19 +10,19 @@ def liftData(ctype, filename, titulo, yaxis, *args):
             drawMedian(ctype, filename, titulo, yaxis, comp, *args)
             drawMean(ctype, filename, titulo, yaxis, comp, *args)
             drawStdDev(ctype, filename, titulo, yaxis, comp, *args)
-            drawPlot(ctype, filename, titulo, yaxis, comp, *args)
+            drawPlotMean(ctype, filename, titulo, yaxis, comp, *args)
         else:
-            drawPlot(ctype, filename, titulo, yaxis, comp, *args)
+            drawPlotMean(ctype, filename, titulo, yaxis, comp, *args)
 
 def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
     fig = plt.figure(figsize=(10,6))
     ax = fig.add_subplot(1,2,1)
-    means = []
+    medians = []
     for v in comp:
-        means.append(np.median(v))
+        medians.append(np.median(v))
     col = ['r','b','g','y','c','m']
-    ax.bar( range(1, (int(ctype))+1),  means, align='center', color=col[0: int(ctype)] )
+    ax.bar( range(1, (int(ctype))+1),  medians, align='center', color=col[0: int(ctype)] )
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis +' (mediana)' )
@@ -34,11 +34,11 @@ def drawStdDev(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
     fig = plt.figure(figsize=(10,6))
     ax = fig.add_subplot(1,2,1)
-    means = []
+    stddev = []
     for v in comp:
-        means.append(np.median(v))
+        stddev.append(np.std(v))
     col = ['r','b','g','y','c','m']
-    ax.bar( range(1, (int(ctype))+1),  means, align='center', color=col[0: int(ctype)] )
+    ax.bar( range(1, (int(ctype))+1),  stddev, align='center', color=col[0: int(ctype)] )
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis +' (desviacion)' )
@@ -62,19 +62,22 @@ def drawMean(ctype, filename, titulo, yaxis, comp, *args):
     plt.savefig(filename+' (promedio).png', bbox_inches = 'tight')
     plt.xticks()
 
-def drawPlot(ctype, filename, titulo, yaxis, comp, *args):
+def drawPlotMean(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
-    fig = plt.figure(figsize=(10,6))
+    fig = plt.figure(figsize=(20,6))
     ax = fig.add_subplot(1,2,1)
     toplot = []
     col = ['r','b','g','y','c','m']
-    ax.plot( range(1, (int(ctype))+1), comp, '-', lw=2 )
+    dmean = []
+    for v in comp:
+        dmean.append(np.mean(v))
+    ax.plot( range(1, (int(ctype))+1), dmean, '-', lw=2 )
     ax.set_yscale('log')
     plt.title(titulo)
     labels = [i for i in args]
-    plt.ylabel(yaxis)
+    plt.ylabel(yaxis + ' promedio')
     plt.xticks(range(1, (int(ctype)) + 1), labels)
-    plt.savefig(filename+' (plot).png', bbox_inches = 'tight')
+    plt.savefig(filename+' (plot mean).png', bbox_inches = 'tight')
     plt.xticks()
 
 if __name__ == "__main__":
