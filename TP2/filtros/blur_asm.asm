@@ -1,3 +1,5 @@
+extern matrizDeConvolucion
+
 default rel
 global _blur_asm
 global blur_asm
@@ -22,10 +24,25 @@ blur_asm:
 	push	r14
 	push	r15
 	sub	rsp,8
-
-
-
+	
 ;rdi=src rsi = dst rdx = filas rcx = cols r8 = radius xmm0 = sigma
+	mov r12,rdi
+	mov r13,rsi
+	mov r14,rdx
+	mov r15,rcx
+	mov rbx,r8
+	
+	mov rdi,r8
+	call matrizDeConvolucion
+	mov rdi,r12
+	mov rsi,r13
+	mov rdx,r14
+	mov rcx,r15
+	mov r8,rbx
+	mov r9,rax
+
+
+
 		;mov rsp,rcx
 ;r15 = x de la posicion calculando actual	
 	xor r15,r15
@@ -54,20 +71,42 @@ blur_asm:
 	cvtdq2ps xmm2,xmm2 ;esto es un 0 float
 	xor r11,r11 ; va a ser el puntero a convolucion x
 	xor r10,r10 ;va a ser el contador a convolucion y
+	pxor xmm5,xmm5
+	cvtdq2ps xmm5,xmm5 ;esto es un 0 float
 .empezarACalcular:
-	
-	
-	
-	
-	
-	;movdqu xmm0,[r12] ;primer original
-	;movdqu xmm1,r9  ;valor conv todavia no tengo conv
- 	;desempaqueto y multiplico
-	addps xmm2,xmm4 ;agrego el primer valor
-	inc r11 ;incremento puntero en x
+	movdqu xmm0,[r12]	
+	;xmm0  = [b1 | r1 | g1 | a1 | b2 | r2 | g2 | a2 | b3 | r3 | g3 | a3 | b4 | r4 | g4 | a4]
+	pxor xmm7, xmm7
+	movdqu xmm1, xmm0
+	punpckhbw xmm0, xmm7 ; [ 0 | b1 |  0  | r1 |  0  | g1 |  0 | a1 |  0 | b2 |  0 | r2 |  0 | g2 | 0 | a2 ]
+	punpcklbw xmm1, xmm7  ; [ 0 | b3 |  0  | r3 |  0  | g3 |  0 | a3 |  0 | b4 |  0 | r4 |  0 | g4 | 0 | a4 ]
+	movdqu xmm2, xmm0
+	movdqu xmm3, xmm1
+	punpckhdq xmm0, xmm7  ; [ 0 |  0 | 0 | b1 | 0 | 0 | 0 |  r1 | 0 | 0 | 0 |  g1 | 0 | 0 | 0 | a1 ] 
+	punpckldq xmm2, xmm7   ; [ 0 |  0 | 0 | b2 | 0 | 0 | 0 |  r2 | 0 | 0 | 0 |  g2 | 0 | 0 | 0 | a2 ] 
+	punpckhdq xmm1, xmm7  ; [ 0 |  0 | 0 | b3 | 0 | 0 | 0 |  r3 | 0 | 0 | 0 |  g3 | 0 | 0 | 0 | a3 ] 
+	punpckldq xmm3, xmm7   ; [ 0 |  0 | 0 | b4 | 0 | 0 | 0 |  r4 | 0 | 0 | 0 |  g4 | 0 | 0 | 0 | a4 ] 
+	;posicion en convolucion
 	mov rcx,r8
 	shl rcx,1
 	inc rcx ;diametro
+	mov r12,r9 ;matrix de conv
+	mov rax,r10
+	mul rcx
+	add rax,r11
+	shl rax,2
+	add r9,rax
+	movdqu xmm4,[r9]
+	;posicion en convolucion
+	pshufd xmm6,xmm4,0 
+	mulps xmm6,xmm0
+	;movdqu xmm1,r9  ;valor conv todavia no tengo conv
+ 	mov rcx,r8
+	shl rcx,1
+	inc rcx ;diametro
+ 	;desempaqueto y multiplico
+	addps xmm2,xmm6 ;agrego el primer valor
+	inc r11 ;incremento puntero en x
 	cmp r11,rcx ;comparo con diametro
 	jne .noLLegoAlDiametroEnElPrimerNodo
 	inc r10 ;incremento puntero a y
