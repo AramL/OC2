@@ -6,9 +6,10 @@ EL formato del archivo deben ser números separados por espacios (siempre que se
 
 Ejemplo:
 test.txt = 
-	11 15 423
-	
-	19 38 291
+
+    11 15 423
+
+    19 38 291
 
 Luego llamar a 
 
