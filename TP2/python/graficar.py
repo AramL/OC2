@@ -63,6 +63,23 @@ def drawMean(ctype, filename, titulo, yaxis, comp, *args):
     plt.xticks()
 
 def drawPlot(ctype, filename, titulo, yaxis, comp, *args):
+    print "saliendo de drawplot"
+    plt.switch_backend('Qt4Agg')
+    fig = plt.figure(figsize=(10,6))
+    ax = fig.add_subplot(1,2,1)
+    toplot = []
+    for v in comp:
+        toplot.append(v)
+    col = ['r','b','g','y','c','m']
+    ax.plot( range(1, (int(ctype))+1), toplot )
+    plt.title(titulo)
+    labels = [i for i in args]
+    plt.ylabel(yaxis)
+    plt.xticks(range(1, (int(ctype)) + 1), labels)
+    plt.savefig(filename+' (plot).png', bbox_inches = 'tight')
+    plt.xticks()
+    print "saliendo de drawplot"
+
 
 if __name__ == "__main__":
     liftData(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], *sys.argv[5:])
