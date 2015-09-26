@@ -16,7 +16,7 @@ echo "**Corriendo mediciones diferencia ASM vs C"
 
 for i in {1..100} 
 do 
-  ./build/tp2 -i asm diff experimentos/game.bmp  experimentos/pokemon.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
+  ./build/tp2 -i asm diff img/scene0.bmp  img/scene400.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
   echo -n " " >> ./python/test_difrencia_ASM_C
 done
 
@@ -24,7 +24,7 @@ echo "" >> ./python/test_difrencia_ASM_C
 
 for i in {1..100} 
 do 
-  ./build/tp2 -i c diff experimentos/game.bmp  experimentos/pokemon.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
+  ./build/tp2 -i c diff img/scene0.bmp  img/scene400.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
   echo -n " " >> ./python/test_difrencia_ASM_C
 done
 
