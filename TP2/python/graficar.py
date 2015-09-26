@@ -22,6 +22,7 @@ def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     for v in comp:
         medians.append(np.median(v))
     col = ['r','b','g','y','c','m']
+    ax.grid(b=True, linestyle='-', which='both', linewidth=2, alpha=0.3)
     ax.bar( range(1, (int(ctype))+1),  medians, align='center', color=col[0: int(ctype)] )
     plt.title(titulo)
     labels = [i for i in args]

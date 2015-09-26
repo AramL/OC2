@@ -4,6 +4,7 @@
 #   Trabajo Practico 2                                                      #
 #                                                                           #
 # ************************************************************************* #
+CC=clang
 ASM = nasm
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
