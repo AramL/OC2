@@ -18,11 +18,11 @@ def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
     fig = plt.figure(figsize=(10,6))
     ax = fig.add_subplot(1,2,1)
-    means = []
+    medians = []
     for v in comp:
-        means.append(np.median(v))
+        medians.append(np.median(v))
     col = ['r','b','g','y','c','m']
-    ax.bar( range(1, (int(ctype))+1),  means, align='center', color=col[0: int(ctype)] )
+    ax.bar( range(1, (int(ctype))+1),  medians, align='center', color=col[0: int(ctype)] )
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis +' (mediana)' )
@@ -34,11 +34,11 @@ def drawStdDev(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
     fig = plt.figure(figsize=(10,6))
     ax = fig.add_subplot(1,2,1)
-    means = []
+    stddev = []
     for v in comp:
-        means.append(np.median(v))
+        stddev.append(np.std(v))
     col = ['r','b','g','y','c','m']
-    ax.bar( range(1, (int(ctype))+1),  means, align='center', color=col[0: int(ctype)] )
+    ax.bar( range(1, (int(ctype))+1),  stddev, align='center', color=col[0: int(ctype)] )
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis +' (desviacion)' )
