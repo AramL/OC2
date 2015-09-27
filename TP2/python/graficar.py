@@ -11,8 +11,10 @@ def liftData(ctype, filename, titulo, yaxis, *args):
             drawMean(ctype, filename, titulo, yaxis, comp, *args)
             drawStdDev(ctype, filename, titulo, yaxis, comp, *args)
             drawPlotMean(ctype, filename, titulo, yaxis, comp, *args)
+            drawPlotMeanLog(ctype, filename, titulo, yaxis, comp, *args)
         else:
             drawPlotMean(ctype, filename, titulo, yaxis, comp, *args)
+            drawPlotMeanLog(ctype, filename, titulo, yaxis, comp, *args)
 
 def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
@@ -72,12 +74,30 @@ def drawPlotMean(ctype, filename, titulo, yaxis, comp, *args):
     for v in comp:
         dmean.append(np.mean(v))
     ax.plot( range(1, (int(ctype))+1), dmean, '-', lw=2 )
-    ax.set_yscale('log')
     plt.title(titulo)
     labels = [i for i in args]
-    plt.ylabel(yaxis + ' promedio')
+    plt.ylabel(yaxis + ' (promedio)')
     plt.xticks(range(1, (int(ctype)) + 1), labels)
     plt.savefig(filename+' (plot mean).png', bbox_inches = 'tight')
+    plt.xticks()
+
+
+def drawPlotMeanLog(ctype, filename, titulo, yaxis, comp, *args):
+    plt.switch_backend('Qt4Agg')
+    fig = plt.figure(figsize=(20,6))
+    ax = fig.add_subplot(1,2,1)
+    toplot = []
+    col = ['r','b','g','y','c','m']
+    dmean = []
+    for v in comp:
+        dmean.append(np.mean(v))
+    ax.set_yscale('log')
+    ax.plot( range(1, (int(ctype))+1), dmean, '-', lw=2 )
+    plt.title(titulo)
+    labels = [i for i in args]
+    plt.ylabel(yaxis + ' (promedio)')
+    plt.xticks(range(1, (int(ctype)) + 1), labels)
+    plt.savefig(filename+' (plot mean logarithmic scale).png', bbox_inches = 'tight')
     plt.xticks()
 
 if __name__ == "__main__":

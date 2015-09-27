@@ -79,8 +79,68 @@ En este trabajo práctico realizamos la implementación de dos filtros de imagen
 \section{Implementacion}
 
 \subsection{Diferencia}
+\noindent Descripcíon de un ciclo de la iteración del filtro diferencia.\\
+Primermo pedimos memoria para declarar las máscaras que vamos a usar y armamos el stackframe (omitido)
+\begin{codesnippet}
+\begin{verbatim}
+section .rodata
+mask_5 DB 2,2,2,2,6,6,6,6,10,10,10,10,14,14,14,14
+trans_2 DB 0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255
+\end{verbatim}
+\end{codesnippet}
 
+\noindent Luego de armar el stackframe tenemos
+\begin{codesnippet}
+\begin{verbatim}
+mov r12, rdx
+mov eax, r8d
+mov ecx, ecx
+mul rcx
+xor r15, r15
+\end{verbatim}
+\end{codesnippet}
+r12 apunta a la matriz resultado, ecx tiene la cantidad de filas, y la parte baja de rax tiene la cantidad de columnas. Al hacer mul rcx se tiene filas*columnas en rdx:rax, como las operaciones son de 32 bits tenemos la multiplicación en rax, que es lo que vamos a usar, junto a r15 para iterar. Ahora entramos al ciclo.
 
+\begin{codesnippet}
+\begin{verbatim}
+.ciclo:
+    cmp r15, rax
+    JE .fin
+\end{verbatim}
+\end{codesnippet}
+
+\noindent Comparamos si r15 es igual a rax en tal caso ya hicimos la diferencia sobre todos los pixeles y termina el ciclo. El ciclo sigue con
+
+\begin{codesnippet}
+\begin{verbatim}
+    movdqu xmm3 , [RDI +  r15*4]   
+    movdqu xmm15, [RSI +  r15*4]
+    movdqu xmm14, xmm15     
+    pminub xmm15, xmm3        
+    pmaxub xmm3 , xmm14        
+    psubb  xmm3 , xmm15             
+    movdqu xmm4, xmm3 
+    movdqu xmm5, xmm3       
+\end{verbatim}
+\end{codesnippet}
+
+\noindent Movemos a xmm$3$ los primeros $4$ pixeles de la primera matriz y a xmm$15$ los primeros $4$ de la segunda matriz a comparar, estos ocupan respectivamente $16$ bytes en memoria (brga por $4$). Después Guardamos en xmm$14$ el valor de xmm$15$ y hacemos un pminub entre xmm$15$ y xmm$3$ lo cual deja en xmm$15$ el mínimo byte a byte. Lo mismo para xmm$3$ pero con pmaxub es decir este tiene el máximo byte a byte. Hacemos esto porque queremos calcular el valor absoluto de la forma abs(x-y) = max(x,y) - min(x,y). Concluimos esta idea haciendo psubb entre xmm$3$ que tenia el máximo y xmm$15$ que tenia el mínimo y finalmente guardamos el resultado en xmm$4,5$ para operar en la siguiente parte.
+
+\begin{codesnippet}
+\begin{verbatim}
+    pslldq xmm4, 1                  
+    pslldq xmm5, 2               
+    movdqu xmm6, xmm5             
+    pmaxub xmm6, xmm4             
+    pmaxub xmm6, xmm3              
+    pshufb xmm6, [mask_5] 
+    paddsb xmm6, [trans_2]
+    movdqu [r12 +  r15*4], xmm6
+    add  r15d, 4
+    jmp .ciclo
+\end{verbatim}
+\end{codesnippet}
+\noindent Ahora shifteamos con packed shift xmm$4,5$ uno y dos bytes respectivamente de forma de poder tomar el máximo de entre r g b en paralelo, es decir $4$ pixels a la vez. Por ejemplo, el primer byte de xmm$4$ tiene al byte de r, y el de xmm$6$ tiene al byte de g, de forma que al hacer pmaxub entre  xmm$6$ y xmm$4$ nos deja en el primer byte de xmm$6$ (y cada 3 bytes) max(r$_n$,g$_n$) donde $n = \{1,2,3,4 \}$ indican los pixeles que levantamos. Los demas bytes de este registro no nos interesan. Repetimos esto entre xmm$6$ y xmm$3$, pasa de vuelta lo mismo pero ahora tenemos en el primer byte de xmm$6$ (y cada $3$ bytes) max(r$_n$,g$_n$, b$_n$) con $n = \{1,2,3,4 \}$. Ahora tenemos que mover este máximo a las 3 coordenadas r,g y b, hacemos esto mediante la mascara mask$_5$ y mediante trans$_2$ sumamos con saturación con tal de dejar en alpha el valor $255$. Copiamos los 16 bytes correspondientes (con el offset adecuado) en la matriz destino, sumamos $4$ a r$15$d y saltamos para, si es necesario, volver a hacer el ciclo completo.
 
 \subsection{Blur gaussiano}
 

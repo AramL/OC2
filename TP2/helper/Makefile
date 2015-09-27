@@ -4,7 +4,6 @@
 #   Trabajo Practico 2                                                      #
 #                                                                           #
 # ************************************************************************* #
-CC=clang
 CFLAGS=-Wall -Wextra -pedantic -O0 -ggdb -std=c99
 
 BUILD_DIR = ../build

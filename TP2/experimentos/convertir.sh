@@ -34,4 +34,4 @@ convert game.bmp -resize 1160x1160 ./tests_size/game-1160x1160.bmp
 convert game.bmp -resize 1632x1632 ./tests_size/game-1632x1632.bmp
 convert game.bmp -resize 2308x2308 ./tests_size/game-2308x2308.bmp
 convert game.bmp -resize 3264x3264 ./tests_size/game-3264x3264.bmp
-convert game.bmp -resize 4620x4620 ./tests_size/pokemon-4620x4620.bmp
+convert game.bmp -resize 4620x4620 ./tests_size/game-4620x4620.bmp
