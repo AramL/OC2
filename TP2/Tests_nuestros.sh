@@ -74,7 +74,7 @@ echo "dame las imagenes"
 
 
 
-
+sh ./experimentos/convertir.sh
 
 echo " "
 echo "**Corriendo mediciones performance sobre tamaño en difrencia"
