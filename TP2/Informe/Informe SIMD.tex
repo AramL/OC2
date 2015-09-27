@@ -1,0 +1,91 @@
+\documentclass[a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{charter}   % tipografia
+\usepackage{graphicx}
+%\usepackage{makeidx}
+\usepackage{paralist} %itemize inline
+
+%\usepackage{float}
+%\usepackage{amsmath, amsthm, amssymb}
+%\usepackage{amsfonts}
+%\usepackage{sectsty}
+%\usepackage{charter}
+%\usepackage{wrapfig}
+%\usepackage{listings}
+%\lstset{language=C}
+
+
+\input{codesnippet}
+
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+
+%\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ - #1}}
+
+\fancyhf{}
+
+\fancyhead[LO]{Sección \rightmark} % \thesection\ 
+\fancyfoot[LO]{\small{Leandro Raffo, Maximiliano Fernández Wortman, Uriel Rozenberg.}}
+\fancyfoot[RO]{\thepage}
+
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\setlength{\hoffset}{-0.8in}
+\setlength{\textwidth}{16cm}
+%\setlength{\hoffset}{-1.1cm}
+%\setlength{\textwidth}{16cm}
+\setlength{\headsep}{0.5cm}
+\setlength{\textheight}{25cm}
+\setlength{\voffset}{-0.7in}
+\setlength{\headwidth}{\textwidth}
+\setlength{\headheight}{13.1pt}
+
+\renewcommand{\baselinestretch}{1.1}  % line spacing
+
+
+
+
+% \setcounter{secnumdepth}{2}
+\usepackage{underscore}
+\usepackage{caratula}
+\usepackage{url}
+
+\begin{document}
+
+\thispagestyle{empty}
+\materia{Organización del Computador II}
+\submateria{Segundo Cuatrimestre de 2015}
+\titulo{Trabajo Práctico II}
+\subtitulo{Programacion SIMD}
+\integrante{Leandro Raffo}{}{}
+\integrante{Maximiliano Fernández Wortman}{}{}
+\integrante{Uriel Rozenberg}{}{}
+
+%Pagina de titulo e indice
+%\thispagestyle{empty}
+
+\maketitle 
+
+\tableofcontents
+
+\newpage
+
+\section{Introduccion}
+En este trabajo práctico realizamos la implementación de dos filtros de imagenes, con tal de ver que tan eficiente puede llegar a ser (o no) SIMD, los filtros son la diferencia de imagenes y el blur gaussiano, los cuales fueron implementados en lenguaje C (gcc y clang) y assembly, haciendo uso de instrucciones vectoriales. Luego comparamos la performance de estas implementaciones sobre diferentes imagenes y usando herramientas probabilísticas y estadísticas.
+
+\section{Implementacion}
+
+\subsection{Diferencia}
+
+
+
+\subsection{Blur gaussiano}
+
+\section{Resultados}
+
+\section{Conclusión}
+
+\end{document}
