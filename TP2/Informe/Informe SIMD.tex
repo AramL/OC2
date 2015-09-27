@@ -148,6 +148,7 @@ r12 apunta a la matriz resultado, ecx tiene la cantidad de filas, y la parte baj
 
 \begin{codesnippet}
 \begin{verbatim}
+movdqu xmm0,[r12]  
 movdqu xmm1, xmm0
 punpckhbw xmm0, xmm7 
 punpcklbw xmm1, xmm7  
@@ -159,6 +160,23 @@ punpckhwd xmm1, xmm7
 punpcklwd xmm3, xmm7  
 \end{verbatim}
 \end{codesnippet}
+
+\noindent Primero levantamos $16$ bytes de memoria, equivalente a $4$ pixeles en xmm$0$ y lo copiamos en xmm$1$ ya que vamos a desempaquetar los datos. Llamamos a punpcklbw/hbw junto a un xmm$7$ que estaba en $0$, tenemos entonces que xmm$0$ tiene los primeros $2$ pixeles ($8$ bytes) extendidos a cada uno a un word. Lo mismo para xmm$1$. Luego repetimos el proceso desempaquetando a un double word, ya que queremos operar con floats y este es su tamaño. 
+
+\begin{codesnippet}
+\begin{verbatim}
+cvtdq2ps xmm0,xmm0
+\end{verbatim}
+\end{codesnippet}
+
+\noindent Convertimos a float 
+
+
+
+
+
+
+
 
 \section{Resultados}
 
