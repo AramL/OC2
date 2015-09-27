@@ -1,4 +1,5 @@
 extern matrizDeConvolucion
+extern free
 
 default rel
 global _blur_asm
@@ -198,6 +199,8 @@ blur_asm:
 	jmp .principio
 .terminePosta:
 
+	mov rdi,r9
+	call free
 
 	add	rsp,8
 	pop	r15
