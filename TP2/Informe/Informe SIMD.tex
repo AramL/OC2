@@ -144,6 +144,22 @@ r12 apunta a la matriz resultado, ecx tiene la cantidad de filas, y la parte baj
 
 \subsection{Blur gaussiano}
 
+\noindent En el blur gaussiano calculamos 4 pixeles por iteración, pero para legibilidad solo vamos a escribir lo que le pasa a uno solo, se repite el código y se apunta a memoria correctamente. 
+
+\begin{codesnippet}
+\begin{verbatim}
+movdqu xmm1, xmm0
+punpckhbw xmm0, xmm7 
+punpcklbw xmm1, xmm7  
+movdqu xmm2, xmm0
+movdqu xmm3, xmm1
+punpckhwd xmm0, xmm7  	
+punpcklwd xmm2, xmm7   
+punpckhwd xmm1, xmm7  
+punpcklwd xmm3, xmm7  
+\end{verbatim}
+\end{codesnippet}
+
 \section{Resultados}
 
 \section{Conclusión}
