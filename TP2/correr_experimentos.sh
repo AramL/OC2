@@ -240,7 +240,7 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/graficarAlt.py 9 ./python/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"  Assembly "gcc (-O3)" "clang (-O3)" "gcc (-O2)" "clang (-O2)"  "gcc (-O1)" "clang (-O1)"  "gcc (-O0)" "clang (-O0)" 
+python ./python/graficarAlt.py 9 ./python/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"  Assembly "gcc (-O2)" "clang (-O3)" "gcc (-O2)" "clang (-O2)"  "gcc (-O1)" "clang (-O1)"  "gcc (-O0)" "clang (-O0)" 
 
 echo " "
 echo "vago uriel :D"
@@ -282,7 +282,7 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/graficar.py 2 ./python/test_blur_ASM_C "blur (ASM vs C)" "CPU Ticks"  Assembly gcc (-02)
+python ./python/graficar.py 2 ./python/test_blur_ASM_C "blur (ASM vs C)" "CPU Ticks"  Assembly "gcc (-02)"
 
 echo "" 
 echo "dame las imagenes"
