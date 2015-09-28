@@ -13,9 +13,7 @@ def liftData(ctype, filename, titulo, yaxis, *args):
             drawPlotMean(ctype, filename, titulo, yaxis, comp, *args)
             drawPlotMeanLog(ctype, filename, titulo, yaxis, comp, *args)
         else:
-            drawplotMean9(ctype, filename, titulo, yaxis, comp, *args)
-            drawPlotMedian9(ctype, filename, titulo, yaxis, comp, *args)
-            drawplotStdDev9(ctype, filename, titulo, yaxis, comp, *args)
+            drawPlotMean(ctype, filename, titulo, yaxis, comp, *args)
             drawPlotMeanLog(ctype, filename, titulo, yaxis, comp, *args)
 
 def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
