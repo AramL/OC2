@@ -30,8 +30,8 @@ $(BUILD_DIR)/$(BIN): FORCE $(MAIN_OBJS_CON_PATH)
 
 export CFLAGS64
 FORCE:
-	make -C helper
-	make -C filtros
+	make -C helper -f Makefile
+	make -C filtros -f Makefile
 
 $(BUILD_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $< -lm
