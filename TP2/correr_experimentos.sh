@@ -2,44 +2,224 @@
 
 clear
 
-echo " "
-echo "**Compilando"
+make clean
 
-make
+
+
+echo " "
+echo "**Compilando -O3"
+
+make -f MakefileO3
+
+if [ $? -ne 0 ]; then
+  echo "  **Error de compilacion"
+  exit 1
+fi
+
+echo " "
+echo "**Corriendo mediciones diferencia ASM vs C"
+
+for i in {1..500} 
+do 
+  ./build/tp2 -i asm diff ./experimentos/tests_size/game-4620x4620.bmp  ./experimentos/tests_size/pokemon-4620x4620.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
+  echo -n " " >> ./python/test_difrencia_ASM_C
+done
+
+
+echo "" >> ./python/test_difrencia_ASM_C
+
+for i in {1..500} 
+do 
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-4620x4620.bmp  ./experimentos/tests_size/pokemon-4620x4620.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
+  echo -n " " >> ./python/test_difrencia_ASM_C
+done
+
+
+make clean
+
+echo " "
+echo "**Compilando Clang -O3"
+
+make -f MakefileClangO3
+
 if [ $? -ne 0 ]; then
   echo "  **Error de compilacion"
   exit 1
 fi
 
 
-echo " "
-echo "**Corriendo mediciones diferencia ASM vs C"
+echo "" >> ./python/test_difrencia_ASM_C
 
-for i in {1..100} 
+for i in {1..500} 
 do 
-  ./build/tp2 -i asm diff img/scene0.bmp  img/scene400.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-4620x4620.bmp  ./experimentos/tests_size/pokemon-4620x4620.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
   echo -n " " >> ./python/test_difrencia_ASM_C
 done
+
+
+
+
+
+
+
+
+make clean
+
+
+echo " "
+echo "**Compilando -O2"
+
+make -f MakefileO2
+
+if [ $? -ne 0 ]; then
+  echo "  **Error de compilacion"
+  exit 1
+fi
+
 
 echo "" >> ./python/test_difrencia_ASM_C
 
-for i in {1..100} 
+for i in {1..500} 
 do 
-  ./build/tp2 -i c diff img/scene0.bmp  img/scene400.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-4620x4620.bmp  ./experimentos/tests_size/pokemon-4620x4620.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
   echo -n " " >> ./python/test_difrencia_ASM_C
 done
+
+
+
+make clean
+
+
+echo " "
+echo "**Compilando Clang -O2"
+
+make -f MakefileClangO2
+
+if [ $? -ne 0 ]; then
+  echo "  **Error de compilacion"
+  exit 1
+fi
+
+
+echo "" >> ./python/test_difrencia_ASM_C
+
+for i in {1..500} 
+do 
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-4620x4620.bmp  ./experimentos/tests_size/pokemon-4620x4620.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
+  echo -n " " >> ./python/test_difrencia_ASM_C
+done
+
+
+
+
+
+
+make clean
+
+
+echo " "
+echo "**Compilando -O1"
+
+make -f MakefileO1
+
+
+if [ $? -ne 0 ]; then
+  echo "  **Error de compilacion"
+  exit 1
+fi
+
+
+echo "" >> ./python/test_difrencia_ASM_C
+
+for i in {1..500} 
+do 
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-4620x4620.bmp  ./experimentos/tests_size/pokemon-4620x4620.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
+  echo -n " " >> ./python/test_difrencia_ASM_C
+done
+
+
+make clean
+
+
+echo " "
+echo "**Compilando Clang -O1"
+
+make -f MakefileClangO1
+
+
+if [ $? -ne 0 ]; then
+  echo "  **Error de compilacion"
+  exit 1
+fi
+
+
+echo "" >> ./python/test_difrencia_ASM_C
+
+for i in {1..500} 
+do 
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-4620x4620.bmp  ./experimentos/tests_size/pokemon-4620x4620.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
+  echo -n " " >> ./python/test_difrencia_ASM_C
+done
+
+
+
+echo " "
+echo "**Compilando Gcc -O0"
+
+make -f MakefileO0
+
+
+if [ $? -ne 0 ]; then
+  echo "  **Error de compilacion"
+  exit 1
+fi
+
+
+echo "" >> ./python/test_difrencia_ASM_C
+
+for i in {1..500} 
+do 
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-4620x4620.bmp  ./experimentos/tests_size/pokemon-4620x4620.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
+  echo -n " " >> ./python/test_difrencia_ASM_C
+done
+
+echo " "
+echo "**Compilando Clang -O0"
+
+make -f MakefileClangO0
+
+
+if [ $? -ne 0 ]; then
+  echo "  **Error de compilacion"
+  exit 1
+fi
+
+
+echo "" >> ./python/test_difrencia_ASM_C
+
+for i in {1..500} 
+do 
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-4620x4620.bmp  ./experimentos/tests_size/pokemon-4620x4620.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
+  echo -n " " >> ./python/test_difrencia_ASM_C
+done
+
+
+
+
 
 echo " "
 echo "**graficando"
 
-python ./python/graficar.py 2 ./python/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"  Assembly gcc 
+python ./python/graficar.py 9 ./python/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"  Assembly "gcc (-O3)" "Clang (-O3)" "gcc (-O2)" "Clang (-O2)"  "gcc (-O1)" "Clang (-O1)"  "gcc (-O0)" "Clang (-O0)" 
 
 echo " "
 echo "vago uriel :D"
 
 
 
+make clean
 
+make -f MakefileO3
 
 
 echo " "
@@ -272,18 +452,10 @@ python ./python/graficar.py 9 ./python/test_performance_size_ASM "diferencia (AS
 
 make clean
 
-
-
-
-
-
-#!/bin/bash
-clear
-
 echo " "
-echo "**Compilando"
+echo "**Compilando Clang O3"
 
-make -f MakefileClang
+make -f MakefileClangO3
 
 if [ $? -ne 0 ]; then
   echo "  **Error de compilacion"
@@ -445,9 +617,5 @@ echo " "
 echo "**graficando"
 
 python ./python/graficar.py 9 ./python/test_performance_size_C_clang "diferencia (clang)" "CPU Ticks"  256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
-
-
-
-
 
 
