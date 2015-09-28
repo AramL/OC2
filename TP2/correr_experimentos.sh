@@ -553,7 +553,7 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/graficar.py 2 ./python/test_blur_ASM_C_vsClang "blur (ASM vs C)" "CPU Ticks"  Assembly "clang (-O2)""
+python ./python/graficar.py 2 ./python/test_blur_ASM_C_vsClang "blur (ASM vs C)" "CPU Ticks"  Assembly "clang (-O2)"
 
 echo "" 
 echo "dame las imagenes"
@@ -653,4 +653,65 @@ echo "**graficando"
 
 python ./python/graficar.py 9 ./python/test_performance_size_C_clang "diferencia clang (-O2)" "CPU Ticks"  256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
 
+
+
+echo ""
+make clean
+
+make 
+
+echo ""
+echo "test radios blur contra tamaño"
+
+for i in {1..20} 
+do 
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-4620x4620.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
+  echo -n " " >> ./python/test_radio_size_ASM
+done
+
+echo "" >> ./python/test_radio_size_ASM
+
+for i in {1..20} 
+do 
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-4620x4620.bmp 5 75 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
+  echo -n " " >> ./python/test_radio_size_ASM
+done
+
+echo "" >> ./python/test_radio_size_ASM
+
+
+for i in {1..20} 
+do 
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-4620x4620.bmp 5 150 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
+  echo -n " " >> ./python/test_radio_size_ASM
+done
+
+echo "" >> ./python/test_radio_size_ASM
+
+
+for i in {1..20} 
+do 
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-4620x4620.bmp 5 300 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
+  echo -n " " >> ./python/test_radio_size_ASM
+done
+
+echo "" >> ./python/test_radio_size_ASM
+
+for i in {1..20} 
+do 
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-4620x4620.bmp 5 600 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
+  echo -n " " >> ./python/test_radio_size_ASM
+done
+
+echo "" >> ./python/test_radio_size_ASM
+
+for i in {1..20} 
+do 
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-4620x4620.bmp 5 1200 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
+  echo -n " " >> ./python/test_radio_size_ASM
+done
+
+echo "" >> ./python/test_radio_size_ASM
+
+python ./python/graficar.py 6 ./python/test_radio_size_ASM "blur ASM (radios)" "CPU Ticks"  15 75 150 300 600 1200
 
