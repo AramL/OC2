@@ -6,26 +6,20 @@ import numpy as np
 def liftData(ctype, filename, titulo, yaxis, *args):
     with open(filename, 'r') as f:
         comp = [[int(x) for x in line.split()] for line in f]
-        if int(ctype) <= 6:
-            drawMedian(ctype, filename, titulo, yaxis, comp, *args)
-            drawMean(ctype, filename, titulo, yaxis, comp, *args)
-            drawStdDev(ctype, filename, titulo, yaxis, comp, *args)
-            drawPlotMean(ctype, filename, titulo, yaxis, comp, *args)
-            drawPlotMeanLog(ctype, filename, titulo, yaxis, comp, *args)
-        else:
-            drawplotMean9(ctype, filename, titulo, yaxis, comp, *args)
-            drawPlotMedian9(ctype, filename, titulo, yaxis, comp, *args)
-            drawplotStdDev9(ctype, filename, titulo, yaxis, comp, *args)
-            drawPlotMeanLog(ctype, filename, titulo, yaxis, comp, *args)
+    drawMedian(ctype, filename, titulo, yaxis, comp, *args)
+    drawMean(ctype, filename, titulo, yaxis, comp, *args)
+    drawStdDev(ctype, filename, titulo, yaxis, comp, *args)
+    drawPlotMean(ctype, filename, titulo, yaxis, comp, *args)
+    drawPlotMeanLog(ctype, filename, titulo, yaxis, comp, *args)
 
 def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
-    fig = plt.figure(figsize=(10,6))
+    fig = plt.figure(figsize=(30,6))
     ax = fig.add_subplot(1,2,1)
     medians = []
     for v in comp:
         medians.append(np.median(v))
-    col = ['r','b','g','y','c','m']
+    col = ['r','b','b','g', 'g','m', 'm', 'c', 'c']
     ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1) 
     ax.bar( range(1, (int(ctype))+1),  medians, align='center', color=col[0: int(ctype)], zorder=10)
     plt.title(titulo)
@@ -37,12 +31,12 @@ def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
 
 def drawStdDev(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
-    fig = plt.figure(figsize=(10,6))
+    fig = plt.figure(figsize=(30,6))
     ax = fig.add_subplot(1,2,1)
     stddev = []
     for v in comp:
         stddev.append(np.std(v))
-    col = ['r','b','g','y','c','m']
+    col = ['r','b','b','g', 'g','m', 'm', 'c', 'c']
     ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1) 
     ax.bar( range(1, (int(ctype))+1),  stddev, align='center', color=col[0: int(ctype)], zorder=10)
     plt.title(titulo)
@@ -54,12 +48,13 @@ def drawStdDev(ctype, filename, titulo, yaxis, comp, *args):
 
 def drawMean(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
-    fig = plt.figure(figsize=(10,6))
+    fig = plt.figure(figsize=(30,6))
     ax = fig.add_subplot(1,2,1)
     means = []
     for v in comp:
         means.append(np.mean(v))
-    col = ['r','b','g','y','c','m']
+    #col = ['r','b','g','y','c','m']
+    col = ['r','b','b','g', 'g','m', 'm', 'c', 'c']
     ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1) 
     ax.bar( range(1, (int(ctype))+1),  means, align='center', color=col[0: int(ctype)], zorder=10)
     plt.title(titulo)
@@ -71,7 +66,7 @@ def drawMean(ctype, filename, titulo, yaxis, comp, *args):
 
 def drawPlotMean(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
-    fig = plt.figure(figsize=(20,6))
+    fig = plt.figure(figsize=(30,6))
     ax = fig.add_subplot(1,2,1)
     toplot = []
     col = ['r','b','g','y','c','m']
@@ -89,7 +84,7 @@ def drawPlotMean(ctype, filename, titulo, yaxis, comp, *args):
 
 def drawPlotMeanLog(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
-    fig = plt.figure(figsize=(20,6))
+    fig = plt.figure(figsize=(30,6))
     ax = fig.add_subplot(1,2,1)
     toplot = []
     col = ['r','b','g','y','c','m']
@@ -104,6 +99,7 @@ def drawPlotMeanLog(ctype, filename, titulo, yaxis, comp, *args):
     plt.xticks(range(1, (int(ctype)) + 1), labels)
     plt.savefig(filename+' (plot mean logarithmic scale).png', bbox_inches = 'tight')
     plt.xticks()
+
 
 if __name__ == "__main__":
     liftData(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], *sys.argv[5:])
