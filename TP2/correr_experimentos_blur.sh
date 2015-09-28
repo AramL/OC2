@@ -305,6 +305,9 @@ done
 echo "" >> ./python/test_radio_cambiando_tamanios_c
 
 
+echo "824x824"
+
+
 for i in {1..20} 
 do 
   ./build/tp2 -i c blur ./experimentos/tests_size/game-824x824.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_c
@@ -312,6 +315,8 @@ do
 done
 
 echo "" >> ./python/test_radio_cambiando_tamanios_c
+
+echo "1160x1160"
 
 
 
@@ -321,18 +326,10 @@ do
   echo -n " " >> ./python/test_radio_cambiando_tamanios_c
 done
 
-echo "" >> ./python/test_radio_cambiando_tamanios_c
-
-for i in {1..20} 
-do 
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1632x1632.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_c
-  echo -n " " >> ./python/test_radio_cambiando_tamanios_c
-done
-
-echo "" >> ./python/test_radio_cambiando_tamanios_c
 
 
-python ./python/graficar.py 6 ./python/test_radio_cambiando_tamanios_c "blur gcc (-O2)" "CPU Ticks" 256kb 512kb 1mb 2mb 4mb 8mb
+
+python ./python/graficar.py 5 ./python/test_radio_cambiando_tamanios_c "blur gcc (-O2)" "CPU Ticks" 256kb 512kb 1mb 2mb 4mb 
 
 
 
@@ -370,6 +367,7 @@ done
 
 echo "" >> ./python/test_radio_cambiando_tamanios_asm
 
+echo "824x824"
 
 for i in {1..20} 
 do 
@@ -379,7 +377,7 @@ done
 
 echo "" >> ./python/test_radio_cambiando_tamanios_asm
 
-
+echo "1160x1160"
 
 for i in {1..20} 
 do 
@@ -389,13 +387,7 @@ done
 
 echo "" >> ./python/test_radio_cambiando_tamanios_asm
 
-for i in {1..20} 
-do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-1632x1632.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_asm
-  echo -n " " >> ./python/test_radio_cambiando_tamanios_asm
-done
-
-echo "" >> ./python/test_radio_cambiando_tamanios_asm
 
 
-python ./python/graficar.py 6 ./python/test_radio_cambiando_tamanios_asm "blur gcc (-O2)" "CPU Ticks" 256kb 512kb 1mb 2mb 4mb 8mb
+
+python ./python/graficar.py 5 ./python/test_radio_cambiando_tamanios_asm "blur gcc (-O2)" "CPU Ticks" 256kb 512kb 1mb 2mb 4mb 
