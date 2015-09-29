@@ -217,11 +217,27 @@ Lo mismo pasa con las implementaciones en C, en este caso gcc con -O2.
 
 \subsection{Blur}
 
+\noindent Una de las hipótesis que teniamos con blur es que dada una imagen con un radio pequeño iba a correr mas lento que con un radio mas grande, pero a medida que el radio domine la cantidad de pixeles sobre las cuales va a aplicar la matriz de convolución el tiempo de ejecución iba a bajar. Esto lo pudimos probar corriendo blur sobre una imagen de tamaño fijo (en este caso 584x584 pixels) e incrementando el radio como se ve en la siguiente imagen
+
+\begin{figure}[h]
+	\includegraphics[scale=0.62]{imagenes/test_radio_size_ASM.png}
+	\caption{Blur, cambiando los radios}
+\end{figure}
+
+El algoritmo llega a un punto crítico cuando el radio es equivalente a la dimensión/2, es decir cuando el algoritmo se comporta como $O(n^4)$ sobre la dimensión.
 
 
+\newpage 
+
+Para comparar al algoritmo en C vs asm hicimos lo mismo que blur, corrimos los dos sobre la misma imagen y calculamos su promedio.
+
+
+\begin{center}
+    \includegraphics[scale=0.6]{imagenes/test_blur_ASM_C.png}
+\end{center}
 
 \section{Conclusión}
 
-\noindent Para el algoritmo de diferencia, se justificaria totalmente hacer una implementación en SIMD, no solo por el hecho de que corre mas rápida, sino que además implementarlo en assembly fue bastante fácil. Pasa lo contrario con blur, donde la performance ganada no es justificable contra imagenes muy grandes.
+\noindent Para el algoritmo de diferencia, se justificaria totalmente hacer una implementación en SIMD, no solo por el hecho de que corre mas rápido, sino que además implementarlo en assembly fue bastante fácil ($<$ 20 lineas). Pasa lo contrario con blur, donde la performance ganada no es justificable contra el costo de implementarlo.
 
 \end{document}
