@@ -6,23 +6,12 @@
 %\usepackage{makeidx}
 \usepackage{paralist} %itemize inline
 
-%\usepackage{float}
-%\usepackage{amsmath, amsthm, amssymb}
-%\usepackage{amsfonts}
-%\usepackage{sectsty}
-%\usepackage{charter}
-%\usepackage{wrapfig}
-%\usepackage{listings}
-%\lstset{language=C}
-
-
 \input{codesnippet}
 
 \usepackage{fancyhdr}
 
 \pagestyle{fancy}
 
-%\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
 \renewcommand{\sectionmark}[1]{\markright{\thesection\ - #1}}
 
 \fancyhf{}
@@ -49,11 +38,12 @@
 
 
 % \setcounter{secnumdepth}{2}
-\usepackage{underscore}
+
 \usepackage{caratula}
-\usepackage{url}
+
 
 \begin{document}
+
 
 \thispagestyle{empty}
 \materia{Organización del Computador II}
@@ -174,11 +164,19 @@ cvtdq2ps xmm0,xmm0
 
 
 
-
-
-
-
 \section{Resultados}
+
+\subsection{Diferencia}
+
+Para analizar las implementaciones de C y assembly, corrimos  cada implementación de diferencia sobre una imagen de $2308$x$2308$ con un tamaño de $16$mb, las implementaciones de C se compilaron con gcc y clang usando los flags de optimización -O0, -O1, -O2 y -O3
+\begin{figure}
+\includegraphics[scale=0.52]{diferenciaCvsASM_Intel_E8440.png}
+\caption{Promedio sobre una imagen de $2308$x$2308$}
+\end{figure}
+
+
+
+\subsection{Blur}
 
 \section{Conclusión}
 
