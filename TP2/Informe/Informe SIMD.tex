@@ -159,8 +159,9 @@ cvtdq2ps xmm0,xmm0
 \end{verbatim}
 \end{codesnippet}
 
-\noindent Convertimos a float 
 
+
+\newpage
 
 
 
@@ -168,16 +169,59 @@ cvtdq2ps xmm0,xmm0
 
 \subsection{Diferencia}
 
-Para analizar las implementaciones de C y assembly, corrimos  cada implementación de diferencia sobre una imagen de $2308$x$2308$ con un tamaño de $16$mb, las implementaciones de C se compilaron con gcc y clang usando los flags de optimización -O0, -O1, -O2 y -O3
-\begin{figure}
-\includegraphics[scale=0.52]{diferenciaCvsASM_Intel_E8440.png}
-\caption{Promedio sobre una imagen de $2308$x$2308$}
+\noindent \textbf{Nota:} todos los tests fueron corridos sobre una PC con procesador Intel Core2Duo E8440.
+\\
+\noindent Para analizar las implementaciones de C y assembly, corrimos 1000 iteraciones de cada implementación de diferencia sobre una imagen de 2308x2308 (16mb) donde las implementaciones de C se compilaron con gcc y clang usando los flags de optimización -O0, -O1, -O2 y -O3.
+
+
+\begin{figure}[h]
+\includegraphics[scale=0.56]{imagenes/test_difrencia_ASM_C_promedio.png}
+\caption{Promedio, sin outliers incluidos, sobre una imagen de 2308x2308 de 16mb.}
 \end{figure}
 
+\noindent Luego eliminamos los outliers y graficamos de vuelta obteniendo.\\
+
+
+\begin{figure}[h]
+\includegraphics[scale=0.56]{imagenes/test_difrencia_ASM_C_no_outliers.png}
+\caption{Promedio, con outliers incluidos, sobre una imagen de 2308x2308 de 16mb.}
+\end{figure}
+
+\noindent Vemos que clang en -O0 se comporta un poco mejor sacando esos resultados extremos, y lo que podemos concluir es que el algoritmo implementado en assembly con SIMD corre 2 veces más rapido que su contraparte en C.
+
+\newpage 
+
+\noindent En el siguiente experimento queria ver si el tamaño de la imagen iba a modificar la performance (incrementar el tiempo de ejecucion) del algoritmo debido a cache misses. Para esto corrimos diferencia en Assembly y C, de vuelta bajo gcc y clang, pero esta vez con el flag -O2, ya que me parecio que era el sweet spot para esta implementación ya que los flags de optimización no garantizan que corra con mejor performance, sobre imágenes que iban de 256kb a 64mb como se ve en la figura (Los tamaños utilizados están en el shellscript convertir.sh que es el que usamos para generar las imagenes). 
+
+\begin{figure}[h]
+	\includegraphics[scale=0.60]{imagenes/test_performance_size_ASM.png}
+	\caption{Diferencia en asm, escala logarítmica}
+\end{figure}
+
+\noindent Lo que se obtuvo es una curva que sube suavemente, lo cual implicaria que el algoritmo tiene un crecimiento bastante predecible hasta el tamaño donde se lo probó (imágenes de 4000x4000 pixels con un tamaño de 64mb).
+
+\begin{figure}[h]
+	\includegraphics[scale=0.60]{imagenes/test_performance_size_ASM_not_log.png}
+	\caption{Diferencia en asm, escala no logarítmica}
+\end{figure}
+
+\newpage 
+
+Lo mismo pasa con las implementaciones en C, en este caso gcc con -O2.
+
+\begin{figure}[h]
+	\includegraphics[scale=0.60]{imagenes/test_performance_size_C.png}
+	\caption{Diferencia en C, escala logarítmica}
+\end{figure}
 
 
 \subsection{Blur}
 
+
+
+
 \section{Conclusión}
+
+\noindent Para el algoritmo de diferencia, se justificaria totalmente hacer una implementación en SIMD, no solo por el hecho de que corre mas rápida, sino que además implementarlo en assembly fue bastante fácil. Pasa lo contrario con blur, donde la performance ganada no es justificable contra imagenes muy grandes.
 
 \end{document}
