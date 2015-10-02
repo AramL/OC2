@@ -1,10 +1,8 @@
 
 #CFLAGS64 = -ggdb -Wall -Wextra -std=c99 -pedantic -m64
-CFLAGS64 = -O0 -Wall -std=c99 -pedantic -m64
+CFLAGS64 =  -Wall -std=c99 -pedantic -m64
 
-
-CFLAGS   = $(CFLAGS64)
-
+CFLAGS   = $(CFLAGS64) 
 BUILD_DIR = build
 BIN = tp2
 
@@ -26,15 +24,16 @@ all: $(BUILD_DIR)/$(BIN)
 
 
 $(BUILD_DIR)/$(BIN): FORCE $(MAIN_OBJS_CON_PATH)
-	$(CC) $(CFLAGS) $(OBJS_CON_PATH) -o $@ -lm
+	$(CC) $(OPTFLAGS) $(CFLAGS) $(OBJS_CON_PATH) -o $@ -lm
 
 export CFLAGS64
+export OPTFLAGS
 FORCE:
-	make -C helper -f Makefile
+	make -C helper -f Makefile 
 	make -C filtros -f Makefile
 
 $(BUILD_DIR)/%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $< -lm
+	$(CC) $(OPTFLAGS) $(CFLAGS) -c -o $@ $< -lm
 
 clean:
 	rm -fr $(BUILD_DIR)/*
