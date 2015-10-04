@@ -22,8 +22,8 @@ void diff_c (unsigned char *src, unsigned char *src_2, unsigned char *dst, int m
     unsigned char (*dst_matrix)[dst_row_size]       = (unsigned char (*)[dst_row_size]) dst;
 
     unsigned char n1 /*,n2,n3,n4*/;
-    for(register int y = 0; y < n; y++){
-        for(register int x = 0; x < m; ++x /* x+4*/){
+    for(int y = 0; y < n; y++){
+        for(int x = 0; x < m; ++x /* x+4*/){
             n1 = infNorm(src_matrix[y][x*4], src_matrix[y][x*4+1], src_matrix[y][x*4+2],
                         src_2_matrix[y][x*4], src_2_matrix[y][x*4+1], src_2_matrix[y][x*4+2]);
             /* n2 = infNorm(src_matrix[y][x*4+4], src_matrix[y][x*4+5], src_matrix[y][x*4+6],
