@@ -149,6 +149,9 @@ blur_asm:
 
 
 .end:
+    mov rdi, r10
+    call free
+
     add rsp, 8
     pop rbx
     pop r15
