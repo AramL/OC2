@@ -3,66 +3,21 @@ global _diff_asm
 global diff_asm
 extern printf
 
-%macro multipush 1-* 
-  sub rsp, 16*%0
-  %assign i 0
-  %rep  %0
-    movdqa  [rsp+16*i], %1
-  %rotate 1
-  %assign i i+1
-  %endrep
-%endmacro
-%macro push_xmm_all 0
-multipush xmm0,xmm1,xmm2,xmm3,xmm4,xmm5,xmm6,xmm7,xmm8,xmm9,xmm10,xmm11,xmm12,xmm13,xmm14,xmm15
-%endmacro
-%macro multipop 1-*
-  %assign i 0
-  %rep  %0
-    movdqa %1, [rsp+16*i]
-  %rotate 1
-  %assign i i+1
-  %endrep
-  add rsp, 16*%0 
-%endmacro
-%macro pop_xmm_all 0
-multipop xmm0,xmm1,xmm2,xmm3,xmm4,xmm5,xmm6,xmm7,xmm8,xmm9,xmm10,xmm11,xmm12,xmm13,xmm14,xmm15
-%endmacro
-%macro push_xmm 1
-sub     rsp, 16
-movdqu  [rsp], xmm%1
-%endmacro
 
-%macro pop_xmm 1
-
-movdqu  xmm%1,[rsp]
-add     rsp, 16
-%endmacro
-%macro printear_reg 2
-push rax
-MOV RDI, es_int
-MOV RSI, %1
-MOV rdx,%2
-push_xmm_all
-call printf 
-pop_xmm_all
-pop rax
-%endmacro
 section .rodata:
 ALIGN 16
-mask_5 DB 2,2,2,2,6,6,6,6,10,10,10,10,14,14,14,14
-trans_2 DB 0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255
-es_int  DB"%c= %i",10,0
-;section .data
-
+mask_5  db 2,2,2,2,6,6,6,6,10,10,10,10,14,14,14,14
+trans_2 db 0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255
+es_int  db "%c= %i",10,0
 
 
 section .text
 ;void diff_asm    (
-    ;unsigned char *src,  rdi
-    ;unsigned char *src2, rsi
-    ;unsigned char *dst,  rdx
-    ;int filas, ecx
-    ;int cols)  r8d
+    ;unsigned char *src,       ;rdi
+    ;unsigned char *src2,      ;rsi
+    ;unsigned char *dst,       ;rdx
+    ;int filas,                ;ecx
+    ;int cols)                 ;r8d
 
 ;_diff_asm:
 diff_asm:

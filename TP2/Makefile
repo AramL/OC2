@@ -1,6 +1,6 @@
 
 #CFLAGS64 = -ggdb -Wall -Wextra -std=c99 -pedantic -m64
-CFLAGS64 =  -Wall -std=c99 -pedantic -m64
+CFLAGS64 =  -Wall -std=c99 -pedantic -m64 -g
 
 CFLAGS   = $(CFLAGS64) 
 BUILD_DIR = build
