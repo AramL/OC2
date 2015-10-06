@@ -35,11 +35,11 @@ blur_asm:
     mov r13, rsi                     ;unsigned char *dst
     mov r14, rdx                     ;int filas,     
     mov r15, rcx                     ;int cols
-    mov rbx, r9                      ;int radius
+    mov ebx, r9d                     ;int radius
    
 
-    mov  rdi, r8
-    mov  rsi, r9
+    mov  edi, r8d
+    mov  esi, r9d
     call matrizDeConvolucion         ;
     mov r10, rax                     ; r10 apunta al kernel
     ; rdi = src, rsi = dst, rdx = filas, rcx = cols, r10 = filas * columnas 
@@ -110,7 +110,7 @@ blur_asm:
 ;sino agrego uno a rcx, rdx, rsi.
 ;rcx = offset kernel, rdx = contador, rsi = offset de la matriz contra el kernel
     cmp rdx, r11
-    je .sumar_fila_rsi
+    je .sumar_fila_kernel
     inc rdx
     inc rcx
     inc rsi
