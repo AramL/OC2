@@ -16,8 +16,8 @@ section .text
     ;unsigned char *dst,      // rsi
     ;int filas,               // rdx
     ;int cols,                // rcx
-    ;float sigma,             // r8
-    ;int radius)              // r9
+    ;float sigma,             // xmm0
+    ;int radius)              // r8
 
 _blur_asm:
 blur_asm:
@@ -42,6 +42,7 @@ blur_asm:
    
 
     mov  edi, r8d
+    ;sigma ya esta en xmm0
     call matrizDeConvolucion         ;
     mov r10, rax                     ; r10 apunta al kernel
     ; rdi = src, rsi = dst, rdx = filas, rcx = cols, r10 = filas * columnas 
