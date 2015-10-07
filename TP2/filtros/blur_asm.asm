@@ -30,16 +30,18 @@ blur_asm:
     push rbx
     sub rsp, 8
 
+    xor r14, r14
+    xor r15, r15
+    xor rbx, rbx
 
     mov r12, rdi                     ;unsigned char *src
     mov r13, rsi                     ;unsigned char *dst
-    mov r14, rdx                     ;int filas,     
-    mov r15, rcx                     ;int cols
-    mov ebx, r9d                     ;int radius
+    mov r14d, edx                     ;int filas,     
+    mov r15d, ecx                     ;int cols
+    mov ebx, r8d                     ;int radius
    
 
     mov  edi, r8d
-    mov  esi, r9d
     call matrizDeConvolucion         ;
     mov r10, rax                     ; r10 apunta al kernel
     ; rdi = src, rsi = dst, rdx = filas, rcx = cols, r10 = filas * columnas 
@@ -59,9 +61,12 @@ blur_asm:
     mov rax, r11
     mul r11                          ;es decir rax = (2radius+1)^2
 
-    mov rbx, rax
+    push rbp
+    mov rbp, rax
+    
     shr rax, 1                       ;rax = (2r+1)^2/2
     inc rax                          ;rax me dice en que parte de la memoria tengo que guardar
+    
     mov rbx, rax
 
     mov r9, r15                      ;r9 tiene el ancho
@@ -85,19 +90,24 @@ blur_asm:
     je .end
 
 .ciclo_kernel:
-    cmp rcx, rbx                     ;comparo si ya recorri toda la matriz de kernel
+    cmp rcx, rbp                     ;comparo si ya recorri toda la matriz de kernel
     je .insert                       ;en tal caso inserto a memoria
     mov r9, rsi                      ;aca preparo el offset para levantar de memoria
     add r9, rdi                      ;rdi dice en que pixel estoy parado y rsi itera la columna
 
-    movd      xmm0, [ r12 + r9 ]     ;muevo el primer dword (4 bytes para un pixel)
-    pxor      xmm8, xmm8
+    movd         xmm0, [ r12 + r9 ]     ;muevo el primer dword (4 bytes para un pixel)
+    pxor           xmm8, xmm8
     punpcklbw xmm0, xmm8             ; xmm0         = [ 0000   | 0000   | 0 | a_k | 0 | g_k | 0 | r_k | 0 | b_k ]
     punpcklwd xmm0, xmm8             ; xmm0         = [ 000a_k | 000g_k | 0 | 0   | 0 | r_k | 0 | 0   | 0 | b_k ]
-    cvtdq2ps  xmm0, xmm0             ; (float) xmm0 = [ 000a_k | 000g_k | 0 | 0   | 0 | r_k | 0 | 0   | 0 | b_k ] 
-    movd      xmm1, [ r10 + rcx ]
-    punpcklbw xmm1, xmm8             ; xmm1         = [ 0000   | 0000   | 0 | a_m | 0 | g_m | 0 | r_m | 0 | b_m ]
-    punpcklwd xmm1, xmm8             ; xmm1         = [ 000a_m | 000g_m | 0 | 0   | 0 | r_m | 0 | 0   | 0 | b_m ]
+    cvtdq2ps    xmm0, xmm0               ;(float) xmm0 = [ 000a_k | 000g_k | 0 | 0   | 0 | r_k | 0 | 0   | 0 | b_k ] 
+    movd         xmm1, [ r10 + rcx*4 ]       ;copio el primer float
+    movq         xmm3, xmm1               ;xmm3 = float
+    psrldq        xmm3, 4
+    paddd        xmm3, xmm1               ;xmm3 =          [0000 |         |    float   |        float]
+    psrldq        xmm3, 4
+    paddd        xmm3, xmm1              ;xmm3 =        [0 | float | float | float]
+    ;punpcklbw xmm1, xmm8             ; xmm1         = [ 0000   | 0000   | 0 | a_m | 0 | g_m | 0 | r_m | 0 | b_m ]
+    ;punpcklwd xmm1, xmm8             ; xmm1         = [ 000a_m | 000g_m | 0 | 0   | 0 | r_m | 0 | 0   | 0 | b_m ]
     cvtdq2ps  xmm1, xmm1             ; (float) xmm1 = [ 000a_m | 000g_m | 0 | 0   | 0 | r_m | 0 | 0   | 0 | b_m ] 
     mulps     xmm0, xmm1             ; xmm0 * xmm1  = [ a_k*a_m| g_k*g_m| r_k*r_m | a_k*a_m ]
 
@@ -128,8 +138,10 @@ blur_asm:
     cvtps2dq xmm1, xmm1             ;convierto a dw en xmm1
     packssdw xmm1, xmm1             ;empaqueto en words
     packsswb xmm1, xmm1,            ;empaqueto en bytes
-    movd  [ r13 + rdi ], xmm1       ;muevo a memoria
-    
+    movd xmm7, ebp
+    add rbp, rdi
+    movd  [ r13 + rbp ], xmm1       ;muevo a memoria
+    movd ebp, xmm7
     ; r14 itera sobre la fila, si es igual a ancho - 2r+1 agrego lo necesario para que la matriz apunte a la proxima fila
     ; si no sumo 4 (pixel_size) para poder obtener los proximos 4 bytes siguientes
     ;
@@ -149,6 +161,7 @@ blur_asm:
 
 
 .end:
+    pop rbp
     mov rdi, r10
     call free
 
