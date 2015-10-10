@@ -28,6 +28,10 @@ push r12
 push r13
 
 mov r12, rdx
+;Mover registros de 32 bits (esto solo vale para 32 bits, con 16 y 8 no!), limpia los bits mas altos
+;entonces al hacer mul rcx, tendriamos el resultado en rdx:rax, pero como los 32 mas altos de rax y rcx estan en 0,
+;el resultado que queremos, osea la multiplicación esta en rax (reg de 32bits x reg de 32bits
+;entra en 64bits). Esto nos ahorra hacer un shift de 32b y un add.
 mov eax, r8d
 mov ecx, ecx
 mul rcx
