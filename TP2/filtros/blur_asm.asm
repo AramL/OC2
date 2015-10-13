@@ -55,7 +55,7 @@ blur_asm:
     ; como la matriz de convolucion tiene altura y longitud   radius * 2 +1
     mov r11, rbx                     ; r11 = rad
     shl r11, 1                       ; rad * 2
-    inc r11                          ; rad * 2 + 1
+    ;inc r11                          ; rad * 2 + 1
 
     ;Si la matriz de kernel es mas grande (ancho u alto) que la matriz salto al final
     cmp r14, r11
@@ -66,13 +66,14 @@ blur_asm:
     ;multiplicamos con registros de 64 bits
     ;como lo que multiplicamos esta en la parte baja (32 bits) 
     ;y la parte alta esta con 0's tenemos el resultado de la mult en la parte baja de rdx:rax osea en rax.
+    inc r11
     mov rax, r11
     mul r11                          
     ;rax = (2radius+1)^2 que es equivalente a lo que vamos a iterar por cada pixel sobre el kernel
 
-    ;Uso rbp ya que no tengo que usar ninguna variable pusheada por stack ni variables locales
+    ;Uso rbp ya que no quiero que usar ninguna variable pusheada por stack ni variables locales
     mov rbp, rax
-    
+    dec r11
 
     mov rax, rbx                        ;rax = radius
     mul r15d                            ;rdx:rax = radius * cols
@@ -82,25 +83,29 @@ blur_asm:
     ;Basicamente rbx marca el lugar a memoria donde tengo que offsetear para escribir en la matriz dst
 
 
-    mov r9, r15                         ;r9 tiene el ancho
-    sub r9, r11                         ;r9 = filas - 2r+1, es decir hasta donde voy a iterar verticalmente
-
-    mov r8, r14
-    sub r8, r11                         ;r8 = columnas - 2r+1 hasta donde voy a iterar horizontalmente
+    mov r9, r14                          ;r9 tiene el alto
+    ;sub r9, r11                         ;r9 = filas - 2r, es decir hasta donde voy a iterar verticalmente
+    mov r8, r15
+    ;sub r8, r11                         ;r8 = columnas - 2r hasta donde voy a iterar horizontalmente
     
-    dec r8
-    dec r9
+    ;dec r8
+    ;dec r9
+
+
     
     mov rax, r9
-    mul r8                              ;rax = filas - 2r+1 * cols - 2r+1, me dice hasta donde tengo que iterar
-
+    sub rax, r11
+    mul r8                              ;rax = filas - 2r * cols - 2r, me dice hasta donde tengo que iterar
+    sub rax, r11
+    dec rax                             ;rax = (filas-2r * cols)-2r
+    shl rax, 2                          ;4*rax
     xor rdi, rdi                        ;voy a usar rdi e rsi para iterar sobre la matriz y el kernel
     xor rsi, rsi    
     xor rdx, rdx
     xor rcx, rcx
     xor r14, r14
     pxor xmm7, xmm7
-
+    sub r15, r11
 
 .ciclo_matriz:
     cmp rdi, rax                        ;si rdi es igual a ancho - 2r+1 * alto - 2r+1 terminamos de iterar
@@ -129,7 +134,7 @@ blur_asm:
 
 
 ;sumar columna kernel
-;si rdx es igual a la longitud de la columna del kernel (2r+1)
+;si rdx es igual a la longitud de la columna del kernel (2r)
 ;paso a la siguiente fila en .sumar_fila_kernel
 ;sino agrego uno a rcx, rdx, rsi.
 ;rcx = offset kernel, rdx = contador, rsi = offset de la matriz contra el kernel
@@ -137,7 +142,7 @@ blur_asm:
     je .sumar_fila_kernel
     inc rdx
     inc rcx
-    inc rsi
+    add rsi, pixel_size
     jmp .ciclo_kernel
 
 .sumar_fila_kernel:
@@ -147,9 +152,10 @@ blur_asm:
     jmp .ciclo_kernel
 
 .insert:
+    pxor     xmm4, xmm4
     cvtps2dq xmm2, xmm2                 ;convierto a dw en xmm2
-    packssdw xmm2, xmm2                 ;empaqueto en words
-    packsswb xmm2, xmm2,                ;empaqueto en bytes
+    packusdw xmm2, xmm4                 ;empaqueto en words
+    packuswb xmm2, xmm4                 ;empaqueto en bytes
     movd     xmm7, ebx
     add      rbx, rdi
     movd     [ r13 + rbx ], xmm2           ;muevo a memoria
@@ -159,15 +165,16 @@ blur_asm:
     ; si no sumo 4 (pixel_size) para poder obtener los proximos 4 bytes siguientes
     xor rsi, rsi
     xor rcx, rcx
-    cmp r14, r8
+    cmp r14, r15
     je .sumar_fila
     add rdi, pixel_size
+    ;add r14, pixel_size
     jmp .ciclo_matriz
 
 .sumar_fila:
     ;paso a la siguiente fila
     ;en la matriz src y dst
-    add rdi, r11
+    add rdi, r8
     xor r14, r14
     jmp .ciclo_matriz
 
