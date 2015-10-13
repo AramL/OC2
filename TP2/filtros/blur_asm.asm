@@ -119,9 +119,9 @@ blur_asm:
     cvtdq2ps    xmm0, xmm0              ;(float) xmm0  = [ 000a_k | 000g_k | 0 | 0   | 0 | r_k | 0 | 0   | 0 | b_k ] 
     movd        xmm1, [ r10 + rcx*4 ]   ;copio el primer float
     movq        xmm3, xmm1              ;xmm3 = float
-    psrldq      xmm3, 4
+    pslldq      xmm3, 4
     paddd       xmm3, xmm1              ;xmm3 =          [0000 |         |    float   |        float]
-    psrldq      xmm3, 4
+    pslldq      xmm3, 4
     paddd       xmm3, xmm1              ; xmm3         = [0 | float | float | float]
     ;cvtdq2ps    xmm1, xmm1              ; (float) xmm1 = [ 000a_m | 000g_m | 0 | 0   | 0 | r_m | 0 | 0   | 0 | b_m ] 
     mulps       xmm0, xmm3              ; xmm0 * xmm1  = [ a_k*a_m| g_k*g_m| r_k*r_m | a_k*a_m ]
