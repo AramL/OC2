@@ -54,7 +54,7 @@ void blur_c  (unsigned char *src, unsigned char *dst, int cols, int filas, float
             dst_matrix[y][x * 4]     = (unsigned char)tempB;
             dst_matrix[y][x * 4 + 1] = (unsigned char)tempR;
             dst_matrix[y][x * 4 + 2] = (unsigned char)tempG; /* yolo    */
-            dst_matrix[x][x * 4 + 3] = 255;                  /* alpha */
+            //dst_matrix[x][x * 4 + 3] = 255;                  /* alpha */
         }
     }
 
