@@ -87,7 +87,10 @@ blur_asm:
 
     mov r8, r14
     sub r8, r11                         ;r8 = columnas - 2r+1 hasta donde voy a iterar horizontalmente
-
+    
+    dec r8
+    dec r9
+    
     mov rax, r9
     mul r8                              ;rax = filas - 2r+1 * cols - 2r+1, me dice hasta donde tengo que iterar
 
@@ -97,9 +100,8 @@ blur_asm:
     xor rcx, rcx
     xor r14, r14
     pxor xmm7, xmm7
-    dec r8
-    dec r9
-    dec rax
+
+
 .ciclo_matriz:
     cmp rdi, rax                        ;si rdi es igual a ancho - 2r+1 * alto - 2r+1 terminamos de iterar
     je .end
@@ -121,8 +123,8 @@ blur_asm:
     paddd       xmm3, xmm1              ;xmm3 =          [0000 |         |    float   |        float]
     psrldq      xmm3, 4
     paddd       xmm3, xmm1              ; xmm3         = [0 | float | float | float]
-    cvtdq2ps    xmm1, xmm1              ; (float) xmm1 = [ 000a_m | 000g_m | 0 | 0   | 0 | r_m | 0 | 0   | 0 | b_m ] 
-    mulps       xmm0, xmm1              ; xmm0 * xmm1  = [ a_k*a_m| g_k*g_m| r_k*r_m | a_k*a_m ]
+    ;cvtdq2ps    xmm1, xmm1              ; (float) xmm1 = [ 000a_m | 000g_m | 0 | 0   | 0 | r_m | 0 | 0   | 0 | b_m ] 
+    mulps       xmm0, xmm3              ; xmm0 * xmm1  = [ a_k*a_m| g_k*g_m| r_k*r_m | a_k*a_m ]
     addps       xmm2, xmm0              
 
 
@@ -145,12 +147,12 @@ blur_asm:
     jmp .ciclo_kernel
 
 .insert:
-    cvtps2dq xmm1, xmm1                 ;convierto a dw en xmm1
-    packssdw xmm1, xmm1                 ;empaqueto en words
-    packsswb xmm1, xmm1,                ;empaqueto en bytes
+    cvtps2dq xmm2, xmm2                 ;convierto a dw en xmm2
+    packssdw xmm2, xmm2                 ;empaqueto en words
+    packsswb xmm2, xmm2,                ;empaqueto en bytes
     movd     xmm7, ebx
     add      rbx, rdi
-    movd     [ r13 + rbx ], xmm1           ;muevo a memoria
+    movd     [ r13 + rbx ], xmm2           ;muevo a memoria
     movd     ebx, xmm7
     pxor     xmm7, xmm7
     ; r14 itera sobre la fila, si es igual a ancho - 2r+1 agrego lo necesario para que la matriz apunte a la proxima fila
