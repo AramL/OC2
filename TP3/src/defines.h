@@ -35,6 +35,10 @@ typedef unsigned int   uint;
 
 #define GDT_IDX_NULL_DESC           0
 
+#define GDT_IDX_CS_CERO_DESC           8
+#define GDT_IDX_CS_TRES_DESC           9
+#define GDT_IDX_DS_CERO_DESC           10
+#define GDT_IDX_DS_TRES_DESC           11
 /* Offsets en la gdt */
 /* -------------------------------------------------------------------------- */
 #define GDT_OFF_NULL_DESC           (GDT_IDX_NULL_DESC      << 3)
