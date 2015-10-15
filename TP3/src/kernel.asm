@@ -8,7 +8,6 @@
 global start
 
 ;; Externs
-extern screen_pintar_linea_h
 extern screen_inicializar
 ;extern screen_pintar_puntajes
 extern GDT_DESC
@@ -90,9 +89,6 @@ BITS 32
     ; Inicializar el juego
     imprimir_texto_mp  inicializando_mp_msg, inicializando_mp_len, 0x07, 4, 0
 
-
-    ; Inicializar pantalla
-    call screen_inicializar
     ; call screen_pintar_puntajes????
 
     ; Inicializar el manejador de memoria
@@ -118,6 +114,9 @@ BITS 32
     ; Cargar tarea inicial
 
     ; Habilitar interrupciones
+
+    ; Inicializar pantalla
+    call screen_inicializar
 
     ; Saltar a la primera tarea: Idle
 
