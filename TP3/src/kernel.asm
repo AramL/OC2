@@ -7,7 +7,13 @@
 
 global start
 
+;; Externs
+extern screen_pintar_linea_h
+extern screen_inicializar
+;extern screen_pintar_puntajes
 extern GDT_DESC
+
+%define NULL    0
 ;; Saltear seccion de datos
 jmp start
 
@@ -77,13 +83,17 @@ BITS 32
     ; esp indica donde empieza la pila.
     mov ebp, 0x1337
     mov esp, 0x28000
-    ;Mensaje de inicio modo protegido
+    ; Mensaje de inicio modo protegido
     imprimir_texto_mp  iniciando_mp_msg, iniciando_mp_len, 0x07, 2, 0
     ; Imprimir mensaje de bienvenida
     imprimir_texto_mp  bienvenida_mp_msg, bienvenida_mp_len, 0x07, 3, 0
     ; Inicializar el juego
     imprimir_texto_mp  inicializando_mp_msg, inicializando_mp_len, 0x07, 4, 0
+
+
     ; Inicializar pantalla
+    call screen_inicializar
+    ; call screen_pintar_puntajes????
 
     ; Inicializar el manejador de memoria
 
