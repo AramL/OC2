@@ -9,6 +9,7 @@ global start
 
 ;; Externs
 extern GDT_DESC
+extern IDT_DESC
 extern idt_inicializar
 extern screen_inicializar
 
@@ -91,8 +92,6 @@ BITS 32
     ; Inicializar el juego
     imprimir_texto_mp  inicializando_mp_msg, inicializando_mp_len, 0x07, 4, 0
 
-    ; call screen_pintar_puntajes????
-
     ; Inicializar el manejador de memoria
 
     ; Inicializar el directorio de paginas
@@ -108,17 +107,17 @@ BITS 32
     ; Inicializar el scheduler
 
     ; Inicializar la IDT
-
+    call idt_inicializar
     ; Cargar IDT
-
+    lidt [IDT_DESC]      ; igual que con la gdt
     ; Configurar controlador de interrupciones
 
     ; Cargar tarea inicial
 
     ; Habilitar interrupciones
-
+    sti 
     ; Inicializar pantalla
-    ;call screen_inicializar
+    ;~call screen_inicializar~
 
     ; Saltar a la primera tarea: Idle
 
