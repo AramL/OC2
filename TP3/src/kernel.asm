@@ -8,11 +8,13 @@
 global start
 
 ;; Externs
-extern screen_inicializar
-;extern screen_pintar_puntajes
 extern GDT_DESC
+extern idt_inicializar
+extern screen_inicializar
 
+;; Defines
 %define NULL    0
+
 ;; Saltear seccion de datos
 jmp start
 
@@ -116,7 +118,7 @@ BITS 32
     ; Habilitar interrupciones
 
     ; Inicializar pantalla
-    call screen_inicializar
+    ;call screen_inicializar
 
     ; Saltar a la primera tarea: Idle
 

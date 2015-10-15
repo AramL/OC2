@@ -24,7 +24,7 @@ gdt_entry gdt[GDT_COUNT] = {
         (unsigned char)     0x00,           /* s            */
         (unsigned char)     0x00,           /* dpl          */
         (unsigned char)     0x00,           /* p            */
-        (unsigned char)     0x01,           /* limit[16:19] */
+        (unsigned char)     0x00,           /* limit[16:19] */
         (unsigned char)     0x00,           /* avl          */
         (unsigned char)     0x00,           /* l            */
         (unsigned char)     0x00,           /* db           */
@@ -39,7 +39,7 @@ gdt_entry gdt[GDT_COUNT] = {
         (unsigned char)     0x01,           /* s            */
         (unsigned char)     0x00,           /* dpl          */
         (unsigned char)     0x01,           /* p            */
-        (unsigned char)     0x00,           /* limit[16:19] */
+        (unsigned char)     0x01,           /* limit[16:19] */
         (unsigned char)     0x00,           /* avl          */
         (unsigned char)     0x00,           /* l            */
         (unsigned char)     0x01,           /* db           */
