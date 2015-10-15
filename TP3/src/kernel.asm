@@ -88,7 +88,7 @@ BITS 32
     ; Mensaje de inicio modo protegido
     imprimir_texto_mp  iniciando_mp_msg, iniciando_mp_len, 0x07, 2, 0
     ; Imprimir mensaje de bienvenida
-    imprimir_texto_mp  bienvenida_mp_msg, bienvenida_mp_len, 0x07, 3, 0
+    imprimir_texto_mp  bienvenida_mp_msg, bienvenida_mp_len, 0xCA, 3, 0     ;0x07, 3, 0
     ; Inicializar el juego
     imprimir_texto_mp  inicializando_mp_msg, inicializando_mp_len, 0x07, 4, 0
 
