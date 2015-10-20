@@ -73,7 +73,7 @@ blur_asm:
 
     ;Uso rbp ya que no quiero que usar ninguna variable pusheada por stack ni variables locales
     mov rbp, rax
-    dec r11
+    ;dec r11
 
     mov rax, rbx                        ;rax = radius
     mul r15d                            ;rdx:rax = radius * cols
@@ -84,7 +84,7 @@ blur_asm:
 
 
     mov r9, r14                          ;r9 tiene el alto
-    ;sub r9, r11                         ;r9 = filas - 2r, es decir hasta donde voy a iterar verticalmente
+    ;sub r9, r11                         ;r9 = filas - 2r+1, es decir hasta donde voy a iterar verticalmente
     mov r8, r15
     ;sub r8, r11                         ;r8 = columnas - 2r hasta donde voy a iterar horizontalmente
     
@@ -95,6 +95,7 @@ blur_asm:
     
     mov rax, r9
     sub rax, r11
+    inc rax
     mul r8                              ;rax = filas - (2r+1) * cols - (2r+1), me dice hasta donde tengo que iterar
     sub rax, r11
     dec rax                             ;rax = (filas-(2r+1) * cols)-(2r+1)
@@ -105,10 +106,11 @@ blur_asm:
     xor rcx, rcx
     xor r14, r14
     pxor xmm7, xmm7
-    sub r15, r11
+    sub r15, r11                        ;cols -2r+1
+    inc r15
+    ;sub r15, r11
     ;xor r9, r9
     shl r11, 2
-    shl rbp, 2
     shl r8, 2
     shl rbx, 2
 .ciclo_matriz:
@@ -145,13 +147,13 @@ blur_asm:
     cmp rdx, r11
     je .sumar_fila_kernel
     add rdx, pixel_size
-    add rcx, pixel_size
+    inc rcx
     add rsi, pixel_size
     jmp .ciclo_kernel
 
 .sumar_fila_kernel:
     xor rdx, rdx
-    ;sub rsi, r11                       ;rsi habia llegado al final, se lo resto y le sumo las columnas
+    sub rsi, r11                       ;rsi habia llegado al final, se lo resto y le sumo las columnas
     add rsi, r8                         ;rsi + columnas, ahora apunta al primer pixel de la proxima fila
     jmp .ciclo_kernel
 
@@ -169,7 +171,7 @@ blur_asm:
     ; si no sumo 4 (pixel_size) para poder obtener los proximos 4 bytes siguientes
     xor rsi, rsi
     xor rcx, rcx
-    cmp r14, r15
+    cmp rdi, r15
     je .sumar_fila
     add rdi, pixel_size
     ;add r14, pixel_size
@@ -179,7 +181,7 @@ blur_asm:
     ;paso a la siguiente fila
     ;en la matriz src y dst
     add rdi, r11
-    xor r14, r14
+    ;xor r14, r14
     jmp .ciclo_matriz
 
 
