@@ -95,9 +95,9 @@ blur_asm:
     
     mov rax, r9
     sub rax, r11
-    mul r8                              ;rax = filas - 2r * cols - 2r, me dice hasta donde tengo que iterar
+    mul r8                              ;rax = filas - (2r+1) * cols - (2r+1), me dice hasta donde tengo que iterar
     sub rax, r11
-    dec rax                             ;rax = (filas-2r * cols)-2r
+    dec rax                             ;rax = (filas-(2r+1) * cols)-(2r+1)
     shl rax, 2                          ;4*rax
     xor rdi, rdi                        ;voy a usar rdi e rsi para iterar sobre la matriz y el kernel
     xor rsi, rsi    
@@ -106,9 +106,13 @@ blur_asm:
     xor r14, r14
     pxor xmm7, xmm7
     sub r15, r11
-
+    ;xor r9, r9
+    shl r11, 2
+    shl rbp, 2
+    shl r8, 2
+    shl rbx, 2
 .ciclo_matriz:
-    cmp rdi, rax                        ;si rdi es igual a ancho - 2r+1 * alto - 2r+1 terminamos de iterar
+    cmp rdi, rax                        ;si rdi es igual a ((ancho - 2r+1) * alto) - 2r+1 terminamos de iterar
     je .end
 
 .ciclo_kernel:
@@ -140,8 +144,8 @@ blur_asm:
 ;rcx = offset kernel, rdx = contador, rsi = offset de la matriz contra el kernel
     cmp rdx, r11
     je .sumar_fila_kernel
-    inc rdx
-    inc rcx
+    add rdx, pixel_size
+    add rcx, pixel_size
     add rsi, pixel_size
     jmp .ciclo_kernel
 
@@ -174,7 +178,7 @@ blur_asm:
 .sumar_fila:
     ;paso a la siguiente fila
     ;en la matriz src y dst
-    add rdi, r8
+    add rdi, r11
     xor r14, r14
     jmp .ciclo_matriz
 
