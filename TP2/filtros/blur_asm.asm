@@ -92,7 +92,7 @@ blur_asm:
     ;dec r9
 
 
-    
+
     mov rax, r9
     sub rax, r11
     inc rax
@@ -104,8 +104,9 @@ blur_asm:
     xor rsi, rsi    
     xor rdx, rdx
     xor rcx, rcx
-    xor r14, r14
+    ;xor r14, r14
     pxor xmm7, xmm7
+    mov r14, r15                        ;r14 = cols
     sub r15, r11                        ;cols -2r+1
     inc r15
     ;sub r15, r11
@@ -113,6 +114,8 @@ blur_asm:
     shl r11, 2
     shl r8, 2
     shl rbx, 2
+    shl r15, 2
+    shl r14, 2
 .ciclo_matriz:
     cmp rdi, rax                        ;si rdi es igual a ((ancho - 2r+1) * alto) - 2r+1 terminamos de iterar
     je .end
@@ -180,7 +183,8 @@ blur_asm:
 .sumar_fila:
     ;paso a la siguiente fila
     ;en la matriz src y dst
-    add rdi, r11
+    add rdi, r11                    ; rdi siguiente fila
+    add r15, r14                    ; r15 tamaño en cols de la siguiente fila
     ;xor r14, r14
     jmp .ciclo_matriz
 
