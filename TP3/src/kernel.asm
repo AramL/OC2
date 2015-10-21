@@ -115,10 +115,10 @@ BITS 32
     ; Cargar tarea inicial
 
     ; Habilitar interrupciones
-    sti 
+    ;sti 
     ; Inicializar pantalla
-    ;~call screen_inicializar~
-
+    call screen_inicializar
+    ;call screen_pintar_puntajes
     ; Saltar a la primera tarea: Idle
 
     ; Ciclar infinitamente (por si algo sale mal...)

@@ -27,7 +27,7 @@ typedef unsigned int   uint;
 
 #define BOOTSECTOR              0x00001000 /* direccion fisica de comienzo del bootsector (copiado) */
 #define KERNEL                  0x00001200 /* direccion fisica de comienzo del kernel */
-
+z
 
 /* Indices en la gdt */
 /* -------------------------------------------------------------------------- */
