@@ -74,8 +74,8 @@ Primermo pedimos memoria para declarar las máscaras que vamos a usar y armamos 
 \begin{codesnippet}
 \begin{verbatim}
 section .rodata
-mask_5 DB 2,2,2,2,6,6,6,6,10,10,10,10,14,14,14,14
-trans_2 DB 0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255
+mascara_copia_pixels db 2,2,2,2,6,6,6,6,10,10,10,10,14,14,14,14
+mascara_asigna_alpha db 0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255
 \end{verbatim}
 \end{codesnippet}
 
@@ -123,8 +123,8 @@ r12 apunta a la matriz resultado, ecx tiene la cantidad de filas, y la parte baj
     movdqu xmm6, xmm5             
     pmaxub xmm6, xmm4             
     pmaxub xmm6, xmm3              
-    pshufb xmm6, [mask_5] 
-    paddsb xmm6, [trans_2]
+    pshufb xmm6, [mascara_copia_pixels] 
+    paddsb xmm6, [mascara_asigna_alpha]
     movdqu [r12 +  r15*4], xmm6
     add  r15d, 4
     jmp .ciclo
