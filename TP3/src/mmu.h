@@ -16,8 +16,38 @@
 #define MAPA_BASE_FISICA  0x500000
 #define MAPA_BASE_VIRTUAL 0x800000
 
-void mmu_inicializar();
 
+typedef struct page_table {
+    unsigned char   present:1;
+    unsigned char   read_write:1;
+    unsigned char   user_supervisor:1;
+    unsigned char   page_level_write_through:1;
+    unsigned char   page_level_cache_disabled:1;
+    unsigned char   accessed:1;
+    unsigned char   dirty_bit:1;
+    unsigned char   page_table_attr_indx:1;
+    unsigned char   global:1;
+    unsigned char   available_11_9:3;
+    unsigned char   page_base_address_31_12:20;
+} __attribute__((__packed__, aligned (4))) page_table;
+
+
+typedef struct page_directory {
+    unsigned char   present:1;
+    unsigned char   read_write:1;
+    unsigned char   user_supervisor:1;
+    unsigned char   page_level_write_through:1;
+    unsigned char   page_level_cache_disabled:1;
+    unsigned char   accessed:1;
+    unsigned char   ignored:1;
+    unsigned char   page_size:1;
+    unsigned char   global:1;
+    unsigned char   available_11_9:3;
+    unsigned char   page_base_address_31_12:20;
+} __attribute__((__packed__, aligned (4))) page_directory;
+
+
+void mmu_inicializar();
 
 // devuelve la proxima pagina libre del area libre del kernel
 uint mmu_proxima_pagina_fisica_libre();
