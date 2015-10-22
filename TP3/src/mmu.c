@@ -36,15 +36,15 @@ void mmu_mapear_pagina  (uint virtual, uint cr3, uint fisica, uint attrs){
         
     }           
     uint posicion_DT = (virtual >> 12) & 0xFF3;                      /* Muevo a la derecha 12 bits y limpio la parte alta */
-    (PD[posicion_DR * 4])[posicion_DT * 4] = (fisica << 12) + attrs; /* Copio la direccion fisica shifteada dejando 12 bits para los atributos y
+    (page_table *)(PD[posicion_DR * 4])[posicion_DT * 4] = (fisica << 12) + attrs; /* Copio la direccion fisica shifteada dejando 12 bits para los atributos y
                                                                         le pego los mismos al final */
 }
 
 uint mmu_unmapear_pagina(uint virtual, uint cr3){
-    void *PD = cr3 >> 12; /* Copio la direccion que esta los 20 bits mas altos de cr3 */
+    page_directory *PD = cr3 >> 12; /* Copio la direccion que esta los 20 bits mas altos de cr3 */
     uint posicion_DR = virtual >> 22 & 0xFF3;
     uint posicion_DT = (virtual >> 12) & 0xFF3; 
-    (PD[posicion_DR*4])[posicion_DT*4] = NULL;  
+    (page_table *)(PD[posicion_DR*4])[posicion_DT*4] = NULL;  
 }
 
 

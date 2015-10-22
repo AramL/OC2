@@ -134,36 +134,103 @@ r12 apunta a la matriz resultado, ecx tiene la cantidad de filas, y la parte baj
 
 \subsection{Blur gaussiano}
 
-\noindent En el blur gaussiano calculamos 4 pixeles por iteración, pero para legibilidad solo vamos a escribir lo que le pasa a uno solo, se repite el código y se apunta a memoria correctamente. 
-
+\noindent El blur gaussiano tiene un ciclo con un ciclo interno más pequeño donde iteramos sobre el kernel, usamos SIMD para hacer los calculos sobre un pixel en simultaneo (es decir las 4 componentes a la vez), además en vez de hacer offsets para atras hacemos offsets para adelante, mpezamos en el pixel $0$ y recorremos la submatriz que va de $0, 2r$ en filas y $0, 2r$ en columnas, $r$ el radio, a la par de la matriz del kernel (que tambien tiene este tamaño) haciendo las multiplicaciones y acumulando estas en otro registro, luego hacemos otro offset para insertar esto en el pixel correcto que esta en la posición ($r, r$), aumentamos la columna y seguimos este proceso hasta el ancho $- 2r$ donde nos paramos en la proxima fila y repetimos hasta llegar a la altura $- 2r$. Ahora pasamos a describir en detalle las operaciones que usamos para esto.\\
+\noindent Antes de entrar al ciclo preparamos algunos registros para saber hasta adonde iterar, tenemos que: rax guarda el último valor hasta el que vamos a iterar que es igual a  [(filas $- 2r$)*columnas] $-2r$, rbp va a guardar hasta donde vamos a hacer cada subciclo es decir $(2r+1)^2$, r11 tiene el valor $2r$, r12 la matriz fuente, r13 la matriz destino, r8 la cantidad de columnas y ebx el offset necesario para insertar el pixel en la matriz destino. Ahora podemos empezar a explicar el subciclo:
 \begin{codesnippet}
 \begin{verbatim}
-movdqu xmm0,[r12]  
-movdqu xmm1, xmm0
-punpckhbw xmm0, xmm7 
-punpcklbw xmm1, xmm7  
-movdqu xmm2, xmm0
-movdqu xmm3, xmm1
-punpckhwd xmm0, xmm7  	
-punpcklwd xmm2, xmm7   
-punpckhwd xmm1, xmm7  
-punpcklwd xmm3, xmm7  
+.ciclo_kernel:
+    cmp rcx, rbp                      
+    je .insert          
+    mov r9, rsi
+    add r9, rdi
+    movd        xmm0, [ r12 + r9 ]      
+    punpcklbw   xmm0, xmm8              
+    punpcklwd   xmm0, xmm8              
+    cvtdq2ps    xmm0, xmm0              
+    movd        xmm1, [ r10 + rcx*4 ]   
+    movq        xmm3, xmm1              
+    pslldq      xmm3, 4
+    paddd       xmm3, xmm1              
+    pslldq      xmm3, 4
+    paddd       xmm3, xmm1                           
+    mulps       xmm0, xmm3              
+    addps       xmm2, xmm0              
+
 \end{verbatim}
 \end{codesnippet}
 
-\noindent Primero levantamos $16$ bytes de memoria, equivalente a $4$ pixeles en xmm$0$ y lo copiamos en xmm$1$ ya que vamos a desempaquetar los datos. Llamamos a punpcklbw/hbw junto a un xmm$7$ que estaba en $0$, tenemos entonces que xmm$0$ tiene los primeros $2$ pixeles ($8$ bytes) extendidos a cada uno a un word. Lo mismo para xmm$1$. Luego repetimos el proceso desempaquetando a un double word, ya que queremos operar con floats y este es su tamaño. 
+\noindent Primero verificamos si tenemos que insertar el pixel, para esto comparamos rcx, el registro que cuenta sobre el tamaño del kernel contra rbp que mantenia hasta donde teniamos que iterar para haber recorrido el kernel, si no, levantamos de memoria un pixel (double word) con la operacion movd, rsi itera sobre la matriz fuente/destino y rdi itera la columna del kernel, rcx itera el kernel linealmente, y lo guardamos en xmm0, xmm8 está previamente con el valor $0$ y lo vamos a usar para desempaquetar los $4$ bytes. Desempaquetamos primero a words, es decir tenemos que los bytes son la parte baja de un word y la parte alta esta llena de $0$s. Repetimos pero con double word y convertimos a float empaquetado. Ahora movemos el valor de la matriz de convolución con movd (un float por eso el *$4$) a xmm1, shifteamos 4 bytes con pslldq movemos un quadword shifteamos y hacemos un packed add (queremos copiar el valor del float) shifteamos xmm3 y volvemos a sumar una vez más, para que cada doubleword de xmm3 tenga el flaot. Ahora multiplicamos el float de xmm3 contra los valores del pixel que desempaquetamos en xmm0 dejando en xmm0 este valor y lo acumulamos en xmm2.
 
 \begin{codesnippet}
 \begin{verbatim}
-cvtdq2ps xmm0,xmm0
+    cmp rdx, r11
+    je .sumar_fila_kernel
+    add rdx, pixel_size
+    inc rcx
+    add rsi, pixel_size
+    jmp .ciclo_kernel
+\end{verbatim}
+\end{codesnippet}
+rdx mantiene el contador para iterar sobre la fila, si este es igual a 2r saltamos a sumar\_fila\_kernel de lo contrario adelantamos rdx y rsi en pixel\_size (que es un \%define con el valor $4$) y entramos al ciclo de vuelta.
+
+
+\begin{codesnippet}
+\begin{verbatim}
+.sumar_fila_kernel:
+    xor rdx, rdx
+    sub rsi, r11                      
+    add rsi, r8                        
+    inc rcx
+    jmp .ciclo_kernel
 \end{verbatim}
 \end{codesnippet}
 
 
+\noindent En sumar fila limpiamos rdx, para volver a poder iterar de $0$ a $2r$, le restamos $2r$ a rsi, este iteraba sobre la fila para la matriz mas grande y le sumamos al mismo la cantidad de columnas, es decir rsi apunta al comienzo de la fila siguiente, incrementamos rcx asi en el proximo ciclo apunta a la siguiente fila tambien y saltamos al ciclo de vuelta.
 
-\newpage
+\begin{codesnippet}
+\begin{verbatim}
+ .insert:
+    pxor     xmm4, xmm4
+    cvtps2dq xmm2, xmm2                 
+    packusdw xmm2, xmm4                 
+    packuswb xmm2, xmm4                 
+    movd     xmm7, ebx
+    add      rbx, rdi
+    movd     [ r13 + rbx ], xmm2           
+    movd     ebx, xmm7
+    pxor     xmm7, xmm7
+    xor rsi, rsi
+    xor rcx, rcx
+    cmp rdi, r15
+    je .sumar_fila
+    add rdi, pixel_size
+    jmp .ciclo_matriz
+\end{verbatim}
+\end{codesnippet}
 
+En .insert hacemos casi lo contrario a levantar, convertimos los floats empaquetados que estaban en xmm2 a doublewords empaquetados y re-empaquetamos a word y luego a byte. Luego sumamos rbx e rdi para obtener la posición en la que vamos a insertar el pixel (los 4 bytes) e insertamos el pixel. Una vez que esto pasa ponemos rsi y rcx en $0$ y vemos si llegamos a la ultima columna que teniamos que iterar, si pasa esto saltamos a sumar\_fila sino sumamos pixel\_size a rdi y saltamos al ciclo del kernel de vuelta.
 
+\begin{codesnippet}
+\begin{verbatim}
+.sumar_fila:
+    add rdi, r11                 
+    add r15, r8                    
+    jmp .ciclo_matriz
+\end{verbatim}
+\end{codesnippet}
+
+\noindent En .sumar\_fila lo que hacemos es sumarle a rdi lo que faltaba para llegar a la proxima columna, $2r$ y le sumamos a r15 la cantida de columnas, r15 en este caso mantiene (acorde al rdi) hasta que columna tenemos que iterar. Basicamente r15 empieza en cols $-2r$ y se le van sumando el total de columnas, en la segunda iteracion tiene $2$cols $-2r$ etc. Aca saltamos a ciclo\_matriz y no ciclo\_kernel, este contiene lo siguiente.
+
+\begin{codesnippet}
+\begin{verbatim}
+.ciclo_matriz:
+    cmp rdi, rax                       
+    jg .end
+\end{verbatim}
+\end{codesnippet}
+
+\noindent Si rdi es mayor que rax (que marcaba el ultimo pixel sobre el que podiamos iterar) saltamos al final, desarmamos el stackframe y retornamos.
 
 \section{Resultados}
 
@@ -238,6 +305,6 @@ Para comparar al algoritmo en C vs asm hicimos lo mismo que blur, corrimos los d
 
 \section{Conclusión}
 
-\noindent Para el algoritmo de diferencia, se justificaria totalmente hacer una implementación en SIMD, no solo por el hecho de que corre mas rápido, sino que además implementarlo en assembly fue bastante fácil ($<$ 20 lineas). Pasa lo contrario con blur, donde la performance ganada no es justificable contra el costo de implementarlo.
+\noindent Para el algoritmo de diferencia, se justificaria totalmente hacer una implementación en SIMD, no solo por el hecho de que corre mas rápido, sino que además implementarlo en assembly fue bastante fácil ($<$ 20 lineas). 
 
 \end{document}
