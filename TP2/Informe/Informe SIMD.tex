@@ -238,9 +238,12 @@ En .insert hacemos casi lo contrario a levantar, convertimos los floats empaquet
 
 \noindent \textbf{Nota:} todos los tests fueron corridos sobre una PC con procesador Intel Core2Duo E8440.
 \\
-\noindent Para analizar las implementaciones de C y assembly, corrimos 1000 iteraciones de cada implementación de diferencia sobre una imagen de 2308x2308 (16mb) donde las implementaciones de C se compilaron con gcc y clang usando los flags de optimización -O0, -O1, -O2 y -O3.
+\noindent Para analizar las implementaciones de C y assembly, corrimos 1000 iteraciones de cada implementación de diferencia sobre una imagen de 2308x2308 (16mb) donde las implementaciones de C se compilaron con gcc y clang usando los flags de optimización -O0, -O1, -O2, -O3 y -Os. Basicamente los flags de -O\# con \# un número entre $0,3$ intentan optimizar principalmente para velocidad y luego tamaño, $0$ siendo el menos 'optimizado' y $3$ el más optimizado, mientras que -Os optimiza principalmente por tamaño del ejecutable, algunas cosas notables son que por ejemplo (luego de hacer un disassembly) notamos que a partir de -O2 gcc ya no armaba un stackframe, ni resguardaba rbp, y pusheaba a medida que necesitaba los registros, alineando rsp cuando fuese necesario, diferencias observables entre -O2 y -O3 fue el uso de operaciones SIMD, por ejemplo de empaquetado y desempaquetado, multiplicaciones packed etc en -O3 (para el blur), mientras que esto no pasaba en -O2, extrañamente la performance es la misma y tal vez se debe a otros factores como el modelo de procesador (Intel c2d E840). Se adjuntan los objdump del build en distintas optimizaciones. \newline
 
 
+\noindent A continuación dejamos los gráfico con el promedio (con y sin outliers) de la diferencia bajo distintos flags de optimización y en assembly.
+ \newpage
+ 
 \begin{figure}[h]
 \includegraphics[scale=0.56]{imagenes/test_difrencia_ASM_C_promedio.png}
 \caption{Promedio, sin outliers incluidos, sobre una imagen de 2308x2308 de 16mb.}
