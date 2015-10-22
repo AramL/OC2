@@ -78,8 +78,11 @@ blur_asm:
     mov rax, rbx                        ;rax = radius
     mul r15d                            ;rdx:rax = radius * cols
     ;de vuelta como multiplico dos numeros de 32 bits el resultado esta en rax.
+    
     add rax, rbx                        ;rax = radius * cols + radius
+
     mov rbx, rax
+
     ;Basicamente rbx marca el lugar a memoria donde tengo que offsetear para escribir en la matriz dst
 
 
@@ -92,13 +95,12 @@ blur_asm:
     ;dec r9
 
 
-
+    dec r11
     mov rax, r9
     sub rax, r11
-    inc rax
     mul r8                              ;rax = filas - (2r+1) * cols - (2r+1), me dice hasta donde tengo que iterar
     sub rax, r11
-    dec rax                             ;rax = (filas-(2r+1) * cols)-(2r+1)
+    ;dec rax                             ;rax = (filas-(2r+1) * cols)-(2r+1)
     shl rax, 2                          ;4*rax
     xor rdi, rdi                        ;voy a usar rdi e rsi para iterar sobre la matriz y el kernel
     xor rsi, rsi    
@@ -108,7 +110,6 @@ blur_asm:
     pxor xmm7, xmm7
     mov r14, r15                        ;r14 = cols
     sub r15, r11                        ;cols -2r+1
-    inc r15
     ;sub r15, r11
     ;xor r9, r9
     shl r11, 2
@@ -116,9 +117,10 @@ blur_asm:
     shl rbx, 2
     shl r15, 2
     shl r14, 2
+
 .ciclo_matriz:
     cmp rdi, rax                        ;si rdi es igual a ((ancho - 2r+1) * alto) - 2r+1 terminamos de iterar
-    je .end
+    jg .end
 
 .ciclo_kernel:
     cmp rcx, rbp                        ;comparo si ya recorri toda la matriz de kernel
@@ -157,7 +159,10 @@ blur_asm:
 .sumar_fila_kernel:
     xor rdx, rdx
     sub rsi, r11                       ;rsi habia llegado al final, se lo resto y le sumo las columnas
+    ;sub rsi, 4
     add rsi, r8                         ;rsi + columnas, ahora apunta al primer pixel de la proxima fila
+    inc rcx
+    
     jmp .ciclo_kernel
 
 .insert:
@@ -175,8 +180,10 @@ blur_asm:
     xor rsi, rsi
     xor rcx, rcx
     cmp rdi, r15
+    
     je .sumar_fila
     add rdi, pixel_size
+    
     ;add r14, pixel_size
     jmp .ciclo_matriz
 
@@ -184,7 +191,10 @@ blur_asm:
     ;paso a la siguiente fila
     ;en la matriz src y dst
     add rdi, r11                    ; rdi siguiente fila
-    add r15, r14                    ; r15 tamaño en cols de la siguiente fila
+    add rdi, 4
+    ;sub rdi, 4
+    ;add r15, r11
+    add r15, r8                    ; r15 tamaño en cols de la siguiente fila
     ;xor r14, r14
     jmp .ciclo_matriz
 

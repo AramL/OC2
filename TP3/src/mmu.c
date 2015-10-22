@@ -7,6 +7,7 @@
 
 #include "mmu.h"
 #include "i386.h"
+<<<<<<< HEAD
 //void * mmu_primera_pagina_libre() {
 
 uint proximaPaginaLibre = 0x100000;
@@ -34,6 +35,48 @@ void mmu_mapear_pagina  (uint virtual, uint cr3, uint fisica, uint attrs) {
 
 
 }
+=======
+
+uint proxima_pagina_libre = 0x100000;
+
+/* Atributos paginas */
+/* -------------------------------------------------------------------------- */
+uint mmu_proxima_pagina_fisica_libre(){
+    uint ret = proxima_pagina_libre;
+    proxima_pagina_libre += 0x1000;
+    return ret;
+}
+
+void mmu_inicializar_pagina(uint * pagina){
+
+}
+
+uint mmu_inicializar_dir_kernel(){
+
+}
+
+void mmu_mapear_pagina  (uint virtual, uint cr3, uint fisica, uint attrs){
+    page_directory *PD = cr3 & 0xFFFFF000;                                          /* Copio la direccion que esta los 20 bits mas altos de cr3 */
+    if(PD == NULL){
+
+    }
+    uint posicion_DR = virtual >> 22;                                /* Shifteo a la derecha 22 bits para obtener el offset en el DR */    
+    if(PD[posicion_DR * 4] == NULL){                                 /* Si es null significa que no hay una tabla de paginas en esa posicion*/
+        
+    }           
+    uint posicion_DT = (virtual >> 12) & 0xFF3;                      /* Muevo a la derecha 12 bits y limpio la parte alta */
+    (page_table *)(PD[posicion_DR * 4])[posicion_DT * 4] = (fisica << 12) + attrs; /* Copio la direccion fisica shifteada dejando 12 bits para los atributos y
+                                                                        le pego los mismos al final */
+}
+
+uint mmu_unmapear_pagina(uint virtual, uint cr3){
+    page_directory *PD = cr3 >> 12; /* Copio la direccion que esta los 20 bits mas altos de cr3 */
+    uint posicion_DR = virtual >> 22 & 0xFF3;
+    uint posicion_DT = (virtual >> 12) & 0xFF3; 
+    (page_table *)(PD[posicion_DR*4])[posicion_DT*4] = NULL;  
+}
+
+>>>>>>> e1fd67399d362bf89d3f3a70e9024732c640bc45
 
 
 /* Direcciones fisicas de codigos */
