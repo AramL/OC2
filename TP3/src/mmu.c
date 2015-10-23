@@ -49,11 +49,11 @@ void mmu_mapear_pagina  (uint virtual, uint cr3, uint fisica, uint attrs) {
     uint posicion_DR = virtual >> 22;                                               /* Shifteo a la derecha 22 bits para obtener el offset en el DR */
     if (PD[posicion_DR * 4] == NULL) {
         /* Si es null significa que no hay una tabla de paginas en esa posicion*/
-        mmu_cargar_entry_PD(PD[posicion_DR * 4], mmu_proxima_pagina_fisica_libre());
+        mmu_cargar_entry_page_directory(PD[posicion_DR * 4], mmu_proxima_pagina_fisica_libre());
     }
 
     uint posicion_DT = (virtual >> 12) & 0xFF3;                                     /* Muevo a la derecha 12 bits y limpio la parte alta */
-    (page_table *)(PD[posicion_DR * 4]->page_base_address_31_12)[posicion_DT * 4] = (fisica << 12) + attrs; 
+    mmu_inicializar_page_table((page_table *)(PD[posicion_DR * 4]->page_base_address_31_12)[posicion_DT * 4], fisica, attrs); 
     /* Copio la direccion fisica shifteada dejando 12 bits para los atributos y
         le pego los mismos al final */
 }
@@ -92,22 +92,22 @@ void mmu_inicializar_page_directory(page_directory * dir, uint addr) {
     dir->page_size = 0;                         /* 0 = 4kb; 1 = 4mb */
     dir->global = 0;
     dir->available_11_9 = 0;
-    dir->page_base_address_31_12 = addr >> 12;
+    dir->page_base_address_31_12 = addr;
 }
 
 
-void mmu_inicializar_page_directory(page_tab * tab, uint addr) {
-    tab->present = 1;
-    tab->read_write =  1;
-    tab->user_supervisor = 0;                   /* 0 = kernel; 1 = user (igual no se pone nunca user, es una entrada de la PD!) */
-    tab->page_level_write_through = 0;
-    tab->page_level_cache_disabled = 0;
-    tab->accessed = 0;
-    tab->dirty_bit = 0;
-    tab->page_table_attr_indx = 0;              /* 0 = 4kb; 1 = 4mb */
-    tab->global = 0;
-    tab->available_11_9 = 0;
-    tab->page_base_address_31_12 = addr >> 12;
+void mmu_inicializar_page_directory(page_tab * tab, uint addr, uint attrs) {
+    tab->present = attrs;
+    tab->read_write =  attrs >> 1;
+    tab->user_supervisor = attrs >> 2;                   /* 0 = kernel; 1 = user (igual no se pone nunca user, es una entrada de la PD!) */
+    tab->page_level_write_through = attrs >> 3;
+    tab->page_level_cache_disabled = attrs >> 4;
+    tab->accessed =  attrs > 5;
+    tab->dirty_bit = attrs > 6;
+    tab->page_table_attr_indx = attrs > 7;              /* 0 = 4kb; 1 = 4mb */
+    tab->global = attrs > 8;
+    tab->available_11_9 = attrs > 9;
+    tab->page_base_address_31_12 = addr;
 }
 
 
