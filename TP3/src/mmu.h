@@ -78,4 +78,7 @@ void mmu_mapear_pagina  (uint virtual, uint cr3, uint fisica, uint attrs);
 uint mmu_unmapear_pagina(uint virtual, uint cr3);
 
 
+void mmu_inicializar_page_directory(page_directory * dir, uint addr);
+void mmu_inicializar_page_table(page_table * tab, uint addr);
+
 #endif	/* !__MMU_H__ */
