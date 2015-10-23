@@ -84,7 +84,7 @@ BITS 32
     ; Establecer la base de la pila
     ; esp indica donde empieza la pila.
     mov ebp, 0x1337
-    mov esp, 0x28000
+    mov esp, 0x27000
     ; Mensaje de inicio modo protegido
     imprimir_texto_mp  iniciando_mp_msg, iniciando_mp_len, 0x07, 2, 0
     ; Imprimir mensaje de bienvenida
