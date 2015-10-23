@@ -238,11 +238,64 @@ done
 
 
 
+make clean
+
+
+
+echo " "
+echo "**Compilando gcc -Os"
+
+
+make OPTFLAGS=-Os
+
+
+if [ $? -ne 0 ]; then
+  echo "  **Error de compilacion"
+  exit 1
+fi
+
+
+echo "" >> ./python/test_difrencia_ASM_C
+
+for i in {1..1000} 
+do 
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
+  echo -n " " >> ./python/test_difrencia_ASM_C
+done
+
+
+make clean
+
+
+
+echo " "
+echo "**Compilando Clang -Os"
+
+
+make CC=clang OPTFLAGS=-Os
+
+
+if [ $? -ne 0 ]; then
+  echo "  **Error de compilacion"
+  exit 1
+fi
+
+
+echo "" >> ./python/test_difrencia_ASM_C
+
+for i in {1..1000} 
+do 
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/test_difrencia_ASM_C
+  echo -n " " >> ./python/test_difrencia_ASM_C
+done
+
+
+
 
 echo " "
 echo "**graficando"
 
-python ./python/graficarAlt.py 9 ./python/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"  Assembly "gcc (-O3)" "clang (-O3)" "gcc (-O2)" "clang (-O2)"  "gcc (-O1)" "clang (-O1)"  "gcc (-O0)" "clang (-O0)" 
+python ./python/graficarAlt.py 11 ./python/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"  Assembly "gcc (-O3)" "clang (-O3)" "gcc (-O2)" "clang (-O2)"  "gcc (-O1)" "clang (-O1)"  "gcc (-O0)" "clang (-O0)" "gcc (-Os)" "clang (-Os)"
 
 echo " "
 echo "vago uriel :D"
