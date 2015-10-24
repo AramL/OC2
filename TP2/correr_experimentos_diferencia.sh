@@ -315,7 +315,7 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/graficarAlt.py 11 ./python/tests/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"  "Assembly" "clang (-O0)" "gcc (-Os)" "clang (-Os)" "gcc (-O3)" "clang (-O3)" "gcc (-O2)" "clang (-O2)"  "gcc (-O1)" "clang (-O1)"  "gcc (-O0)" 
+python ./python/graficarAlt.py 11 ./python/tests/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"  "Assembly    " "gcc (-Os)    " "clang (-Os)    " "gcc (-O3)    " "clang (-O3)    " "gcc (-O2)    " "clang (-O2)    " "gcc (-O1)    " "clang (-O1)    " "gcc (-O0)    " "clang (-O0)    " 
 
 echo " "
 echo "vago uriel :D"
@@ -338,7 +338,7 @@ echo "**Diferencia en C"
 
 for i in {1..100} 
 do 
-  ./build/tp2 -i c diff  ./experimentos/tests_size/game-290x290.bmp ./experimentos/tests_size/pokemon-290x290.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_performance_size_C_GCC_O2
+  ./build/tp2 -i c diff  ./experimentos/tests_size/game-292x292.bmp ./experimentos/tests_size/pokemon-292x292.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_performance_size_C_GCC_O2
   echo -n " " >> ./python/tests/test_performance_size_C_GCC_O2
 done
 
@@ -441,7 +441,7 @@ echo "**Diferencia en C"
 
 for i in {1..100} 
 do 
-  ./build/tp2 -i c diff  ./experimentos/tests_size/game-290x290.bmp ./experimentos/tests_size/pokemon-290x290.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_performance_size_C_oS
+  ./build/tp2 -i c diff  ./experimentos/tests_size/game-292x292.bmp ./experimentos/tests_size/pokemon-292x292.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_performance_size_C_oS
   echo -n " " >> ./python/tests/test_performance_size_C_oS
 done
 
@@ -539,7 +539,7 @@ echo "**Diferencia en ASM"
 
 for i in {1..100} 
 do 
-  ./build/tp2 -i asm diff  ./experimentos/tests_size/game-290x290.bmp ./experimentos/tests_size/pokemon-290x290.bmp  | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_performance_size_ASM
+  ./build/tp2 -i asm diff  ./experimentos/tests_size/game-292x292.bmp ./experimentos/tests_size/pokemon-292x292.bmp  | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_performance_size_ASM
   echo -n " " >> ./python/tests/test_performance_size_ASM
 done
 
@@ -639,7 +639,7 @@ echo "**Diferencia en C"
 
 for i in {1..100} 
 do 
-  ./build/tp2 -i c diff  ./experimentos/tests_size/game-290x290.bmp ./experimentos/tests_size/pokemon-290x290.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_performance_size_C_clang
+  ./build/tp2 -i c diff  ./experimentos/tests_size/game-292x292.bmp ./experimentos/tests_size/pokemon-292x292.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_performance_size_C_clang
   echo -n " " >> ./python/tests/test_performance_size_C_clang
 done
 
@@ -740,7 +740,7 @@ echo "**Diferencia en C"
 
 for i in {1..100} 
 do 
-  ./build/tp2 -i c diff  ./experimentos/tests_size/game-290x290.bmp ./experimentos/tests_size/pokemon-290x290.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_performance_size_C_clang_oS
+  ./build/tp2 -i c diff  ./experimentos/tests_size/game-292x292.bmp ./experimentos/tests_size/pokemon-292x292.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_performance_size_C_clang_oS
   echo -n " " >> ./python/tests/test_performance_size_C_clang_oS
 done
 

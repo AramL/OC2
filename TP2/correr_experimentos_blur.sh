@@ -350,7 +350,7 @@ make CC=clang OPTFLAGS=-O2
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-290x290.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_c
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-292x292.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_c
   echo -n " " >> ./python/test_radio_cambiando_tamanios_c
 done
 
@@ -413,7 +413,7 @@ make OPTFLAGS=-O0
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-290x290.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_asm
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-292x292.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_asm
   echo -n " " >> ./python/test_radio_cambiando_tamanios_asm
 done
 

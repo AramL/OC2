@@ -19,9 +19,9 @@ def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     medians = []
     for v in comp:
         medians.append(np.median(v))
-    col = ['r','b','b','g', 'g','m', 'm', 'c', 'c']
+    col = ['r','b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
     ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1) 
-    ax.bar( range(1, (int(ctype))+1),  medians, align='center', color=col[0: int(ctype)], zorder=10)
+    ax.bar( range(1, (int(ctype))+1),  medians, align='center', color=col[0: int(ctype) + 1], zorder=10)
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis +' (mediana)' )
@@ -36,9 +36,9 @@ def drawStdDev(ctype, filename, titulo, yaxis, comp, *args):
     stddev = []
     for v in comp:
         stddev.append(np.std(v))
-    col = ['r','b','b','g', 'g','m', 'm', 'c', 'c']
+    col = ['r','b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
     ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1) 
-    ax.bar( range(1, (int(ctype))+1),  stddev, align='center', color=col[0: int(ctype)], zorder=10)
+    ax.bar( range(1, (int(ctype))+1),  stddev, align='center', color=col[0: int(ctype) + 1], zorder=10)
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis +' (desviacion)' )
@@ -54,9 +54,10 @@ def drawMean(ctype, filename, titulo, yaxis, comp, *args):
     for v in comp:
         means.append(np.mean(v))
     #col = ['r','b','g','y','c','m']
-    col = ['r','b','b','g', 'g','m', 'm', 'c', 'c']
+    #col = ['r','b','b','g', 'g','m', 'm', 'c', 'c']
+    col = ['r','b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
     ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1) 
-    ax.bar( range(1, (int(ctype))+1),  means, align='center', color=col[0: int(ctype)], zorder=10)
+    ax.bar( range(1, (int(ctype))+1),  means, align='center', color=col[0: int(ctype) + 1], zorder=10)
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis+' (promedio)')
