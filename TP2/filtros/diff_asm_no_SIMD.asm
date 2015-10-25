@@ -120,14 +120,14 @@ sar r9d, 0x1f
 xor r14d, r9d
 sub r14d, r9d
 
-cmp r12b, r13b
+cmp r12w, r13w
 jg .z_y
-cmp r13b, r14b
+cmp r13w, r14w
 cmovl r13d, r14d
 jmp .insert
 
 .z_y:
-cmp r12b, r14b
+cmp r12w, r14w
 mov r13d, r14d
 cmovge r13d, r12d
 
@@ -139,7 +139,7 @@ mov al, r13b
 ror rax, 8
 mov al, r13b
 ror rax, 8
-mov al, 0         ;alpha
+;mov al, 255         ;alpha
 ror rax, 8
 ret
 
