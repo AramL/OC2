@@ -11,6 +11,8 @@ make clean
 
 rm -rf ./python/tests/*
 
+git checkout ./python/tests/placeholder
+
 echo ""
 echo "**Corriendo mediciones diferencia ASM vs C"
 
