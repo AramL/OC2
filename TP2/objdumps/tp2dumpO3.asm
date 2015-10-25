@@ -1,4 +1,3 @@
-
 0000000000402280 <infNorm>:
   402280: 40 0f b6 ff           movzx  edi,dil
   402284: 0f b6 c9              movzx  ecx,cl
