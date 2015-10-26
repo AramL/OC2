@@ -62,7 +62,7 @@ uint mmu_unmapear_pagina(uint virtual, uint cr3) {
     page_directory *PD = cr3 >> 12; /* Copio la direccion que esta los 20 bits mas altos de cr3 */
     uint posicion_DR = virtual >> 22 & 0xFF3;
     uint posicion_DT = (virtual >> 12) & 0xFF3;
-    (page_table *)(PD[posicion_DR * 4])[posicion_DT * 4] = NULL;
+    (page_table *)(PD[posicion_DR * 4])[posicion_DT * 4]->present = 0;
 }
 
 
