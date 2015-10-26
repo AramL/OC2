@@ -19,12 +19,16 @@ def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     medians = []
     for v in comp:
         medians.append(np.median(v))
-    col = ['r','b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
+    if len(comp) == 12:
+        col = ['r', 'r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
+    else:
+        col = ['r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
     ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1) 
-    ax.bar( range(1, (int(ctype))+1),  medians, align='center', color=col[0: int(ctype) + 1], zorder=10)
+    ax.bar( range(1, int(ctype) + 1),  medians, align='center', color=col[0: int(ctype) + 1], zorder=10)
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis +' (mediana)' )
+    plt.tick_params(labelsize = 9)
     plt.xticks(range(1, (int(ctype)) + 1), labels)
     plt.savefig(filename+' (mediana).png', bbox_inches = 'tight')
     plt.xticks()
@@ -36,12 +40,16 @@ def drawStdDev(ctype, filename, titulo, yaxis, comp, *args):
     stddev = []
     for v in comp:
         stddev.append(np.std(v))
-    col = ['r','b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
+    if len(comp) == 12:
+        col = ['r', 'r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
+    else:
+        col = ['r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
     ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1) 
     ax.bar( range(1, (int(ctype))+1),  stddev, align='center', color=col[0: int(ctype) + 1], zorder=10)
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis +' (desviacion)' )
+    plt.tick_params(labelsize = 9)
     plt.xticks(range(1, (int(ctype)) + 1), labels)
     plt.savefig(filename+' (desviacion).png', bbox_inches = 'tight')
     plt.xticks()
@@ -53,14 +61,16 @@ def drawMean(ctype, filename, titulo, yaxis, comp, *args):
     means = []
     for v in comp:
         means.append(np.mean(v))
-    #col = ['r','b','g','y','c','m']
-    #col = ['r','b','b','g', 'g','m', 'm', 'c', 'c']
-    col = ['r','b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
+    if len(comp) == 12:
+        col = ['r', 'r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
+    else:
+        col = ['r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
     ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1) 
     ax.bar( range(1, (int(ctype))+1),  means, align='center', color=col[0: int(ctype) + 1], zorder=10)
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis+' (promedio)')
+    plt.tick_params(labelsize = 9)
     plt.xticks(range(1, (int(ctype)) + 1), labels)
     plt.savefig(filename+' (promedio).png', bbox_inches = 'tight')
     plt.xticks()
@@ -78,6 +88,7 @@ def drawPlotMean(ctype, filename, titulo, yaxis, comp, *args):
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis + ' (promedio)')
+    plt.tick_params(labelsize = 9)
     plt.xticks(range(1, (int(ctype)) + 1), labels)
     plt.savefig(filename+' (plot mean).png', bbox_inches = 'tight')
     plt.xticks()
@@ -97,6 +108,7 @@ def drawPlotMeanLog(ctype, filename, titulo, yaxis, comp, *args):
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis + ' (promedio)')
+    plt.tick_params(labelsize = 9)
     plt.xticks(range(1, (int(ctype)) + 1), labels)
     plt.savefig(filename+' (plot mean logarithmic scale).png', bbox_inches = 'tight')
     plt.xticks()
