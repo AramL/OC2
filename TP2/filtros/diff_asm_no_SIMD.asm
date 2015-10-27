@@ -14,26 +14,6 @@ section .text
     ;unsigned char *dst,       ;rdx
     ;int filas,                ;ecx
     ;int cols)                 ;r8d
-
-
-
-
-; 
-;  PROBAR HACIENDO UN JUMP EN VEZ DE CALL Y HACER UN JMP BACK DOS VECEs
-;  JMP .inf_norm  y al final poner jmp dsp_dellamar_inf:_norm_1 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-; 
-
-
-
-
 _diff_asm:
 diff_asm:
 push rbp
@@ -45,21 +25,15 @@ push rbx
 sub rsp, 8
 
 mov r15, rdx
-;Mover registros de 32 bits (esto solo vale para 32 bits, con 16 y 8 no!), limpia los bits mas altos
-;entonces al hacer mul rcx, tendriamos el resultado en rdx:rax, pero como los 32 mas altos de rax y rcx estan en 0,
-;el resultado que queremos, osea la multiplicación esta en rax (reg de 32bits x reg de 32bits
-;entra en 64bits). Esto nos ahorra hacer un shift de 32b y un add.
 mov eax, r8d
 mov ecx, ecx
 mul rcx
-
 mov rcx, rax
 mov rdx, r15
 
 .ciclo:
 cmp rcx, 0
 je .fin
-
 mov rbx, [rdi + rcx*4 - 8]
 movzx r12, bl
 shr rbx, 8
@@ -77,7 +51,6 @@ movzx r9, r15b
 shr r15, 16
 
 call inf_norm
-
 
 movzx r12, bl
 shr rbx, 8
