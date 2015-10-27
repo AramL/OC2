@@ -1,7 +1,6 @@
 ;default rel
 global _diff_asm
 global diff_asm
-extern printf
 
 
 section .rodata:

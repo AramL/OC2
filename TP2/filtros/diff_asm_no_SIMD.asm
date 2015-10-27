@@ -1,11 +1,6 @@
 ;default rel
 global _diff_asm
 global diff_asm
-extern printf
-
-
-section .rodata:
-mascara_alpha db 0,0,0,255,0,0,0,255
 
 section .text
 ;void diff_asm    (

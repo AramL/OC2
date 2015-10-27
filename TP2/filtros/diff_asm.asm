@@ -1,14 +1,12 @@
 ;default rel
 global _diff_asm
 global diff_asm
-extern printf
 
 
 section .rodata:
 ALIGN 16
 mask db 3,3,3,3,7,7,7,7,11,11,11,11,15,15,15,15
 trans db 0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255
-es_int  db "%c= %i",10,0
 
 
 section .text
