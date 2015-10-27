@@ -19,13 +19,14 @@ section .text
     ;int filas,                ;ecx
     ;int cols)                 ;r8d
 
-;_diff_asm:
+_diff_asm:
 diff_asm:
 push rbp                 
 mov rbp, rsp
-push r15
 push r12
 push r13
+push r14
+sub rsp, 8
 
 mov r12, rdx
 ;Mover registros de 32 bits (esto solo vale para 32 bits, con 16 y 8 no!), limpia los bits mas altos
@@ -37,13 +38,13 @@ mov ecx, ecx
 mul rcx
 ;shl rdx, 32
 ;add rax, rdx
-xor r15, r15
+xor r14, r14
 .ciclo:
-    cmp r15, rax
+    cmp r14, rax
     JE .fin
 
-    movdqu xmm3 , [rdi +  r15*4]    ;xmm3= [-R0-|G0|B0|A0|-R1-|G1|B1|A1|-R2-|G2|B2|A2|-R3-|G3|B3|A3]_0  
-    movdqu xmm15, [rsi +  r15*4]    ;xmm15= [-R0-|G0|B0|A0|-R1-|G1|B1|A1|-R2-|G2|B2|A2|-R3-|G3|B3|A3]_0 de la segunda immagen
+    movdqu xmm3 , [rdi +  r14*4]    ;xmm3= [-R0-|G0|B0|A0|-R1-|G1|B1|A1|-R2-|G2|B2|A2|-R3-|G3|B3|A3]_0  
+    movdqu xmm15, [rsi +  r14*4]    ;xmm15= [-R0-|G0|B0|A0|-R1-|G1|B1|A1|-R2-|G2|B2|A2|-R3-|G3|B3|A3]_0 de la segunda immagen
     movdqu xmm14, xmm15             ; back upeo xmm15 para usar ese valor despues
     pminub xmm15, xmm3              ;aca tiene minimo entre R_src1 y R_src2 para cada uno
     pmaxub xmm3 , xmm14             ; aca el maximo
@@ -58,13 +59,15 @@ xor r15, r15
     pmaxub xmm6, xmm3               ;xmm6=[max(R0,G0,B0)|+@@|+@@|+@@|max(R1,G1,B1)|+@@|+@@|+@@|max(R2,G2,B2)|+@@|+@@|+@@|max(R3,G3,B3)|+@@|+@@|+@@]_0  +@@ = màs basura :D
     pshufb xmm6, [mask] 
     paddsb xmm6, [trans]
-    movdqu [r12 +  r15*4], xmm6
-    add  r15d, 4
+    movdqu [r12 +  r14*4], xmm6
+    add  r14d, 4
     jmp .ciclo
 
 .fin:
+
+add rsp, 8
+pop r14
 pop r13
 pop r12
-pop r15
 pop rbp
 ret

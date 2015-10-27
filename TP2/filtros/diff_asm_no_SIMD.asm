@@ -15,6 +15,25 @@ section .text
     ;int filas,                ;ecx
     ;int cols)                 ;r8d
 
+
+
+
+; 
+;  PROBAR HACIENDO UN JUMP EN VEZ DE CALL Y HACER UN JMP BACK DOS VECEs
+;  JMP .inf_norm  y al final poner jmp dsp_dellamar_inf:_norm_1 
+; 
+; 
+; 
+; 
+; 
+; 
+; 
+; 
+; 
+
+
+
+
 _diff_asm:
 diff_asm:
 push rbp
