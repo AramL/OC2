@@ -9,7 +9,8 @@
 #include "i386.h"
 
 uint proxima_pagina_libre = 0x100000;
-
+uint pag_A;
+uint pag_B;
 /* Atributos paginas */
 /* -------------------------------------------------------------------------- */
 uint mmu_proxima_pagina_fisica_libre() {
@@ -17,13 +18,25 @@ uint mmu_proxima_pagina_fisica_libre() {
     proxima_pagina_libre += 0x1000;
     return ret;
 }
-
-void mmu_inicializar(){
-
+/**
+USA IDENTITY MAPPING
+**/
+uint dame_proxima_pagina_mapeada(uint attrs) {
+    uint pag = mmu_proxima_pagina_fisica_libre();
+    mmu_mapear_pagina  (pag, 0x27000000, pag, attrs);
+    return pag;
 }
 
-uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_tipo){
-return 0;
+void mmu_inicializar() {
+    proxima_pagina_libre = 0x100000;
+/**
+    pag_A = dame_proxima_pagina_mapeada(0);
+    pag_B = dame_proxima_pagina_mapeada(0);
+**/
+}
+
+uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_tipo) {
+    return 0;
 }
 
 void mmu_inicializar_pagina(uint * pagina) {
@@ -41,16 +54,16 @@ uint mmu_inicializar_dir_kernel() {
 
     /* Inicializamos las tablas cada tabla direcciona 4k, empezando en 0 porque tenemos identity mapping */
     int p_tabla = 0;
-    for(p_tabla = 0x0; p_tabla < 0x3FFFFF; p_tabla += 0x1000)
-        mmu_mapear_pagina(0x28000 + 0x20*(p_tabla)/0x1000, 0x27000000, p_tabla, 0x3); 
+    for (p_tabla = 0x0; p_tabla < 0x3FFFFF; p_tabla += 0x1000)
+        mmu_mapear_pagina(0x28000 + 0x20 * (p_tabla) / 0x1000, 0x27000000, p_tabla, 0x3);
     /*
     for(int p_tabla = 0x28000; p_tabla < 0x29000; p_tabla += 0x20)
-        mmu_inicializar_page_table(p_tabla, 1000* (p_tabla/0x20)); 
+        mmu_inicializar_page_table(p_tabla, 1000* (p_tabla/0x20));
     */
-    /* 
-    for (uint i = 0x000; i < 0x3FFFFF; i += 0x1000) 
+    /*
+    for (uint i = 0x000; i < 0x3FFFFF; i += 0x1000)
         mmu_mapear_pagina(i, 0x27000000, i, 0x3 );*/      /* 3 es 11 en binario setea los bits de read and write y presente */
-        return 0;
+    return 0;
 
 }
 
@@ -67,7 +80,7 @@ void mmu_mapear_pagina  (uint virtual, uint cr3, uint fisica, uint attrs) {
     uint add = pd[posicion_DR * 4].page_base_address_31_12 ;
     add = add << 12;
     page_table *pt = (page_table *) add;                    /* Muevo a la derecha 12 bits y limpio la parte alta */
-    mmu_inicializar_page_table(&pt[posicion_DT * 4], fisica, attrs); 
+    mmu_inicializar_page_table(&pt[posicion_DT * 4], fisica, attrs);
     /* Copio la direccion fisica shifteada dejando 12 bits para los atributos y
         le pego los mismos al final */
 }
