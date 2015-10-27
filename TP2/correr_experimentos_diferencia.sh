@@ -16,10 +16,35 @@ git checkout ./python/tests/placeholder
 echo ""
 echo "**Corriendo mediciones diferencia ASM vs C"
 
+
+make clean 
+mv ./filtros/diff_asm.asm ./filtros/diff_asm_SIMD.asm
+mv ./filtros/diff_asm_avx_256.asm ./filtros/diff_asm.asm
+
 make
 
-echo "Corriendo ASM"
+mv ./filtros/diff_asm.asm ./filtros/diff_asm_avx_256.asm
+mv ./filtros/diff_asm_SIMD.asm ./filtros/diff_asm.asm
+
+
+echo "Corriendo ASM simd (128bits)"
 echo ""
+echo "" >> ./python/tests/test_difrencia_ASM_C
+for i in {1..100} 
+do 
+  ./build/tp2 -i asm diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  echo -n " " >> ./python/tests/test_difrencia_ASM_C
+done
+
+echo "" 
+
+
+
+
+
+echo "Corriendo ASM simd (128bits)"
+echo ""
+echo "" >> ./python/tests/test_difrencia_ASM_C
 for i in {1..100} 
 do 
   ./build/tp2 -i asm diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
@@ -41,6 +66,9 @@ mv ./filtros/diff_asm_no_SIMD.asm ./filtros/diff_asm.asm
 
 make
 
+mv ./filtros/diff_asm.asm ./filtros/diff_asm_no_SIMD.asm
+mv ./filtros/diff_asm_SIMD.asm ./filtros/diff_asm.asm
+
 echo "Corriendo ASM no simd"
 echo ""
 
@@ -54,8 +82,7 @@ done
 echo "" 
 
 #Lo vuelvo a poner como estaba para los proximos tests
-mv ./filtros/diff_asm.asm ./filtros/diff_asm_no_SIMD.asm
-mv ./filtros/diff_asm_SIMD.asm ./filtros/diff_asm.asm
+
 
 clear
 
@@ -339,7 +366,9 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/graficarAlt.py 12 ./python/tests/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"  "asm (SIMD)" "asm" "gcc (-Os)" "clang (-Os)" "gcc (-O3)" "clang (-O3)" "gcc (-O2)" "clang (-O2)" "gcc (-O1)" "clang (-O1)" "gcc (-O0)" "clang (-O0)" 
+
+python ./python/graficarAlt.py 13 ./python/tests/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"   "asm (AVX)" "asm (SSE4)" "asm" "gcc (-Os)" "clang (-Os)" "gcc (-O3)" "clang (-O3)" "gcc (-O2)" "clang (-O2)" "gcc (-O1)" "clang (-O1)" "gcc (-O0)" "clang (-O0)" 
+#python ./python/graficarAlt.py 12 ./python/tests/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"  "asm (SIMD)" "asm" "gcc (-Os)" "clang (-Os)" "gcc (-O3)" "clang (-O3)" "gcc (-O2)" "clang (-O2)" "gcc (-O1)" "clang (-O1)" "gcc (-O0)" "clang (-O0)" 
 
 echo " "
 echo "vago uriel :D"
@@ -854,3 +883,93 @@ python ./python/graficar.py 9 ./python/tests/test_performance_size_C_clang_oS "d
 
 clear
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+echo "test asm simple vs sse vs avx"
+
+
+
+make clean 
+mv ./filtros/diff_asm.asm ./filtros/diff_asm_SIMD.asm
+mv ./filtros/diff_asm_avx_256.asm ./filtros/diff_asm.asm
+
+make
+
+mv ./filtros/diff_asm.asm ./filtros/diff_asm_avx_256.asm
+mv ./filtros/diff_asm_SIMD.asm ./filtros/diff_asm.asm
+
+
+echo "Corriendo ASM simd (128bits)"
+echo ""
+echo "" >> ./python/tests/test_asm_versions
+for i in {1..100} 
+do 
+  ./build/tp2 -i asm diff ./experimentos/tests_size/game-4620x4620.bmp  ./experimentos/tests_size/pokemon-4620x4620.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_asm_versions
+  echo -n " " >> ./python/tests/test_asm_versions
+done
+
+echo "" 
+
+
+
+
+
+echo "Corriendo ASM simd (128bits)"
+echo ""
+echo "" >> ./python/tests/test_asm_versions
+for i in {1..100} 
+do 
+  ./build/tp2 -i asm diff ./experimentos/tests_size/game-4620x4620.bmp  ./experimentos/tests_size/pokemon-4620x4620.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_asm_versions
+  echo -n " " >> ./python/tests/test_asm_versions
+done
+
+echo "" 
+
+
+
+
+clear 
+
+make clean
+
+#Cambio los nombres asi puedo ejecutar la diferencia que no usa simd
+mv ./filtros/diff_asm.asm ./filtros/diff_asm_SIMD.asm
+mv ./filtros/diff_asm_no_SIMD.asm ./filtros/diff_asm.asm
+
+make
+
+mv ./filtros/diff_asm.asm ./filtros/diff_asm_no_SIMD.asm
+mv ./filtros/diff_asm_SIMD.asm ./filtros/diff_asm.asm
+
+echo "Corriendo ASM no simd"
+echo ""
+
+echo "" >> ./python/tests/test_asm_versions
+for i in {1..100} 
+do 
+  ./build/tp2 -i asm diff ./experimentos/tests_size/game-4620x4620.bmp  ./experimentos/tests_size/pokemon-4620x4620.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_asm_versions
+  echo -n " " >> ./python/tests/test_asm_versions
+done
+
+echo "" 
+
+#Lo vuelvo a poner como estaba para los proximos tests
+
+python ./python/graficarAlt.py 13 ./python/tests/test_asm_versions "diferencia (ASM)" "CPU Ticks"   "asm (AVX)" "asm (SSE4)" "asm"

@@ -21,6 +21,8 @@ def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
         medians.append(np.median(v))
     if len(comp) == 12:
         col = ['r', 'r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
+    if len(comp) == 13
+        col = ['r', 'r', 'r','b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
     else:
         col = ['r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
     ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1) 
@@ -28,7 +30,8 @@ def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis +' (mediana)' )
-    plt.tick_params(labelsize = 9)
+    if len(comp) >= 10:
+        plt.tick_params(labelsize = 9)
     plt.xticks(range(1, (int(ctype)) + 1), labels)
     plt.savefig(filename+' (mediana).png', bbox_inches = 'tight')
     plt.xticks()
