@@ -27,12 +27,11 @@ mv ./filtros/diff_asm.asm ./filtros/diff_asm_avx_256.asm
 mv ./filtros/diff_asm_SIMD.asm ./filtros/diff_asm.asm
 
 
-echo "Corriendo ASM simd (128bits)"
+echo "Corriendo ASM simd (256bits)"
 echo ""
-echo "" >> ./python/tests/test_difrencia_ASM_C
-for i in {1..100} 
+for i in {1..1000} 
 do 
-  ./build/tp2 -i asm diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  ./build/tp2 -i asm diff ./experimentos/tests_size/game-2320x2320.bmp  ./experimentos/tests_size/pokemon-2320x2320.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
   echo -n " " >> ./python/tests/test_difrencia_ASM_C
 done
 
@@ -45,9 +44,9 @@ echo ""
 echo "Corriendo ASM simd (128bits)"
 echo ""
 echo "" >> ./python/tests/test_difrencia_ASM_C
-for i in {1..100} 
+for i in {1..1000} 
 do 
-  ./build/tp2 -i asm diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  ./build/tp2 -i asm diff ./experimentos/tests_size/game-2320x2320.bmp  ./experimentos/tests_size/pokemon-2320x2320.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
   echo -n " " >> ./python/tests/test_difrencia_ASM_C
 done
 
@@ -73,9 +72,9 @@ echo "Corriendo ASM no simd"
 echo ""
 
 echo "" >> ./python/tests/test_difrencia_ASM_C
-for i in {1..100} 
+for i in {1..1000} 
 do 
-  ./build/tp2 -i asm diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  ./build/tp2 -i asm diff ./experimentos/tests_size/game-2320x2320.bmp  ./experimentos/tests_size/pokemon-2320x2320.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
   echo -n " " >> ./python/tests/test_difrencia_ASM_C
 done
 
@@ -101,9 +100,9 @@ fi
 
 echo "" >> ./python/tests/test_difrencia_ASM_C
 
-for i in {1..100} 
+for i in {1..1000} 
 do 
-  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2320x2320.bmp  ./experimentos/tests_size/pokemon-2320x2320.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
   echo -n " " >> ./python/tests/test_difrencia_ASM_C
 done
 
@@ -127,9 +126,9 @@ fi
 
 echo "" >> ./python/tests/test_difrencia_ASM_C
 
-for i in {1..100} 
+for i in {1..1000} 
 do 
-  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2320x2320.bmp  ./experimentos/tests_size/pokemon-2320x2320.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
   echo -n " " >> ./python/tests/test_difrencia_ASM_C
 done
 
@@ -158,9 +157,9 @@ fi
 
 echo "" >> ./python/tests/test_difrencia_ASM_C
 
-for i in {1..100} 
+for i in {1..1000} 
 do 
-  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2320x2320.bmp  ./experimentos/tests_size/pokemon-2320x2320.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
   echo -n " " >> ./python/tests/test_difrencia_ASM_C
 done
 
@@ -185,9 +184,9 @@ fi
 
 echo "" >> ./python/tests/test_difrencia_ASM_C
 
-for i in {1..100} 
+for i in {1..1000} 
 do 
-  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2320x2320.bmp  ./experimentos/tests_size/pokemon-2320x2320.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
   echo -n " " >> ./python/tests/test_difrencia_ASM_C
 done
 
@@ -213,9 +212,9 @@ fi
 
 echo "" >> ./python/tests/test_difrencia_ASM_C
 
-for i in {1..100} 
+for i in {1..1000} 
 do 
-  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2320x2320.bmp  ./experimentos/tests_size/pokemon-2320x2320.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
   echo -n " " >> ./python/tests/test_difrencia_ASM_C
 done
 
@@ -241,9 +240,9 @@ fi
 
 echo "" >> ./python/tests/test_difrencia_ASM_C
 
-for i in {1..100} 
+for i in {1..1000} 
 do 
-  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2320x2320.bmp  ./experimentos/tests_size/pokemon-2320x2320.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
   echo -n " " >> ./python/tests/test_difrencia_ASM_C
 done
 
@@ -270,9 +269,9 @@ fi
 
 echo "" >> ./python/tests/test_difrencia_ASM_C
 
-for i in {1..100} 
+for i in {1..1000} 
 do 
-  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2320x2320.bmp  ./experimentos/tests_size/pokemon-2320x2320.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
   echo -n " " >> ./python/tests/test_difrencia_ASM_C
 done
  
@@ -297,9 +296,9 @@ fi
 
 echo "" >> ./python/tests/test_difrencia_ASM_C
 
-for i in {1..100} 
+for i in {1..1000} 
 do 
-  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2320x2320.bmp  ./experimentos/tests_size/pokemon-2320x2320.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
   echo -n " " >> ./python/tests/test_difrencia_ASM_C
 done
 
@@ -322,9 +321,9 @@ fi
 
 echo "" >> ./python/tests/test_difrencia_ASM_C
 
-for i in {1..100} 
+for i in {1..1000} 
 do 
-  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2320x2320.bmp  ./experimentos/tests_size/pokemon-2320x2320.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
   echo -n " " >> ./python/tests/test_difrencia_ASM_C
 done
 
@@ -351,9 +350,9 @@ fi
 
 echo "" >> ./python/tests/test_difrencia_ASM_C
 
-for i in {1..100} 
+for i in {1..1000} 
 do 
-  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2320x2320.bmp  ./experimentos/tests_size/pokemon-2320x2320.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
   echo -n " " >> ./python/tests/test_difrencia_ASM_C
 done
 
@@ -921,7 +920,7 @@ echo ""
 echo "" >> ./python/tests/test_asm_versions
 for i in {1..100} 
 do 
-  ./build/tp2 -i asm diff ./experimentos/tests_size/game-4620x4620.bmp  ./experimentos/tests_size/pokemon-4620x4620.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_asm_versions
+  ./build/tp2 -i asm diff ./experimentos/tests_size/game-4624x4624.bmp  ./experimentos/tests_size/pokemon-4624x4624.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_asm_versions
   echo -n " " >> ./python/tests/test_asm_versions
 done
 
@@ -936,7 +935,7 @@ echo ""
 echo "" >> ./python/tests/test_asm_versions
 for i in {1..100} 
 do 
-  ./build/tp2 -i asm diff ./experimentos/tests_size/game-4620x4620.bmp  ./experimentos/tests_size/pokemon-4620x4620.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_asm_versions
+  ./build/tp2 -i asm diff ./experimentos/tests_size/game-4624x4624.bmp  ./experimentos/tests_size/pokemon-4624x4624.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_asm_versions
   echo -n " " >> ./python/tests/test_asm_versions
 done
 
@@ -964,7 +963,7 @@ echo ""
 echo "" >> ./python/tests/test_asm_versions
 for i in {1..100} 
 do 
-  ./build/tp2 -i asm diff ./experimentos/tests_size/game-4620x4620.bmp  ./experimentos/tests_size/pokemon-4620x4620.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_asm_versions
+  ./build/tp2 -i asm diff ./experimentos/tests_size/game-4624x4624.bmp  ./experimentos/tests_size/pokemon-4624x4624.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_asm_versions
   echo -n " " >> ./python/tests/test_asm_versions
 done
 

@@ -2,6 +2,7 @@
 
 rm -rf ./tests_size/*
 
+echo "Creando imagenes.."
 #Tests de tamaño
 convert pokemon.bmp -resize 292x290   ./tests_size/pokemon-292x292.bmp
 convert pokemon.bmp -resize 416x416   ./tests_size/pokemon-416x416.bmp
@@ -12,7 +13,8 @@ convert pokemon.bmp -resize 1632x1632 ./tests_size/pokemon-1632x1632.bmp
 convert pokemon.bmp -resize 2308x2308 ./tests_size/pokemon-2308x2308.bmp
 convert pokemon.bmp -resize 3264x3264 ./tests_size/pokemon-3264x3264.bmp
 convert pokemon.bmp -resize 4620x4620 ./tests_size/pokemon-4620x4620.bmp
-
+convert pokemon.bmp -resize 2320x2320 ./tests_size/pokemon-2320x2320.bmp
+convert pokemon.bmp -resize 4624x4624 ./tests_size/pokemon-4624x4624.bmp
 
 convert game.bmp -resize 292x292   ./tests_size/game-290x290.bmp
 convert game.bmp -resize 416x416   ./tests_size/game-416x416.bmp
@@ -23,3 +25,7 @@ convert game.bmp -resize 1632x1632 ./tests_size/game-1632x1632.bmp
 convert game.bmp -resize 2308x2308 ./tests_size/game-2308x2308.bmp
 convert game.bmp -resize 3264x3264 ./tests_size/game-3264x3264.bmp
 convert game.bmp -resize 4620x4620 ./tests_size/game-4620x4620.bmp
+convert game.bmp -resize 2320x2320 ./tests_size/game-2320x2320.bmp
+convert game.bmp -resize 4624x4624 ./tests_size/game-4620x4624.bmp
+
+echo "Listo"
