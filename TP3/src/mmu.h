@@ -28,7 +28,7 @@ typedef struct page_table {
     unsigned char   page_table_attr_indx:1;
     unsigned char   global:1;
     unsigned char   available_11_9:3;
-    unsigned char   page_base_address_31_12:20;
+    unsigned int      page_base_address_31_12:20;
 } __attribute__((__packed__, aligned (4))) page_table;
 
 
@@ -43,7 +43,7 @@ typedef struct page_directory {
     unsigned char   page_size:1;
     unsigned char   global:1;
     unsigned char   available_11_9:3;
-    unsigned char   page_base_address_31_12:20;
+    unsigned int     page_base_address_31_12:20;
 } __attribute__((__packed__, aligned (4))) page_directory;
 
 
@@ -79,6 +79,6 @@ uint mmu_unmapear_pagina(uint virtual, uint cr3);
 
 
 void mmu_inicializar_page_directory(page_directory * dir, uint addr);
-void mmu_inicializar_page_table(page_table * tab, uint addr);
+void mmu_inicializar_page_table(page_table * tab, uint addr, uint attrs);
 
 #endif	/* !__MMU_H__ */

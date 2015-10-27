@@ -126,7 +126,7 @@ mov al, r13b
 ror rax, 8
 mov al, r13b
 ror rax, 8
-;mov al, 255         ;alpha
+mov al, 255         ;alpha
 ror rax, 8
 ret
 

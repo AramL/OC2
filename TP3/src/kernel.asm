@@ -12,7 +12,7 @@ extern GDT_DESC
 extern IDT_DESC
 extern idt_inicializar
 extern screen_inicializar
-
+extern mmu_inicializar_dir_kernel
 ;; Defines
 %define NULL    0
 
@@ -93,9 +93,12 @@ BITS 32
     imprimir_texto_mp  inicializando_mp_msg, inicializando_mp_len, 0x07, 4, 0
 
     ; Inicializar el manejador de memoria
-
+    call mmu_inicializar_dir_kernel
+    mov cr3, eax
     ; Inicializar el directorio de paginas
-
+    mov eax, cr0
+    or     eax, 0x80000000
+    mov cr0, eax
     ; Cargar directorio de paginas
 
     ; Habilitar paginacion
