@@ -56,7 +56,7 @@ xor r14, r14
     vpshufb ymm6, ymm6, [mask] 
     vpaddsb ymm6, ymm6, [trans]
     vmovdqu [r12 +  r14*4], ymm6
-    add  r14d, 4
+    add  r14d, 8
     jmp .ciclo
 
 .fin:

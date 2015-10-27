@@ -60,7 +60,7 @@ xor r14, r14
     pshufb xmm6, [mask] 
     paddsb xmm6, [trans]
     movdqu [r12 +  r14*4], xmm6
-    add  r14d, 8
+    add  r14d, 4
     jmp .ciclo
 
 .fin:
