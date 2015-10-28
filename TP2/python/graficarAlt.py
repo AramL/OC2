@@ -19,11 +19,12 @@ def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     medians = []
     for v in comp:
         medians.append(np.median(v))
+    col = ['r', 'b', 'g', 'm', 'c', 'y', 'r', 'b', 'g', 'm', 'c', 'y']
     if len(comp) == 12:
         col = ['r', 'r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
-    if len(comp) == 13
+    if len(comp) == 13:
         col = ['r', 'r', 'r','b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
-    else:
+    if len(comp) == 11:
         col = ['r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
     ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1) 
     ax.bar( range(1, int(ctype) + 1),  medians, align='center', color=col[0: int(ctype) + 1], zorder=10)
@@ -43,9 +44,12 @@ def drawStdDev(ctype, filename, titulo, yaxis, comp, *args):
     stddev = []
     for v in comp:
         stddev.append(np.std(v))
+    col = ['r', 'b', 'g', 'm', 'c', 'y', 'r', 'b', 'g', 'm', 'c', 'y']
     if len(comp) == 12:
         col = ['r', 'r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
-    else:
+    if len(comp) == 13:
+        col = ['r', 'r', 'r','b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
+    if len(comp) == 11:
         col = ['r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
     ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1) 
     ax.bar( range(1, (int(ctype))+1),  stddev, align='center', color=col[0: int(ctype) + 1], zorder=10)
@@ -64,9 +68,12 @@ def drawMean(ctype, filename, titulo, yaxis, comp, *args):
     means = []
     for v in comp:
         means.append(np.mean(v))
+    col = ['r', 'b', 'g', 'm', 'c', 'y', 'r', 'b', 'g', 'm', 'c', 'y']
     if len(comp) == 12:
         col = ['r', 'r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
-    else:
+    if len(comp) == 13:
+        col = ['r', 'r', 'r','b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
+    if len(comp) == 11:
         col = ['r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
     ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1) 
     ax.bar( range(1, (int(ctype))+1),  means, align='center', color=col[0: int(ctype) + 1], zorder=10)

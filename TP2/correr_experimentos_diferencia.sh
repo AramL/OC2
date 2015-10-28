@@ -367,7 +367,7 @@ echo " "
 echo "**graficando"
 
 
-python ./python/graficarAlt.py 12 ./python/tests/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"   "asm (SIMD)" "asm" "gcc (-Os)" "clang (-Os)" "gcc (-O3)" "clang (-O3)" "gcc (-O2)" "clang (-O2)" "gcc (-O1)" "clang (-O1)" "gcc (-O0)" "clang (-O0)" 
+python ./python/graficarAlt.py 12 ./python/tests/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"   "asm (SSE4)" "asm" "gcc (-Os)" "clang (-Os)" "gcc (-O3)" "clang (-O3)" "gcc (-O2)" "clang (-O2)" "gcc (-O1)" "clang (-O1)" "gcc (-O0)" "clang (-O0)" 
 #python ./python/graficarAlt.py 12 ./python/tests/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"  "asm (AVX)" "asm (SIMD)" "asm" "gcc (-Os)" "clang (-Os)" "gcc (-O3)" "clang (-O3)" "gcc (-O2)" "clang (-O2)" "gcc (-O1)" "clang (-O1)" "gcc (-O0)" "clang (-O0)" 
 
 echo " "
@@ -474,7 +474,7 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/graficar.py 9 ./python/tests/test_performance_size_C_GCC_O2 "diferencia gcc (-O2)" "CPU Ticks"  256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
+python ./python/graficarAlt.py 9 ./python/tests/test_performance_size_C_GCC_O2 "diferencia gcc (-O2)" "CPU Ticks"  256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
 
 
 
@@ -577,7 +577,7 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/graficar.py 9 ./python/tests/test_performance_size_C_oS "diferencia gcc (-Os)" "CPU Ticks"  256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
+python ./python/graficarAlt.py 9 ./python/tests/test_performance_size_C_oS "diferencia gcc (-Os)" "CPU Ticks"  256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
 
 
 
@@ -675,7 +675,7 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/graficar.py 9 ./python/tests/test_performance_size_ASM "diferencia ASM" "CPU Ticks"  256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
+python ./python/graficarAlt.py 9 ./python/tests/test_performance_size_ASM "diferencia ASM" "CPU Ticks"  256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
 
 
 
@@ -775,7 +775,7 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/graficar.py 9 ./python/tests/test_performance_size_C_clang "diferencia clang (-O2)" "CPU Ticks"  256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
+python ./python/graficarAlt.py 9 ./python/tests/test_performance_size_C_clang "diferencia clang (-O2)" "CPU Ticks"  256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
 
 
 clear
@@ -876,7 +876,7 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/graficar.py 9 ./python/tests/test_performance_size_C_clang_oS "diferencia clang (-Os)" "CPU Ticks" 256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
+python ./python/graficarAlt.py 9 ./python/tests/test_performance_size_C_clang_oS "diferencia clang (-Os)" "CPU Ticks" 256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
 
 
 
@@ -889,17 +889,78 @@ clear
 
 
 
+make clean
+
+echo "diferencia loop unrolling"
+
+
+make 
 
 
 
+for i in {1..1000}
+do 
+  ./build/tp2 -i asm diff  ./experimentos/tests_size/game-4620x4620.bmp ./experimentos/tests_size/pokemon-4620x4620.bmp  | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_loop_unrolled
+  echo -n " " >> ./python/tests/test_loop_unrolled
+done
+
+make clean
+
+#Cambio los nombres asi puedo ejecutar la diferencia que no usa simd
+mv ./filtros/diff_asm.asm ./filtros/diff_asm_SIMD.asm
+mv ./filtros/diff_asm_no_SIMD.asm ./filtros/diff_asm.asm
+
+make
+
+mv ./filtros/diff_asm.asm ./filtros/diff_asm_no_SIMD.asm
+mv ./filtros/diff_asm_SIMD.asm ./filtros/diff_asm.asm
+
+
+echo "" >> ./python/tests/test_loop_unrolled
+
+for i in {1..1000}
+do 
+  ./build/tp2 -i asm diff  ./experimentos/tests_size/game-4620x4620.bmp ./experimentos/tests_size/pokemon-4620x4620.bmp  | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_loop_unrolled
+  echo -n " " >> ./python/tests/test_loop_unrolled
+done
+
+
+make clean
+
+
+mv ./filtros/diff_c.c ./filtros/diff_c_no_unroll.c
+mv ./filtros/diff_c_unrolled.c ./filtros/diff_c.c
+
+make OPTFLAGS=-O3
+
+mv ./filtros/diff_c.c ./filtros/diff_c_unrolled.c
+mv ./filtros/diff_c_no_unroll.c ./filtros/diff_c.c
 
 
 
+echo "" >> ./python/tests/test_loop_unrolled
+
+for i in {1..1000}
+do 
+  ./build/tp2 -i c diff  ./experimentos/tests_size/game-4620x4620.bmp ./experimentos/tests_size/pokemon-4620x4620.bmp  | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_loop_unrolled
+  echo -n " " >> ./python/tests/test_loop_unrolled
+done
 
 
+make clean
+
+make OPTFLAGS=-O3
+
+echo "" >> ./python/tests/test_loop_unrolled
+
+for i in {1..1000}
+do 
+  ./build/tp2 -i c diff  ./experimentos/tests_size/game-4620x4620.bmp ./experimentos/tests_size/pokemon-4620x4620.bmp  | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_loop_unrolled
+  echo -n " " >> ./python/tests/test_loop_unrolled
+done
 
 
-
+python ./python/graficarAlt.py 4 ./python/tests/test_loop_unrolled "diferencia unrolling" "CPU Ticks" "asm (SSE4)" "asm" "gcc (unrolled)" "gcc"
 
 
 # echo "test asm simple vs sse vs avx"
