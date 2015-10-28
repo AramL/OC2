@@ -31,13 +31,11 @@ void mmu_inicializar_pagina(uint * pagina) {
 }
 
 uint mmu_inicializar_dir_kernel() {
-
-    /*for (uint j = 0x27000; j < 0x28000 -; j += 0x20) {*/
     mmu_inicializar_page_directory((page_directory *)0x27000, 0x28000, 0x3);
     int limpiar = 0;
     for(limpiar = 0x27000+0x20; limpiar < 0x28000; limpiar +=0x20)
         mmu_inicializar_page_directory((page_directory *)limpiar, 0, 0);
-    /* necesitamos mapear los primeros 4 mebibytes para el kernel y area libre de memoria
+    /* necesitamos mapear los primeros 4 megabytes para el kernel y area libre de memoria
      * con una sola entrada en la PD por ahora nos alcanza, vamos a necesitar una tabla de paginas con 1024 entradas
      * como cada una direcciona 4k tenemos los 4mb.
      */
@@ -49,11 +47,7 @@ uint mmu_inicializar_dir_kernel() {
     for(int p_tabla = 0x28000; p_tabla < 0x29000; p_tabla += 0x20)
         mmu_inicializar_page_table(p_tabla, 1000* (p_tabla/0x20)); 
     */
-    /* 
-    for (uint i = 0x000; i < 0x3FFFFF; i += 0x1000) 
-        mmu_mapear_pagina(i, 0x27000000, i, 0x3 );*/      /* 3 es 11 en binario setea los bits de read and write y presente */
-        return 0;
-
+    return 0;
 }
 
 void mmu_mapear_pagina  (uint virtual, uint cr3, uint fisica, uint attrs) {
@@ -68,7 +62,6 @@ void mmu_mapear_pagina  (uint virtual, uint cr3, uint fisica, uint attrs) {
         int tab_c = proxima_pag;
         for(; tab_c < proxima_pag + 0x1000; tab_c +=0x20)
             mmu_inicializar_page_table((page_table *)tab_c, 0, 0);
-
     }
 
     uint posicion_DT = (virtual >> 12) & 0xFF3;
@@ -77,7 +70,8 @@ void mmu_mapear_pagina  (uint virtual, uint cr3, uint fisica, uint attrs) {
 
     mmu_inicializar_page_table(pt, fisica, attrs); 
     /* Copio la direccion fisica shifteada dejando 12 bits para los atributos y
-        le pego los mismos al final */
+        le pego los mismos al final 
+     */
 }
 
 uint mmu_unmapear_pagina(uint virtual, uint cr3) {
