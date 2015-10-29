@@ -11,8 +11,6 @@ def liftData(ctype, filename, titulo, yaxis, *args):
     drawStdDev(ctype, filename, titulo, yaxis, comp, *args)
     drawPlotMean(ctype, filename, titulo, yaxis, comp, *args)
     drawPlotMeanLog(ctype, filename, titulo, yaxis, comp, *args)
-    drawTables(ctype, filename, titulo, yaxis, comp, *args)
-
 
 def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
@@ -44,6 +42,10 @@ def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     plt.xticks(range(1, (int(ctype)) + 1), labels)
     plt.savefig(filename+' (mediana).png', bbox_inches = 'tight')
     plt.xticks()
+    val_strings = ["%10.10f" % x for x in medians ]
+    with open(filename + '_mediana.txt', 'w') as file_:
+        for k in range(1, len(comp)):
+            file_.write(labels[k] + " " + val_strings[k] + "\n")
 
 def drawStdDev(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
@@ -74,6 +76,10 @@ def drawStdDev(ctype, filename, titulo, yaxis, comp, *args):
     plt.xticks(range(1, (int(ctype)) + 1), labels)
     plt.savefig(filename+' (desviacion).png', bbox_inches = 'tight')
     plt.xticks()
+    val_strings = ["%10.10f" % x for x in stddev ]
+    with open(filename + '_stddev.txt', 'w') as file_:
+        for k in range(1, len(comp)):
+            file_.write(labels[k] + " " + val_strings[k] + "\n")
 
 def drawMean(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
@@ -104,6 +110,10 @@ def drawMean(ctype, filename, titulo, yaxis, comp, *args):
     plt.xticks(range(1, (int(ctype)) + 1), labels)
     plt.savefig(filename+' (promedio).png', bbox_inches = 'tight')
     plt.xticks()
+    val_strings = ["%10.10f" % x for x in means ]
+    with open(filename + '_promedio.txt', 'w') as file_:
+        for k in range(1, len(comp)):
+            file_.write(labels[k] + " " + val_strings[k] + "\n")
 
 def drawPlotMean(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
