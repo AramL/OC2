@@ -15,7 +15,7 @@
 
 #define MAPA_BASE_FISICA  0x500000
 #define MAPA_BASE_VIRTUAL 0x800000
-
+#define KERNEL_CR3 		  0x27000
 
 typedef struct page_table {
     unsigned char   present:1;

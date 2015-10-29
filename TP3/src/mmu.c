@@ -81,12 +81,14 @@ void mmu_mapear_pagina  (uint virtual, uint cr3, uint fisica, uint attrs) {
 uint mmu_unmapear_pagina(uint virtual, uint cr3) {
     cr3 = cr3 & 0xFFFFF000;
     page_directory *pd =  (page_directory *) cr3;
-    
+
     uint posicion_DR = (virtual >> 22) & 0x3FF;/*FF3;*/
     uint posicion_DT = (virtual >> 12) & 0x3FF;/*FF3;*/
 
     pd = pd + (posicion_DR * 4);
+
     uint add = pd->page_base_address_31_12 << 12;
+    
     page_table *pt = (page_table *) (add + (posicion_DT *4));
 
     pt[posicion_DT * 4].present = 0;
