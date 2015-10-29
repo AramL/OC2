@@ -94,6 +94,7 @@ BITS 32
 
     ; Inicializar el manejador de memoria
     call mmu_inicializar_dir_kernel
+
     mov cr3, eax
     ; Inicializar el directorio de paginas
     mov eax, cr0
