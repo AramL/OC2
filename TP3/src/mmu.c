@@ -22,13 +22,43 @@ void mmu_inicializar(){
 
 }
 
-uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_tipo){
-return 0;
+uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_tipo) {
+    //Copiar el codigo del perro al lugar donde empieza (dependiendo de A o B)
+    //puse 0x7FFFFFF por q es cacho de memoria virtual q no se va a usar en ningun momento segun el enunciado
+
+    mmu_mapear_pagina(0x7FFFFFF,  KERNEL_CR3, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x3); //soy un genioh!
+    uint codigo_tarea;
+    int codigo = index_jugador * 10 + index_tipo;
+    switch (codigo) {
+    case (JUGADOR_A*10+ TIPO_1):
+        codigo_tarea = 0x10000;
+        break;
+    case (JUGADOR_A*10+ TIPO_2):
+        codigo_tarea = 0x11000;
+        break;
+    case (JUGADOR_B*10+ TIPO_1):
+        codigo_tarea = 0x12000;
+        break;
+    case (JUGADOR_B*10+ TIPO_2):
+        codigo_tarea = 0x13000;
+        break;
+    }
+    mmu_copiar_pagina(codigo_tarea, 0x7FFFFFF);
+
+    return 0;
 }
+
 
 void mmu_inicializar_pagina(uint * pagina) {
 
 }
+
+void mmu_copiar_pagina    (uint src, uint dst) {
+    for (uint i = 0; i < 1024, i + 32) {
+        (*(dst + i)) = (*(src + i));
+    }
+}
+
 
 uint mmu_inicializar_dir_kernel() {
     mmu_inicializar_page_directory((page_directory *)0x27000, 0x28000, 0x3);
@@ -88,7 +118,7 @@ uint mmu_unmapear_pagina(uint virtual, uint cr3) {
     pd = pd + (posicion_DR * 4);
 
     uint add = pd->page_base_address_31_12 << 12;
-    
+
     page_table *pt = (page_table *) (add + (posicion_DT *4));
 
     pt[posicion_DT * 4].present = 0;
@@ -141,3 +171,12 @@ void mmu_inicializar_page_table(page_table *tab, uint addr, uint attrs) {
 }
 
 
+// transforma coordenadas (x,y) en direcciones fisicas
+uint mmu_xy2fisica(uint x, uint y) {
+    return 0x5000000 + x * 0x1000 + y * 80 * 0x1000;
+}
+
+// transforma coordenadas (x,y) en direcciones virtuales
+uint mmu_xy2virtual(uint x, uint y) {
+    return 0x8000000 + x * 0x1000 + y * 80 * 0x1000;
+}
