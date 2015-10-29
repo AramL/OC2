@@ -47,6 +47,8 @@ uint mmu_inicializar_dir_kernel() {
     for(int p_tabla = 0x28000; p_tabla < 0x29000; p_tabla += 0x20)
         mmu_inicializar_page_table(p_tabla, 1000* (p_tabla/0x20)); 
     */
+
+    mmu_unmapear_pagina(0x3FF000, 0x27000);
     return 0x27000;
     /* Devolvemos el cr3  (eax) */
 }
@@ -77,13 +79,16 @@ void mmu_mapear_pagina  (uint virtual, uint cr3, uint fisica, uint attrs) {
 }
 
 uint mmu_unmapear_pagina(uint virtual, uint cr3) {
-    cr3 = cr3 & 0x000;
+    cr3 = cr3 & 0xFFFFF000;
     page_directory *pd =  (page_directory *) cr3;
+    
     uint posicion_DR = (virtual >> 22) & 0x3FF;/*FF3;*/
     uint posicion_DT = (virtual >> 12) & 0x3FF;/*FF3;*/
+
     pd = pd + (posicion_DR * 4);
     uint add = pd->page_base_address_31_12 << 12;
     page_table *pt = (page_table *) (add + (posicion_DT *4));
+
     pt[posicion_DT * 4].present = 0;
     return 0;
 }
