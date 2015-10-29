@@ -21,6 +21,7 @@ uint mmu_proxima_pagina_fisica_libre() {
 void mmu_inicializar(){
 
 }
+/*
 
 uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_tipo) {
     //Copiar el codigo del perro al lugar donde empieza (dependiendo de A o B)
@@ -47,17 +48,18 @@ uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_
 
     return 0;
 }
-
+*/
 
 void mmu_inicializar_pagina(uint * pagina) {
 
 }
 
+/*
 void mmu_copiar_pagina    (uint src, uint dst) {
     for (uint i = 0; i < 1024, i + 32) {
         (*(dst + i)) = (*(src + i));
     }
-}
+}*/
 
 
 uint mmu_inicializar_dir_kernel() {
@@ -78,7 +80,11 @@ uint mmu_inicializar_dir_kernel() {
         mmu_inicializar_page_table(p_tabla, 1000* (p_tabla/0x20)); 
     */
 
+    /* Testeamos que desmapea esta pagina correctamente
+        ej 3
     mmu_unmapear_pagina(0x3FF000, 0x27000);
+    
+    */
     return 0x27000;
     /* Devolvemos el cr3  (eax) */
 }
@@ -121,7 +127,7 @@ uint mmu_unmapear_pagina(uint virtual, uint cr3) {
 
     page_table *pt = (page_table *) (add + (posicion_DT *4));
 
-    pt[posicion_DT * 4].present = 0;
+    pt->present = 0;
     return 0;
 }
 
