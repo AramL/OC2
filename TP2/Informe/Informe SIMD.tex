@@ -22,8 +22,8 @@
 
 \renewcommand{\headrulewidth}{0.5pt}
 \renewcommand{\footrulewidth}{0.5pt}
-\setlength{\hoffset}{-0.8in}
-\setlength{\textwidth}{16cm}
+\setlength{\hoffset}{-1.1in}
+\setlength{\textwidth}{18cm}
 %\setlength{\hoffset}{-1.1cm}
 %\setlength{\textwidth}{16cm}
 \setlength{\headsep}{0.5cm}
@@ -246,19 +246,12 @@ En .insert hacemos casi lo contrario a levantar, convertimos los floats empaquet
  \newpage
  
 \begin{figure}[h]
-\includegraphics[scale=0.56]{imagenes/test_difrencia_ASM_C_promedio.png}
-\caption{Promedio, sin outliers incluidos, sobre una imagen de 2308x2308 de 16mb.}
+\includegraphics[scale=0.71]{imagenes/test_difrencia_ASM_C_PROMEDIO_Os}
+\caption{Promedio, 1000 iteraciones sobre una imagen de 2308x2308 pixels de 16mb.}
 \end{figure}
 
-\noindent Luego eliminamos los outliers y graficamos de vuelta obteniendo.\\
 
 
-\begin{figure}[h]
-\includegraphics[scale=0.56]{imagenes/test_difrencia_ASM_C_no_outliers.png}
-\caption{Promedio, con outliers incluidos, sobre una imagen de 2308x2308 de 16mb.}
-\end{figure}
-
-\noindent Vemos que clang en -O0 se comporta un poco mejor sacando esos resultados extremos, y lo que podemos concluir es que el algoritmo implementado en assembly con SIMD corre 2 veces más rapido que su contraparte en C.
 
 \newpage 
 

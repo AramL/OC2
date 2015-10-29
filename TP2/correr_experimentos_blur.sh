@@ -1,5 +1,8 @@
 #!/bin/bash
 
+rm -rf ./python/tests_blur/*
+git checkout ./python/tests_blur/placeholder
+
 echo "corriendo los experimentos de blur"
 
 
@@ -13,19 +16,19 @@ echo "**Corriendo mediciones blur ASM vs C"
 
 for j in {1..10}
 do
-  ./build/tp2 -i asm blur img/lena24.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_blur_ASM_C
-  echo -n " " >> ./python/test_blur_ASM_C
+  ./build/tp2 -i asm blur img/lena24.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+  echo -n " " >> ./python/tests_blur/test_blur_ASM_C
 done
 
-echo "" >> ./python/test_blur_ASM_C
+echo "" >> ./python/tests_blur/test_blur_ASM_C
 
 echo ""
 echo "med asm terminadas"
 
 for r in {1..10}
 do
-  ./build/tp2 -i c blur img/lena24.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_blur_ASM_C
-  echo -n " " >> ./python/test_blur_ASM_C
+  ./build/tp2 -i c blur img/lena24.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+  echo -n " " >> ./python/tests_blur/test_blur_ASM_C
   echo ""
   echo $r
 done
@@ -33,7 +36,7 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/graficar.py 2 ./python/test_blur_ASM_C "blur (ASM vs C)" "CPU Ticks"  Assembly "gcc (-02)"
+python ./python/tests_blur/graficar.py 2 ./python/tests_blur/test_blur_ASM_C "blur (ASM vs C)" "CPU Ticks"  Assembly "gcc (-02)"
 
 echo "" 
 echo "dame las imagenes"
@@ -49,19 +52,19 @@ echo "**Corriendo mediciones blur ASM vs C"
 
 for j in {1..10}
 do
-  ./build/tp2 -i asm blur img/lena24.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_blur_ASM_C_vsClang
-  echo -n " " >> ./python/test_blur_ASM_C_vsClang
+  ./build/tp2 -i asm blur img/lena24.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C_vsClang
+  echo -n " " >> ./python/tests_blur/test_blur_ASM_C_vsClang
 done
 
-echo "" >> ./python/test_blur_ASM_C_vsClang
+echo "" >> ./python/tests_blur/test_blur_ASM_C_vsClang
 
 echo ""
 echo "med asm terminadas"
 
 for r in {1..10}
 do
-  ./build/tp2 -i c blur img/lena24.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_blur_ASM_C_vsClang
-  echo -n " " >> ./python/test_blur_ASM_C_vsClang
+  ./build/tp2 -i c blur img/lena24.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C_vsClang
+  echo -n " " >> ./python/tests_blur/test_blur_ASM_C_vsClang
   echo ""
   echo $r
 done
@@ -69,7 +72,7 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/graficar.py 2 ./python/test_blur_ASM_C_vsClang "blur (ASM vs C)" "CPU Ticks"  Assembly "clang (-O2)"
+python ./python/tests_blur/graficar.py 2 ./python/tests_blur/test_blur_ASM_C_vsClang "blur (ASM vs C)" "CPU Ticks"  Assembly "clang (-O2)"
 
 echo "" 
 echo "dame las imagenes"
@@ -87,84 +90,84 @@ echo "test radios blur contra tamaño"
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 5 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 5 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
 done
 
-echo "" >> ./python/test_radio_size_ASM
+echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 10 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 10 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
 done
 
-echo "" >> ./python/test_radio_size_ASM
-
-
-for i in {1..20} 
-do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 25 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
-done
-
-echo "" >> ./python/test_radio_size_ASM
+echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 50 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 25 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
 done
 
-echo "" >> ./python/test_radio_size_ASM
+echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 75 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 50 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
 done
 
-echo "" >> ./python/test_radio_size_ASM
+echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 100 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 75 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
 done
 
-echo "" >> ./python/test_radio_size_ASM
+echo "" >> ./python/tests_blur/test_radio_size_ASM
+
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 150 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 100 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
 done
 
-echo "" >> ./python/test_radio_size_ASM
+echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 200 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 150 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
 done
 
-echo "" >> ./python/test_radio_size_ASM
+echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 250 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 200 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
 done
 
-echo "" >> ./python/test_radio_size_ASM
+echo "" >> ./python/tests_blur/test_radio_size_ASM
+
+for i in {1..20} 
+do 
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 250 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
+done
+
+echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 
 
 
-python ./python/graficar.py 9 ./python/test_radio_size_ASM "blur ASM (radios)" "CPU Ticks"  5 10 25 50 75 100 150 200 250
+python ./python/tests_blur/graficar.py 9 ./python/tests_blur/test_radio_size_ASM "blur ASM (radios)" "CPU Ticks"  5 10 25 50 75 100 150 200 250
 
 
 echo ""
@@ -172,84 +175,84 @@ echo "test radios blur contra tamaño"
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 5 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 5 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
 done
 
-echo "" >> ./python/test_radio_size_ASM
+echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 10 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 10 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
 done
 
-echo "" >> ./python/test_radio_size_ASM
-
-
-for i in {1..20} 
-do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 25 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
-done
-
-echo "" >> ./python/test_radio_size_ASM
+echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 50 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 25 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
 done
 
-echo "" >> ./python/test_radio_size_ASM
+echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 75 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 50 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
 done
 
-echo "" >> ./python/test_radio_size_ASM
+echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 100 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 75 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
 done
 
-echo "" >> ./python/test_radio_size_ASM
+echo "" >> ./python/tests_blur/test_radio_size_ASM
+
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 150 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 100 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
 done
 
-echo "" >> ./python/test_radio_size_ASM
+echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 200 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 150 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
 done
 
-echo "" >> ./python/test_radio_size_ASM
+echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 250 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_ASM
-  echo -n " " >> ./python/test_radio_size_ASM
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 200 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
 done
 
-echo "" >> ./python/test_radio_size_ASM
+echo "" >> ./python/tests_blur/test_radio_size_ASM
+
+for i in {1..20} 
+do 
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 250 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_ASM
+  echo -n " " >> ./python/tests_blur/test_radio_size_ASM
+done
+
+echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 
 
 
-python ./python/graficar.py 9 ./python/test_radio_size_ASM "blur ASM (radios)" "CPU Ticks"  5 10 25 50 75 100 150 200 250
+python ./python/tests_blur/graficar.py 9 ./python/tests_blur/test_radio_size_ASM "blur ASM (radios)" "CPU Ticks"  5 10 25 50 75 100 150 200 250
 
 
 
@@ -264,83 +267,83 @@ echo "test radios blur contra tamaño"
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 5 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_c
-  echo -n " " >> ./python/test_radio_size_c
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 5 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_c
+  echo -n " " >> ./python/tests_blur/test_radio_size_c
 done
 
-echo "" >> ./python/test_radio_size_c
+echo "" >> ./python/tests_blur/test_radio_size_c
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 10 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_c
-  echo -n " " >> ./python/test_radio_size_c
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 10 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_c
+  echo -n " " >> ./python/tests_blur/test_radio_size_c
 done
 
-echo "" >> ./python/test_radio_size_c
-
-
-for i in {1..20} 
-do 
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 25 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_c
-  echo -n " " >> ./python/test_radio_size_c
-done
-
-echo "" >> ./python/test_radio_size_c
+echo "" >> ./python/tests_blur/test_radio_size_c
 
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 50 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_c
-  echo -n " " >> ./python/test_radio_size_c
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 25 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_c
+  echo -n " " >> ./python/tests_blur/test_radio_size_c
 done
 
-echo "" >> ./python/test_radio_size_c
+echo "" >> ./python/tests_blur/test_radio_size_c
 
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 75 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_c
-  echo -n " " >> ./python/test_radio_size_c
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 50 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_c
+  echo -n " " >> ./python/tests_blur/test_radio_size_c
 done
 
-echo "" >> ./python/test_radio_size_c
+echo "" >> ./python/tests_blur/test_radio_size_c
 
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 100 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_c
-  echo -n " " >> ./python/test_radio_size_c
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 75 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_c
+  echo -n " " >> ./python/tests_blur/test_radio_size_c
 done
 
-echo "" >> ./python/test_radio_size_c
+echo "" >> ./python/tests_blur/test_radio_size_c
+
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 150 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_c
-  echo -n " " >> ./python/test_radio_size_c
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 100 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_c
+  echo -n " " >> ./python/tests_blur/test_radio_size_c
 done
 
-echo "" >> ./python/test_radio_size_c
+echo "" >> ./python/tests_blur/test_radio_size_c
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 200 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_c
-  echo -n " " >> ./python/test_radio_size_c
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 150 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_c
+  echo -n " " >> ./python/tests_blur/test_radio_size_c
 done
 
-echo "" >> ./python/test_radio_size_c
+echo "" >> ./python/tests_blur/test_radio_size_c
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 250 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_size_c
-  echo -n " " >> ./python/test_radio_size_c
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 200 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_c
+  echo -n " " >> ./python/tests_blur/test_radio_size_c
 done
 
-echo "" >> ./python/test_radio_size_c
+echo "" >> ./python/tests_blur/test_radio_size_c
+
+for i in {1..20} 
+do 
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 250 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_size_c
+  echo -n " " >> ./python/tests_blur/test_radio_size_c
+done
+
+echo "" >> ./python/tests_blur/test_radio_size_c
 
 
 
-python ./python/graficar.py 9 ./python/test_radio_size_ASM "blur ASM (radios)" "CPU Ticks"  5 10 25 50 75 100 150 200 250
+python ./python/tests_blur/graficar.py 9 ./python/tests_blur/test_radio_size_ASM "blur ASM (radios)" "CPU Ticks"  5 10 25 50 75 100 150 200 250
 
 
 
@@ -350,27 +353,27 @@ make CC=clang OPTFLAGS=-O2
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-292x292.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_c
-  echo -n " " >> ./python/test_radio_cambiando_tamanios_c
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-292x292.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_c
+  echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_c
 done
 
-echo "" >> ./python/test_radio_cambiando_tamanios_c
+echo "" >> ./python/tests_blur/test_radio_cambiando_tamanios_c
 
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-416x416.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_c
-  echo -n " " >> ./python/test_radio_cambiando_tamanios_c
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-416x416.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_c
+  echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_c
 done
 
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_c
-  echo -n " " >> ./python/test_radio_cambiando_tamanios_c
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-584x584.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_c
+  echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_c
 done
 
-echo "" >> ./python/test_radio_cambiando_tamanios_c
+echo "" >> ./python/tests_blur/test_radio_cambiando_tamanios_c
 
 
 echo "824x824"
@@ -378,11 +381,11 @@ echo "824x824"
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-824x824.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_c
-  echo -n " " >> ./python/test_radio_cambiando_tamanios_c
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-824x824.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_c
+  echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_c
 done
 
-echo "" >> ./python/test_radio_cambiando_tamanios_c
+echo "" >> ./python/tests_blur/test_radio_cambiando_tamanios_c
 
 echo "1160x1160"
 
@@ -390,14 +393,14 @@ echo "1160x1160"
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_c
-  echo -n " " >> ./python/test_radio_cambiando_tamanios_c
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_c
+  echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_c
 done
 
 
 
 
-python ./python/graficar.py 5 ./python/test_radio_cambiando_tamanios_c "blur gcc (-O2)" "CPU Ticks" 256kb 512kb 1mb 2mb 4mb 
+python ./python/tests_blur/graficar.py 5 ./python/tests_blur/test_radio_cambiando_tamanios_c "blur gcc (-O2)" "CPU Ticks" 256kb 512kb 1mb 2mb 4mb 
 
 
 
@@ -413,49 +416,49 @@ make OPTFLAGS=-O0
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-292x292.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_asm
-  echo -n " " >> ./python/test_radio_cambiando_tamanios_asm
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-292x292.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_asm
+  echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_asm
 done
 
-echo "" >> ./python/test_radio_cambiando_tamanios_asm
+echo "" >> ./python/tests_blur/test_radio_cambiando_tamanios_asm
 
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-416x416.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_asm
-  echo -n " " >> ./python/test_radio_cambiando_tamanios_asm
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-416x416.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_asm
+  echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_asm
 done
 
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_asm
-  echo -n " " >> ./python/test_radio_cambiando_tamanios_asm
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_asm
+  echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_asm
 done
 
-echo "" >> ./python/test_radio_cambiando_tamanios_asm
+echo "" >> ./python/tests_blur/test_radio_cambiando_tamanios_asm
 
 echo "824x824"
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-824x824.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_asm
-  echo -n " " >> ./python/test_radio_cambiando_tamanios_asm
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-824x824.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_asm
+  echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_asm
 done
 
-echo "" >> ./python/test_radio_cambiando_tamanios_asm
+echo "" >> ./python/tests_blur/test_radio_cambiando_tamanios_asm
 
 echo "1160x1160"
 
 for i in {1..20} 
 do 
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/test_radio_cambiando_tamanios_asm
-  echo -n " " >> ./python/test_radio_cambiando_tamanios_asm
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_asm
+  echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_asm
 done
 
-echo "" >> ./python/test_radio_cambiando_tamanios_asm
+echo "" >> ./python/tests_blur/test_radio_cambiando_tamanios_asm
 
 
 
 
-python ./python/graficar.py 5 ./python/test_radio_cambiando_tamanios_asm "blur gcc (-O2)" "CPU Ticks" 256kb 512kb 1mb 2mb 4mb 
+python ./python/tests_blur/graficar.py 5 ./python/tests_blur/test_radio_cambiando_tamanios_asm "blur gcc (-O2)" "CPU Ticks" 256kb 512kb 1mb 2mb 4mb 

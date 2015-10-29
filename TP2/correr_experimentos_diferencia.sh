@@ -56,7 +56,7 @@ echo ""
 
 
 
-clear 
+reset 
 
 make clean
 
@@ -84,7 +84,7 @@ echo ""
 #Lo vuelvo a poner como estaba para los proximos tests
 
 
-clear
+reset
 
 echo " "
 echo "**Compilando gcc -Os"
@@ -138,7 +138,7 @@ done
 
 
 
-clear
+reset
 
 make clean
 
@@ -168,7 +168,7 @@ done
 echo "" 
 
 
-clear 
+reset 
 
 make clean
 
@@ -193,7 +193,7 @@ done
 
 
 
-clear
+reset
 
 echo "" 
 
@@ -223,7 +223,7 @@ done
 echo "" 
 
 
-clear
+reset
 
 make clean
 
@@ -247,11 +247,11 @@ do
   echo -n " " >> ./python/tests/test_difrencia_ASM_C
 done
 
-clear
+reset
 
 echo "" 
 
-clear
+reset
 
 make clean
 
@@ -277,7 +277,7 @@ do
 done
  
 
-clear
+reset
 
 echo "" 
 
@@ -375,7 +375,7 @@ echo "vago uriel :D"
 
 
 
-clear
+reset
 
 
 
@@ -479,7 +479,7 @@ python ./python/graficarAlt.py 9 ./python/tests/test_performance_size_C_GCC_O2 "
 
 
 
-clear
+reset
 
 
 
@@ -582,7 +582,7 @@ python ./python/graficarAlt.py 9 ./python/tests/test_performance_size_C_oS "dife
 
 
 
-clear
+reset
 
 
 
@@ -679,7 +679,7 @@ python ./python/graficarAlt.py 9 ./python/tests/test_performance_size_ASM "difer
 
 
 
-clear
+reset
 
 make clean
 
@@ -778,7 +778,7 @@ echo "**graficando"
 python ./python/graficarAlt.py 9 ./python/tests/test_performance_size_C_clang "diferencia clang (-O2)" "CPU Ticks"  256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
 
 
-clear
+reset
 
 
 
@@ -881,7 +881,7 @@ python ./python/graficarAlt.py 9 ./python/tests/test_performance_size_C_clang_oS
 
 
 
-clear
+reset
 
 
 
@@ -900,7 +900,7 @@ make
 
 for i in {1..1000}
 do 
-  ./build/tp2 -i asm diff  ./experimentos/tests_size/game-4620x4620.bmp ./experimentos/tests_size/pokemon-4620x4620.bmp  | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_loop_unrolled
+  ./build/tp2 -i asm diff  ./experimentos/tests_size/game-3264x3264.bmp ./experimentos/tests_size/pokemon-3264x3264.bmp  | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_loop_unrolled
   echo -n " " >> ./python/tests/test_loop_unrolled
 done
 
@@ -920,7 +920,7 @@ echo "" >> ./python/tests/test_loop_unrolled
 
 for i in {1..1000}
 do 
-  ./build/tp2 -i asm diff  ./experimentos/tests_size/game-4620x4620.bmp ./experimentos/tests_size/pokemon-4620x4620.bmp  | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_loop_unrolled
+  ./build/tp2 -i asm diff  ./experimentos/tests_size/game-3264x3264.bmp ./experimentos/tests_size/pokemon-3264x3264.bmp  | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_loop_unrolled
   echo -n " " >> ./python/tests/test_loop_unrolled
 done
 
@@ -942,7 +942,7 @@ echo "" >> ./python/tests/test_loop_unrolled
 
 for i in {1..1000}
 do 
-  ./build/tp2 -i c diff  ./experimentos/tests_size/game-4620x4620.bmp ./experimentos/tests_size/pokemon-4620x4620.bmp  | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_loop_unrolled
+  ./build/tp2 -i c diff  ./experimentos/tests_size/game-3264x3264.bmp ./experimentos/tests_size/pokemon-3264x3264.bmp  | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_loop_unrolled
   echo -n " " >> ./python/tests/test_loop_unrolled
 done
 
@@ -955,12 +955,31 @@ echo "" >> ./python/tests/test_loop_unrolled
 
 for i in {1..1000}
 do 
-  ./build/tp2 -i c diff  ./experimentos/tests_size/game-4620x4620.bmp ./experimentos/tests_size/pokemon-4620x4620.bmp  | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_loop_unrolled
+  ./build/tp2 -i c diff  ./experimentos/tests_size/game-3264x3264.bmp ./experimentos/tests_size/pokemon-3264x3264.bmp  | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_loop_unrolled
   echo -n " " >> ./python/tests/test_loop_unrolled
 done
 
 
 python ./python/graficarAlt.py 4 ./python/tests/test_loop_unrolled "diferencia unrolling" "CPU Ticks" "asm (SSE4)" "asm" "gcc (unrolled)" "gcc"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # echo "test asm simple vs sse vs avx"
@@ -1006,7 +1025,7 @@ python ./python/graficarAlt.py 4 ./python/tests/test_loop_unrolled "diferencia u
 
 
 
-# clear 
+# reset 
 
 # make clean
 
