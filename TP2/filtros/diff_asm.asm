@@ -5,9 +5,8 @@ global diff_asm
 
 section .rodata:
 ALIGN 16
-mask db 3,3,3,3,7,7,7,7,11,11,11,11,15,15,15,15
+mask db 2,2,2,2,6,6,6,6,10,10,10,10,14,14,14,14
 trans db 0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255
-
 
 section .text
 ;void diff_asm    (

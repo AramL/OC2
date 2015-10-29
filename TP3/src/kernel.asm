@@ -96,10 +96,13 @@ BITS 32
     call mmu_inicializar_dir_kernel
 
     mov cr3, eax
+
+    xchg bx, bx
     ; Inicializar el directorio de paginas
     mov eax, cr0
     or     eax, 0x80000000
     mov cr0, eax
+    xchg bx, bx
     ; Cargar directorio de paginas
 
     ; Habilitar paginacion

@@ -14,105 +14,144 @@ def liftData(ctype, filename, titulo, yaxis, *args):
 
 def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
-    fig = plt.figure(figsize=(30,6))
+    if len(comp) > 10:
+        fig = plt.figure(figsize=(26, 5))
+    else:
+        fig = plt.figure(figsize=(15, 5))
     ax = fig.add_subplot(1,2,1)
     medians = []
     for v in comp:
         medians.append(np.median(v))
+    col = ['r', 'b', 'g', 'm', 'c', 'y', 'r', 'b', 'g', 'm', 'c', 'y']
     if len(comp) == 12:
         col = ['r', 'r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
-    if len(comp) == 13
+    if len(comp) == 13:
         col = ['r', 'r', 'r','b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
-    else:
+    if len(comp) == 11:
         col = ['r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
-    ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1) 
-    ax.bar( range(1, int(ctype) + 1),  medians, align='center', color=col[0: int(ctype) + 1], zorder=10)
+    ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1)
+    if len(comp) < 7:
+        ax.bar( range(1, int(ctype) + 1),  medians, align='center', color=col[0: int(ctype) + 1], zorder = 10, width = 0.7)
+    else:
+        ax.bar( range(1, int(ctype) + 1),  medians,  color=col[0: int(ctype) + 1], zorder = 10)
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis +' (mediana)' )
     if len(comp) >= 10:
-        plt.tick_params(labelsize = 9)
+        plt.tick_params(labelsize = 8)
     plt.xticks(range(1, (int(ctype)) + 1), labels)
     plt.savefig(filename+' (mediana).png', bbox_inches = 'tight')
     plt.xticks()
+    val_strings = ["%10.10f" % x for x in medians ]
+    with open(filename + '_mediana.txt', 'w') as file_:
+        for k in range(1, len(comp)):
+            file_.write(labels[k] + " " + val_strings[k] + "\n")
 
 def drawStdDev(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
-    fig = plt.figure(figsize=(30,6))
+    if len(comp) > 10:
+        fig = plt.figure(figsize=(22, 5))
+    else:
+        fig = plt.figure(figsize=(15, 5))
     ax = fig.add_subplot(1,2,1)
     stddev = []
     for v in comp:
         stddev.append(np.std(v))
+    col = ['r', 'b', 'g', 'm', 'c', 'y', 'r', 'b', 'g', 'm', 'c', 'y']
     if len(comp) == 12:
         col = ['r', 'r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
-    else:
+    if len(comp) == 13:
+        col = ['r', 'r', 'r','b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
+    if len(comp) == 11:
         col = ['r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
     ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1) 
-    ax.bar( range(1, (int(ctype))+1),  stddev, align='center', color=col[0: int(ctype) + 1], zorder=10)
+    if len(comp) < 7:
+        ax.bar( range(1, int(ctype) + 1),  stddev, align='center', color=col[0: int(ctype) + 1], zorder = 10, width = 0.6)
+    else:
+        ax.bar( range(1, int(ctype) + 1),  stddev, align='center', color=col[0: int(ctype) + 1], zorder = 10)
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis +' (desviacion)' )
-    plt.tick_params(labelsize = 9)
+    plt.tick_params(labelsize = 8)
     plt.xticks(range(1, (int(ctype)) + 1), labels)
     plt.savefig(filename+' (desviacion).png', bbox_inches = 'tight')
     plt.xticks()
+    val_strings = ["%10.10f" % x for x in stddev ]
+    with open(filename + '_stddev.txt', 'w') as file_:
+        for k in range(1, len(comp)):
+            file_.write(labels[k] + " " + val_strings[k] + "\n")
 
 def drawMean(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
-    fig = plt.figure(figsize=(30,6))
+    if len(comp) > 10:
+        fig = plt.figure(figsize=(22, 5))
+    else:
+        fig = plt.figure(figsize=(15, 5))
     ax = fig.add_subplot(1,2,1)
     means = []
     for v in comp:
         means.append(np.mean(v))
+    col = ['r', 'b', 'g', 'm', 'c', 'y', 'r', 'b', 'g', 'm', 'c', 'y']
     if len(comp) == 12:
         col = ['r', 'r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
-    else:
+    if len(comp) == 13:
+        col = ['r', 'r', 'r','b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
+    if len(comp) == 11:
         col = ['r' ,'b','b','g', 'g','m', 'm', 'c', 'c', 'y' ,'y']
     ax.grid( b=True, linestyle='-',  axis = 'y', linewidth=1, zorder=1) 
-    ax.bar( range(1, (int(ctype))+1),  means, align='center', color=col[0: int(ctype) + 1], zorder=10)
+    if len(comp) < 7:
+        ax.bar( range(1, int(ctype) + 1),  means, align='center', color=col[0: int(ctype) + 1], zorder = 10, width = 0.6)
+    else:
+        ax.bar( range(1, int(ctype) + 1),  means, align='center', color=col[0: int(ctype) + 1], zorder = 10)
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis+' (promedio)')
-    plt.tick_params(labelsize = 9)
+    plt.tick_params(labelsize = 8)
     plt.xticks(range(1, (int(ctype)) + 1), labels)
     plt.savefig(filename+' (promedio).png', bbox_inches = 'tight')
     plt.xticks()
+    val_strings = ["%10.10f" % x for x in means ]
+    with open(filename + '_promedio.txt', 'w') as file_:
+        for k in range(1, len(comp)):
+            file_.write(labels[k] + " " + val_strings[k] + "\n")
 
 def drawPlotMean(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
-    fig = plt.figure(figsize=(30,6))
+    fig = plt.figure(figsize=(26, 5))
     ax = fig.add_subplot(1,2,1)
-    toplot = []
     col = ['r','b','g','y','c','m']
     dmean = []
     for v in comp:
         dmean.append(np.mean(v))
-    ax.plot( range(1, (int(ctype))+1), dmean, '-', lw=2 )
+    dmean = [0] + dmean + [dmean[len(dmean)-1]/2]
+    ax.plot( range(1, (int(ctype))+3), dmean, '-', lw=2 )
     plt.title(titulo)
     labels = [i for i in args]
+    labels = [" "]+ labels + [" "]
     plt.ylabel(yaxis + ' (promedio)')
     plt.tick_params(labelsize = 9)
-    plt.xticks(range(1, (int(ctype)) + 1), labels)
+    plt.xticks(range(1, (int(ctype)) + 3), labels)
     plt.savefig(filename+' (plot mean).png', bbox_inches = 'tight')
     plt.xticks()
 
 
 def drawPlotMeanLog(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
-    fig = plt.figure(figsize=(30,6))
+    fig = plt.figure(figsize=(26, 5))
     ax = fig.add_subplot(1,2,1)
-    toplot = []
     col = ['r','b','g','y','c','m']
     dmean = []
     for v in comp:
         dmean.append(np.mean(v))
+    dmean = [dmean[0]/1.5] + dmean + [dmean[len(dmean)-1]/5]
     ax.set_yscale('log')
-    ax.plot( range(1, (int(ctype))+1), dmean, '-', lw=2 )
+    ax.plot( range(1, (int(ctype))+3), dmean, '-', lw=2 )
     plt.title(titulo)
     labels = [i for i in args]
+    labels = [" "]+ labels + [" "]
     plt.ylabel(yaxis + ' (promedio)')
     plt.tick_params(labelsize = 9)
-    plt.xticks(range(1, (int(ctype)) + 1), labels)
+    plt.xticks(range(1, (int(ctype)) + 3), labels)
     plt.savefig(filename+' (plot mean logarithmic scale).png', bbox_inches = 'tight')
     plt.xticks()
 

@@ -22,8 +22,8 @@
 
 \renewcommand{\headrulewidth}{0.5pt}
 \renewcommand{\footrulewidth}{0.5pt}
-\setlength{\hoffset}{-0.8in}
-\setlength{\textwidth}{16cm}
+\setlength{\hoffset}{-1.1in}
+\setlength{\textwidth}{18cm}
 %\setlength{\hoffset}{-1.1cm}
 %\setlength{\textwidth}{16cm}
 \setlength{\headsep}{0.5cm}
@@ -132,7 +132,7 @@ r12 apunta a la matriz resultado, ecx tiene la cantidad de filas, y la parte baj
 \end{codesnippet}
 \noindent Ahora shifteamos con packed shift xmm$4,5$ uno y dos bytes respectivamente de forma de poder tomar el máximo de entre r g b en paralelo, es decir $4$ pixels a la vez. Por ejemplo, el primer byte de xmm$4$ tiene al byte de r, y el de xmm$6$ tiene al byte de g, de forma que al hacer pmaxub entre  xmm$6$ y xmm$4$ nos deja en el primer byte de xmm$6$ (y cada 3 bytes) max(r$_n$,g$_n$) donde $n = \{1,2,3,4 \}$ indican los pixeles que levantamos. Los demas bytes de este registro no nos interesan. Repetimos esto entre xmm$6$ y xmm$3$, pasa de vuelta lo mismo pero ahora tenemos en el primer byte de xmm$6$ (y cada $3$ bytes) max(r$_n$,g$_n$,b$_n$) con $n = \{1,2,3,4 \}$. Ahora tenemos que mover este máximo a las 3 coordenadas r, g y b, hacemos esto mediante la mascara mask$_5$ y mediante trans$_2$ sumamos con saturación con tal de dejar en alpha el valor $255$. Copiamos los 16 bytes correspondientes (con el offset adecuado) en la matriz destino, sumamos $4$ a r$15$d y saltamos para, si es necesario, volver a hacer el ciclo completo.
 
-\newpage 
+
 \subsection{Blur gaussiano}
 
 \noindent El blur gaussiano consta de dos ciclos uno anidado sobre el otro, el anidado itera sobre el kernel y el que anida itera sobre la matriz, usamos SIMD para hacer los calculos sobre un pixel en simultaneo (es decir las 4 componentes rgba a la vez), además en vez de hacer offsets para atras como el codigo en C nos movemos siempre para adelante, por ejemplo, empezamos en el pixel $0$ y recorremos la submatriz que va de $0, 2r$ en filas y $0, 2r$ en columnas, donde $r$ es el radio, a la par de la matriz del kernel (que también tiene este tamaño) haciendo las multiplicaciones y acumulandolas, luego cuando terminamos de iterar sobre el kernel, insertamos en el pixel destino, que esta en la posición ($r, r$), luego aumentamos la columna y seguimos este proceso hasta el ancho $- 2r$ donde nos paramos en la proxima fila y repetimos hasta llegar a la altura $- 2r$, es decir siempre que insertamos el pixel estamos en rango. Ahora pasamos a describir más en detalle las operaciones que usamos para esto.\\
@@ -246,19 +246,13 @@ En .insert hacemos casi lo contrario a levantar, convertimos los floats empaquet
  \newpage
  
 \begin{figure}[h]
-\includegraphics[scale=0.56]{imagenes/test_difrencia_ASM_C_promedio.png}
-\caption{Promedio, sin outliers incluidos, sobre una imagen de 2308x2308 de 16mb.}
+\includegraphics[scale=0.71]{imagenes/test_difrencia_ASM_C_PROMEDIO_Os}
+\caption{Promedio, 1000 iteraciones sobre una imagen de 2308x2308 pixels de 16mb.}
 \end{figure}
 
-\noindent Luego eliminamos los outliers y graficamos de vuelta obteniendo.\\
+Como podemos observar, la versión en assembler usando instrucciones vectorizadas es más de dos veces mas rapida que cualquiera de las otras implementaciones. En particular es 
 
 
-\begin{figure}[h]
-\includegraphics[scale=0.56]{imagenes/test_difrencia_ASM_C_no_outliers.png}
-\caption{Promedio, con outliers incluidos, sobre una imagen de 2308x2308 de 16mb.}
-\end{figure}
-
-\noindent Vemos que clang en -O0 se comporta un poco mejor sacando esos resultados extremos, y lo que podemos concluir es que el algoritmo implementado en assembly con SIMD corre 2 veces más rapido que su contraparte en C.
 
 \newpage 
 

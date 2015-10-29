@@ -1,8 +1,8 @@
 #!/bin/bash
 
-echo "hasdasd"
-
 rm -rf ./tests_size/*
+
+git checkout ./tests_size/placeholder
 
 echo "Creando imagenes.."
 
