@@ -21,49 +21,7 @@ uint mmu_proxima_pagina_fisica_libre() {
 void mmu_inicializar(){
 
 }
-/*
 
-uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_tipo) {
-    //Copiar el codigo del perro al lugar donde empieza (dependiendo de A o B)
-    //puse 0x7FFFFFF por q es cacho de memoria virtual q no se va a usar en ningun momento segun el enunciado
-
-    mmu_mapear_pagina(0x7FFFFFF,  KERNEL_CR3, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x3); //soy un genioh!
-    uint codigo_tarea;
-    int codigo = index_jugador * 10 + index_tipo;
-    switch (codigo) {
-    case (JUGADOR_A*10+ TIPO_1):
-        codigo_tarea = 0x10000;
-        break;
-    case (JUGADOR_A*10+ TIPO_2):
-        codigo_tarea = 0x11000;
-        break;
-    case (JUGADOR_B*10+ TIPO_1):
-        codigo_tarea = 0x12000;
-        break;
-    case (JUGADOR_B*10+ TIPO_2):
-        codigo_tarea = 0x13000;
-        break;
-    }
-
-    mmu_copiar_pagina(codigo_tarea, 0x7FFFFFF);
-    mmu_unmapear_pagina(0x7FFFFFF, KERNEL_CR3);
-    mmu_mapear_pagina(mmu_xy2virtual(perro->jugador->x_cucha, perro->jugador->y_cucha),  KERNEL_CR3, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x1);
-    //hacer una PD para el perro en una pagina libre, limpiarla y hacer <esto>
-    uint pd_perro =  mmu_proxima_pagina_fisica_libre();
-    mmu_inicializar_pagina(pd_perro);
-    int p_tabla = 0;
-
-    for (p_tabla = 0x0; p_tabla < 0x3FFFFF; p_tabla += 0x1000)
-        mmu_mapear_pagina(p_tabla, pd_perro, p_tabla, 0x3);
-
-    //  </esto>
-
-    //pedir pagina fisica libre(si no existe para ese jugador y mapearla a 0x400000)
-    //mapear posicion en el mapa como rw 0x401000
-
-    return 0;
-}
-*/
 
 void mmu_inicializar_pagina(uint * pagina) {
 
@@ -112,6 +70,62 @@ uint mmu_inicializar_dir_kernel() {
     return 0x27000;
     /* Devolvemos el cr3  (eax) */
 }
+
+
+// transforma coordenadas (x,y) en direcciones fisicas
+uint mmu_xy2fisica(uint x, uint y) {
+    return 0x5000000 + x * 0x1000 + y * 80 * 0x1000;
+}
+
+// transforma coordenadas (x,y) en direcciones virtuales
+uint mmu_xy2virtual(uint x, uint y) {
+    return 0x8000000 + x * 0x1000 + y * 80 * 0x1000;
+}
+
+/*
+
+uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_tipo) {
+    //Copiar el codigo del perro al lugar donde empieza (dependiendo de A o B)
+    //puse 0x7FFFFFF por q es cacho de memoria virtual q no se va a usar en ningun momento segun el enunciado
+
+    mmu_mapear_pagina(0x7FFFFFF,  k_cr3, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x3); //soy un genioh!
+    uint codigo_tarea;
+    int codigo = index_jugador * 10 + index_tipo;
+    switch (codigo) {
+    case (JUGADOR_A*10+ TIPO_1):
+        codigo_tarea = 0x10000;
+        break;
+    case (JUGADOR_A*10+ TIPO_2):
+        codigo_tarea = 0x11000;
+        break;
+    case (JUGADOR_B*10+ TIPO_1):
+        codigo_tarea = 0x12000;
+        break;
+    case (JUGADOR_B*10+ TIPO_2):
+        codigo_tarea = 0x13000;
+        break;
+    }
+
+    mmu_copiar_pagina(codigo_tarea, 0x7FFFFFF);
+    mmu_unmapear_pagina(0x7FFFFFF, k_cr3);
+    mmu_mapear_pagina(mmu_xy2virtual(perro->jugador->x_cucha, perro->jugador->y_cucha),  k_cr3, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x1);
+    //hacer una PD para el perro en una pagina libre, limpiarla y hacer <esto>
+    uint pd_perro =  mmu_proxima_pagina_fisica_libre();
+    mmu_inicializar_pagina(pd_perro);
+    int p_tabla = 0;
+
+    for (p_tabla = 0x0; p_tabla < 0x3FFFFF; p_tabla += 0x1000)
+        mmu_mapear_pagina(p_tabla, pd_perro, p_tabla, 0x3);
+
+    //  </esto>
+
+    //pedir pagina fisica libre(si no existe para ese jugador y mapearla a 0x400000)
+    //mapear posicion en el mapa como rw 0x401000
+
+    return 0;
+}
+*/
+
 
 void mmu_mapear_pagina  (uint virtual, uint cr3, uint fisica, uint attrs) {
     cr3 = cr3 & 0xFFFFF000;
@@ -201,12 +215,3 @@ void mmu_inicializar_page_table(page_table *tab, uint addr, uint attrs) {
 }
 
 
-// transforma coordenadas (x,y) en direcciones fisicas
-uint mmu_xy2fisica(uint x, uint y) {
-    return 0x5000000 + x * 0x1000 + y * 80 * 0x1000;
-}
-
-// transforma coordenadas (x,y) en direcciones virtuales
-uint mmu_xy2virtual(uint x, uint y) {
-    return 0x8000000 + x * 0x1000 + y * 80 * 0x1000;
-}
