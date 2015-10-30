@@ -74,18 +74,38 @@ uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_
         codigo_tarea = 0x13000;
         break;
     }
+
     mmu_copiar_pagina(codigo_tarea, 0x7FFFFFF);
+    mmu_unmapear_pagina(0x7FFFFFF, KERNEL_CR3);
+    mmu_mapear_pagina(mmu_xy2virtual(perro->jugador->x_cucha, perro->jugador->y_cucha),  KERNEL_CR3, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x1);
+    //hacer una PD para el perro en una pagina libre, limpiarla y hacer <esto>
+    uint pd_perro =  mmu_proxima_pagina_fisica_libre();
+    mmu_inicializar_pagina(pd_perro);
+    int p_tabla = 0;
+
+    for (p_tabla = 0x0; p_tabla < 0x3FFFFF; p_tabla += 0x1000)
+        mmu_mapear_pagina(p_tabla, pd_perro, p_tabla, 0x3);
+
+    //  </esto>
+
+    //pedir pagina fisica libre(si no existe para ese jugador y mapearla a 0x400000)
+    //mapear posicion en el mapa como rw 0x401000
 
     return 0;
 }
 void mmu_copiar_pagina    (uint src, uint dst) {
-    for (uint i = 0; i < 1024, i + 32) {
-        (*(dst + i)) = (*(src + i));
+    uint* source = (uint *)src;
+    uint* destination = (uint *) dst;
+    for (uint i = 0; i < 1024; i++) {
+        destination[i] = source[i];
     }
 }
 
 void mmu_inicializar_pagina(uint * pagina) {
-
+    uint* pag = (uint *) pagina;
+    for (uint i = 0; i < 1024; i++) {
+        pag[i] = 0;
+    }
 }
 
 uint mmu_inicializar_dir_kernel() {
