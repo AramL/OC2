@@ -3,7 +3,12 @@
 rm -rf ./python/tests_blur/*
 git checkout ./python/tests_blur/placeholder
 
+
+
+reset
+
 echo "corriendo los experimentos de blur"
+
 
 
 make clean
@@ -13,7 +18,37 @@ make OPTFLAGS=-O3
 
 echo " "
 echo "**Corriendo mediciones blur ASM vs C"
+echo "Blur 4 pixels"
+for j in {1..100}
+do
+  ./build/tp2 -i asm blur experimentos/game-1160x1160 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+  echo -n " " >> ./python/tests_blur/test_blur_ASM_C
+done
 
+echo "" >> ./python/tests_blur/test_blur_ASM_C
+
+echo ""
+echo "med asm terminadas"
+
+reset
+
+
+make clean
+
+
+mv ./filtros/blur_asm.asm ./filtros/blur_asm_4_pixels.asm
+mv ./filtros/blur_asm_1_pixel.asm ./filtros/blur_asm.asm
+
+make
+
+mv ./filtros/blur_asm.asm ./filtros/blur_asm_1_pixel.asm
+mv ./filtros/blur_asm_4_pixels.asm ./filtros/blur_asm.asm
+
+
+echo " "
+echo "**Corriendo mediciones blur ASM vs C"
+echo "Blur 1 pixel
+"
 for j in {1..100}
 do
   ./build/tp2 -i asm blur experimentos/game-1160x1160 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
@@ -170,7 +205,7 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/tests_blur/graficar.py 11 ./python/tests_blur/test_blur_ASM_C "blur (ASM vs C)" "CPU Ticks"  "asm (SSE4)" "gcc (-Os)" "clang (-Os)" "gcc (-O3)" "clang (-O3)""gcc (-O2)" "clang (-O2)""gcc (-O1)" "clang (-O1)" "gcc (-O0)" "clang (-O0)"
+python ./python/tests_blur/graficar.py 12 ./python/tests_blur/test_blur_ASM_C "blur (ASM vs C)" "CPU Ticks"  "asm v1 (SSE4)" "asm v2 (SSE4)" "gcc (-Os)" "clang (-Os)" "gcc (-O3)" "clang (-O3)""gcc (-O2)" "clang (-O2)""gcc (-O1)" "clang (-O1)" "gcc (-O0)" "clang (-O0)"
 
 echo "" 
 echo "dame las imagenes"

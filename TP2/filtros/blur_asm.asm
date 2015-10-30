@@ -6,8 +6,9 @@ global _blur_asm
 global blur_asm
 
 
-%define NULL        0
-%define pixel_size  4
+%define NULL            0
+%define pixel_size      4
+%define pixel_size_four 16
 section .data
 
 section .text
@@ -128,11 +129,30 @@ blur_asm:
     mov r9, rsi                         ;aca preparo el offset para levantar de memoria
     add r9, rdi                         ;rdi dice en que pixel estoy parado y rsi itera la columna
 
-    movd        xmm0, [ r12 + r9 ]      ;muevo el primer dword (4 bytes para un pixel)
     pxor        xmm8, xmm8
+    movd        xmm0, [ r12 + r9 ]      ;muevo el primer dword (4 bytes para un pixel)
+  
     punpcklbw   xmm0, xmm8              ; xmm0         = [ 0000   | 0000   | 0 | a_k | 0 | g_k | 0 | r_k | 0 | b_k ]
     punpcklwd   xmm0, xmm8              ; xmm0         = [ 000a_k | 000g_k | 0 | 0   | 0 | r_k | 0 | 0   | 0 | b_k ]
     cvtdq2ps    xmm0, xmm0              ;(float) xmm0  = [ 000a_k | 000g_k | 0 | 0   | 0 | r_k | 0 | 0   | 0 | b_k ] 
+    
+    movd        xmm4, [r12 + r9 + 4]
+    punpcklbw   xmm4, xmm8              ; xmm4         = [ 0000   | 0000   | 0 | a_k | 0 | g_k | 0 | r_k | 0 | b_k ]
+    punpcklwd   xmm4, xmm8              ; xmm4         = [ 000a_k | 000g_k | 0 | 0   | 0 | r_k | 0 | 0   | 0 | b_k ]
+    cvtdq2ps    xmm4, xmm4              ;(float) xmm4  = [ 000a_k | 000g_k | 0 | 0   | 0 | r_k | 0 | 0   | 0 | b_k ] 
+
+    movd        xmm5, [r12 + r9 + 8]
+    punpcklbw   xmm5, xmm8              ; xmm5         = [ 0000   | 0000   | 0 | a_k | 0 | g_k | 0 | r_k | 0 | b_k ]
+    punpcklwd   xmm5, xmm8              ; xmm5         = [ 000a_k | 000g_k | 0 | 0   | 0 | r_k | 0 | 0   | 0 | b_k ]
+    cvtdq2ps    xmm5, xmm5              ;(float) xmm5  = [ 000a_k | 000g_k | 0 | 0   | 0 | r_k | 0 | 0   | 0 | b_k ] 
+
+
+    movd        xmm6, [r12 + r9 + 12]
+    punpcklbw   xmm6, xmm8              ; xmm6         = [ 0000   | 0000   | 0 | a_k | 0 | g_k | 0 | r_k | 0 | b_k ]
+    punpcklwd   xmm6, xmm8              ; xmm6         = [ 000a_k | 000g_k | 0 | 0   | 0 | r_k | 0 | 0   | 0 | b_k ]
+    cvtdq2ps    xmm6, xmm6              ;(float) xmm6  = [ 000a_k | 000g_k | 0 | 0   | 0 | r_k | 0 | 0   | 0 | b_k ] 
+
+
     movd        xmm1, [ r10 + rcx*4 ]   ;copio el primer float
     movq        xmm3, xmm1              ;xmm3 = float
     pslldq      xmm3, 4
@@ -141,8 +161,14 @@ blur_asm:
     paddd       xmm3, xmm1              ; xmm3         = [0 | float | float | float]
     ;cvtdq2ps    xmm1, xmm1              ; (float) xmm1 = [ 000a_m | 000g_m | 0 | 0   | 0 | r_m | 0 | 0   | 0 | b_m ] 
     mulps       xmm0, xmm3              ; xmm0 * xmm1  = [ a_k*a_m| g_k*g_m| r_k*r_m | a_k*a_m ]
-    addps       xmm2, xmm0              
+    mulps       xmm4, xmm3
+    mulps       xmm5, xmm3
+    mulps       xmm6, xmm3
 
+    addps       xmm2, xmm0              
+    addps       xmm7, xmm4
+    addps       xmm9, xmm5
+    addps       xmm10, xmm6
 
 ;sumar columna kernel
 ;si rdx es igual a la longitud de la columna del kernel (2r)
@@ -162,19 +188,44 @@ blur_asm:
     ;sub rsi, 4
     add rsi, r8                         ;rsi + columnas, ahora apunta al primer pixel de la proxima fila
     inc rcx
-    
+   
     jmp .ciclo_kernel
 
 .insert:
-    pxor     xmm4, xmm4
-    cvtps2dq xmm2, xmm2                 ;convierto a dw en xmm2
-    packusdw xmm2, xmm4                 ;empaqueto en words
-    packuswb xmm2, xmm4                 ;empaqueto en bytes
-    movd     xmm7, ebx
+
+
+
+
+    pxor     xmm8, xmm8
+    movd     xmm8, ebx
     add      rbx, rdi
+
+    cvtps2dq xmm2, xmm2                 ;convierto a dw en xmm2
+    packusdw xmm2, xmm8                 ;empaqueto en words
+    packuswb xmm2, xmm8                 ;empaqueto en bytes
+
     movd     [ r13 + rbx ], xmm2           ;muevo a memoria
-    movd     ebx, xmm7
-    pxor     xmm7, xmm7
+
+    cvtps2dq xmm7, xmm7                 ;convierto a dw en xmm7
+    packusdw xmm7, xmm8                 ;empaqueto en words
+    packuswb xmm7, xmm8                 ;empaqueto en bytes
+
+    movd     [ r13 + rbx + 4], xmm7           ;muevo a memoria
+
+    cvtps2dq xmm9, xmm9                 ;convierto a dw en xmm9
+    packusdw xmm9, xmm8                 ;empaqueto en words
+    packuswb xmm9, xmm8                 ;empaqueto en bytes
+
+    movd     [ r13 + rbx + 8], xmm9           ;muevo a memoria
+
+    cvtps2dq xmm10, xmm10                 ;convierto a dw en xmm10
+    packusdw xmm10, xmm8                 ;empaqueto en words
+    packuswb xmm10, xmm8                 ;empaqueto en bytes
+
+    movd     [ r13 + rbx + 12 ], xmm10           ;muevo a memoria
+
+    movd     ebx, xmm8
+    pxor     xmm8, xmm8
     ; r14 itera sobre la fila, si es igual a ancho - 2r+1 agrego lo necesario para que la matriz apunte a la proxima fila
     ; si no sumo 4 (pixel_size) para poder obtener los proximos 4 bytes siguientes
     xor rsi, rsi
@@ -182,7 +233,7 @@ blur_asm:
     cmp rdi, r15
     
     je .sumar_fila
-    add rdi, pixel_size
+    add rdi, pixel_size_four
     
     ;add r14, pixel_size
     jmp .ciclo_matriz
@@ -191,7 +242,7 @@ blur_asm:
     ;paso a la siguiente fila
     ;en la matriz src y dst
     add rdi, r11                    ; rdi siguiente fila
-    add rdi, 4
+    add rdi, pixel_size_four
     ;sub rdi, 4
     ;add r15, r11
     add r15, r8                    ; r15 tamaño en cols de la siguiente fila
