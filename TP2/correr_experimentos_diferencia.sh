@@ -39,7 +39,7 @@ echo "**Corriendo mediciones diferencia ASM vs C"
 
 make clean
 
-make
+make OPTFLAGS=-O3
 
 
 
@@ -64,7 +64,7 @@ make clean
 mv ./filtros/diff_asm.asm ./filtros/diff_asm_SIMD.asm
 mv ./filtros/diff_asm_no_SIMD.asm ./filtros/diff_asm.asm
 
-make
+make OPTLAGS=-O3
 
 mv ./filtros/diff_asm.asm ./filtros/diff_asm_no_SIMD.asm
 mv ./filtros/diff_asm_SIMD.asm ./filtros/diff_asm.asm
@@ -585,6 +585,8 @@ python ./python/graficarAlt.py 9 ./python/tests/test_performance_size_C_oS "dife
 reset
 
 
+make clean
+make OPTFLAGS=-O3
 
 echo " "
 echo "**Corriendo mediciones performance sobre tamaño en difrencia"
@@ -683,7 +685,7 @@ reset
 
 make clean
 
-make CC=clang OPTFLAGS=-O2
+make CC=clang OPTFLAGS=-O3
 
 
 echo " "
@@ -775,7 +777,7 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/graficarAlt.py 9 ./python/tests/test_performance_size_C_clang "diferencia clang (-O2)" "CPU Ticks"  256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
+python ./python/graficarAlt.py 9 ./python/tests/test_performance_size_C_clang "diferencia clang (-O3)" "CPU Ticks"  256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
 
 
 reset
