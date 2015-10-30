@@ -301,7 +301,7 @@ Primero corrimos un tests parecido al de diferencia donde probamos todas las imp
 
 \begin{figure}[h]
 	\includegraphics[scale=0.62]{imagenes/tests_blur_promedio.png}
-	\caption{Blur, cambiando los radios}
+	\caption{Promedio sobre 100 iteraciones del blur aplicado a una imagen de 1160x1160 con radio 15.}
 \end{figure}
 
 Como vemos la versión de assembler que opera sobre 4 pixels es más de 3 veces mas rápida que cualquiera de las versiones de C, y es casi dos veces mas rapida que la versión que opera sobre un pixel, el cambio de codigo es mínimo, asi que no se justificaria nunca el no pasar a operar sobre 16 pixeles. Otra cosa a notar es que el rol entre gcc y clang cambió a diferencia de la diferencia de imagenes donde gcc era siempre mas rápido que clang aca pasa lo contrario, e inclusive la versión de clang en -O1 es la más rápida en general, esto también nos hace pensar que los flags de optimización no siempre son una solución efectiva si lo que se busca es codigo de alta performance, para esto la solución siempre va a ser escribir puramente codigo assembler. No solo el código es más fiel (la desviación sobre assembler es la más pequeña de todas) sino que más rápido en todos los casos.
