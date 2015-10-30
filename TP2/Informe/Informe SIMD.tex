@@ -69,7 +69,7 @@ En este trabajo práctico realizamos la implementación de dos filtros de imagen
 \section{Implementacion}
 
 \subsection{Diferencia}
-\noindent Descripcíon de un ciclo de la iteración del filtro diferencia.\\
+ Descripcíon de un ciclo de la iteración del filtro diferencia.\\
 Primermo pedimos memoria para declarar las máscaras que vamos a usar y armamos el stackframe (omitido)
 \begin{codesnippet}
 \begin{verbatim}
@@ -79,7 +79,7 @@ mascara_asigna_alpha db 0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255
 \end{verbatim}
 \end{codesnippet}
 
-\noindent Luego de armar el stackframe tenemos
+ Luego de armar el stackframe tenemos
 \begin{codesnippet}
 \begin{verbatim}
 mov r12, rdx
@@ -99,7 +99,7 @@ r12 apunta a la matriz resultado, ecx tiene la cantidad de filas, y la parte baj
 \end{verbatim}
 \end{codesnippet}
 
-\noindent Comparamos si r15 es igual a rax en tal caso ya hicimos la diferencia sobre todos los pixeles y termina el ciclo. El ciclo sigue con
+ Comparamos si r15 es igual a rax en tal caso ya hicimos la diferencia sobre todos los pixeles y termina el ciclo. El ciclo sigue con
 
 \begin{codesnippet}
 \begin{verbatim}
@@ -114,7 +114,7 @@ r12 apunta a la matriz resultado, ecx tiene la cantidad de filas, y la parte baj
 \end{verbatim}
 \end{codesnippet}
 
-\noindent Movemos a xmm$3$ los primeros $4$ pixeles de la primera matriz y a xmm$15$ los primeros $4$ de la segunda matriz a comparar, estos ocupan respectivamente $16$ bytes en memoria (brga por $4$). Después Guardamos en xmm$14$ el valor de xmm$15$ y hacemos un pminub entre xmm$15$ y xmm$3$ lo cual deja en xmm$15$ el mínimo byte a byte. Lo mismo para xmm$3$ pero con pmaxub es decir este tiene el máximo byte a byte. Hacemos esto porque queremos calcular el valor absoluto de la forma $|x-y|$ = $\max(x,y) - \min(x,y)$. Concluimos esta idea haciendo psubb entre xmm$3$ que tenia el máximo y xmm$15$ que tenia el mínimo y finalmente guardamos el resultado en xmm$4,5$ para operar en la siguiente parte.
+ Movemos a xmm$3$ los primeros $4$ pixeles de la primera matriz y a xmm$15$ los primeros $4$ de la segunda matriz a comparar, estos ocupan respectivamente $16$ bytes en memoria (brga por $4$). Después Guardamos en xmm$14$ el valor de xmm$15$ y hacemos un pminub entre xmm$15$ y xmm$3$ lo cual deja en xmm$15$ el mínimo byte a byte. Lo mismo para xmm$3$ pero con pmaxub es decir este tiene el máximo byte a byte. Hacemos esto porque queremos calcular el valor absoluto de la forma $|x-y|$ = $\max(x,y) - \min(x,y)$. Concluimos esta idea haciendo psubb entre xmm$3$ que tenia el máximo y xmm$15$ que tenia el mínimo y finalmente guardamos el resultado en xmm$4,5$ para operar en la siguiente parte.
 
 \begin{codesnippet}
 \begin{verbatim}
@@ -130,13 +130,18 @@ r12 apunta a la matriz resultado, ecx tiene la cantidad de filas, y la parte baj
     jmp .ciclo
 \end{verbatim}
 \end{codesnippet}
-\noindent Ahora shifteamos con packed shift xmm$4,5$ uno y dos bytes respectivamente de forma de poder tomar el máximo de entre r g b en paralelo, es decir $4$ pixels a la vez. Por ejemplo, el primer byte de xmm$4$ tiene al byte de r, y el de xmm$6$ tiene al byte de g, de forma que al hacer pmaxub entre  xmm$6$ y xmm$4$ nos deja en el primer byte de xmm$6$ (y cada 3 bytes) max(r$_n$,g$_n$) donde $n = \{1,2,3,4 \}$ indican los pixeles que levantamos. Los demas bytes de este registro no nos interesan. Repetimos esto entre xmm$6$ y xmm$3$, pasa de vuelta lo mismo pero ahora tenemos en el primer byte de xmm$6$ (y cada $3$ bytes) max(r$_n$,g$_n$,b$_n$) con $n = \{1,2,3,4 \}$. Ahora tenemos que mover este máximo a las 3 coordenadas r, g y b, hacemos esto mediante la mascara mask$_5$ y mediante trans$_2$ sumamos con saturación con tal de dejar en alpha el valor $255$. Copiamos los 16 bytes correspondientes (con el offset adecuado) en la matriz destino, sumamos $4$ a r$15$d y saltamos para, si es necesario, volver a hacer el ciclo completo.
+
+ Ahora shifteamos con packed shift xmm$4,5$ uno y dos bytes respectivamente de forma de poder tomar el máximo de entre r g b en paralelo, es decir $4$ pixels a la vez. Por ejemplo, el primer byte de xmm$4$ tiene al byte de r, y el de xmm$6$ tiene al byte de g, de forma que al hacer pmaxub entre  xmm$6$ y xmm$4$ nos deja en el primer byte de xmm$6$ (y cada 3 bytes) max(r$_n$,g$_n$) donde $n = \{1,2,3,4 \}$ indican los pixeles que levantamos. Los demas bytes de este registro no nos interesan. Repetimos esto entre xmm$6$ y xmm$3$, pasa de vuelta lo mismo pero ahora tenemos en el primer byte de xmm$6$ (y cada $3$ bytes) max(r$_n$,g$_n$,b$_n$) con $n = \{1,2,3,4 \}$. Ahora tenemos que mover este máximo a las 3 coordenadas r, g y b, hacemos esto mediante la mascara mask$_5$ y mediante trans$_2$ sumamos con saturación con tal de dejar en alpha el valor $255$. Copiamos los 16 bytes correspondientes (con el offset adecuado) en la matriz destino, sumamos $4$ a r$15$d y saltamos para, si es necesario, volver a hacer el ciclo completo.
 
 
 \subsection{Blur gaussiano}
 
-\noindent El blur gaussiano consta de dos ciclos uno anidado sobre el otro, el anidado itera sobre el kernel y el que anida itera sobre la matriz, usamos SIMD para hacer los calculos sobre un pixel en simultaneo (es decir las 4 componentes rgba a la vez), además en vez de hacer offsets para atras como el codigo en C nos movemos siempre para adelante, por ejemplo, empezamos en el pixel $0$ y recorremos la submatriz que va de $0, 2r$ en filas y $0, 2r$ en columnas, donde $r$ es el radio, a la par de la matriz del kernel (que también tiene este tamaño) haciendo las multiplicaciones y acumulandolas, luego cuando terminamos de iterar sobre el kernel, insertamos en el pixel destino, que esta en la posición ($r, r$), luego aumentamos la columna y seguimos este proceso hasta el ancho $- 2r$ donde nos paramos en la proxima fila y repetimos hasta llegar a la altura $- 2r$, es decir siempre que insertamos el pixel estamos en rango. Ahora pasamos a describir más en detalle las operaciones que usamos para esto.\\
-\noindent Antes de entrar al ciclo preparamos algunos registros para saber hasta donde iterar, tenemos que: rax guarda el último valor hasta el que vamos a recorrer que es igual a  [(filas $- 2r$)*columnas] $-2r$, rbp va a guardar hasta donde vamos a hacer cada subciclo es decir $(2r+1)^2$, r11 tiene el valor $2r$, r12 la matriz fuente, r13 la matriz destino, r8 la cantidad de columnas y rbx (ebx) el offset necesario para insertar el pixel en la matriz destino.
+ El blur gaussiano consta de dos ciclos uno anidado sobre el otro, el anidado itera sobre el kernel y el que anida itera sobre la matriz, usamos SIMD para hacer los calculos sobre cuatro pixeles en simultaneo (es decir sobre 16 componentes en total), además en vez de hacer offsets para atras como el codigo en C nos movemos siempre para adelante, por ejemplo, empezamos en el pixel $0$ y recorremos la submatriz que va de $0, 2r$ en filas y $0, 2r$ en columnas, donde $r$ es el radio, a la par de la matriz del kernel (que también tiene este tamaño) haciendo las multiplicaciones sobre cuatro pixeles y acumulandolas, luego cuando terminamos de iterar sobre el kernel, insertamos en los cuatro pixel destino, que esta en la posición ($r, r$) hasta ($r+3, r+3$), luego aumentamos la columna y seguimos este proceso hasta el ancho $- 2r - 16$ donde nos paramos en la proxima fila y repetimos hasta llegar a la altura $- 2r$, es decir siempre que insertamos los pixeles estamos en rango. Podemos hacer 4 pixeles a la vez pues el ancho es un múltiplo de 4. Ahora pasamos a describir más en detalle las operaciones que usamos para esto. \newline
+ 
+\noindent \textbf{Nota:} Siempre vamos a poner el código sobre un pixel porque las operaciones sobre los otros 3 son las mismas operaciones sobre distintos registros en seguidilla, vamos a aclarar estos casos en la explicación.
+\newline
+
+ Antes de entrar al ciclo preparamos algunos registros para saber hasta donde iterar, tenemos que: rax guarda el último valor hasta el que vamos a recorrer que es igual a  [(filas $- 2r$)*columnas] $-2r$, rbp va a guardar hasta donde vamos a hacer cada subciclo es decir $(2r+1)^2$, r11 tiene el valor $2r$, r12 la matriz fuente, r13 la matriz destino, r8 la cantidad de columnas y rbx (ebx) el offset necesario para insertar el pixel en la matriz destino.
 \begin{codesnippet}
 \begin{verbatim}
 .ciclo_kernel:
@@ -147,7 +152,13 @@ r12 apunta a la matriz resultado, ecx tiene la cantidad de filas, y la parte baj
     movd        xmm0, [ r12 + r9 ]      
     punpcklbw   xmm0, xmm8              
     punpcklwd   xmm0, xmm8              
-    cvtdq2ps    xmm0, xmm0              
+    cvtdq2ps    xmm0, xmm0    
+\end{verbatim}
+\end{codesnippet}
+
+ Primero verificamos si tenemos que insertar el pixel, para esto comparamos rcx, el registro que cuenta sobre el tamaño del kernel contra rbp que mantenia hasta donde teniamos que iterar para haber recorrido el kernel, si no, levantamos de memoria 4 bytes y los desempaquetamos a double words y convertimos a float, repetimos esto con los offsets $r12 + r9 + 4/8/12$, es decir los primeros $16$ bytes, y guardando en los registros xmm4, xmm5 y xmm6 respectivamente.
+\begin{codesnippet}
+\begin{verbatim}    
     movd        xmm1, [ r10 + rcx*4 ]   
     movq        xmm3, xmm1              
     pslldq      xmm3, 4
@@ -160,7 +171,7 @@ r12 apunta a la matriz resultado, ecx tiene la cantidad de filas, y la parte baj
 \end{verbatim}
 \end{codesnippet}
 
-\noindent Primero verificamos si tenemos que insertar el pixel, para esto comparamos rcx, el registro que cuenta sobre el tamaño del kernel contra rbp que mantenia hasta donde teniamos que iterar para haber recorrido el kernel, si no, levantamos de memoria un pixel (double word) con la operacion movd, rsi itera sobre la matriz fuente/destino y rdi itera la columna del kernel, rcx itera el kernel linealmente, y lo guardamos en xmm0, xmm8 está previamente con el valor $0$ y lo vamos a usar para desempaquetar los $4$ bytes. Desempaquetamos primero a words, es decir tenemos que los bytes son la parte baja de un word y la parte alta esta llena de $0$s. Repetimos pero con double word y convertimos a float empaquetado. Ahora movemos el valor de la matriz de convolución con movd (un float por eso el *$4$) a xmm1, shifteamos 4 bytes con pslldq movemos un quadword shifteamos y hacemos un packed add (queremos copiar el valor del float) shifteamos xmm3 y volvemos a sumar una vez más, para que cada doubleword de xmm3 tenga el flaot. Ahora multiplicamos el float de xmm3 contra los valores del pixel que desempaquetamos en xmm0 dejando en xmm0 este valor y lo acumulamos en xmm2.
+Como rcx itera el kernel linealmente, movemos el valor de la matriz de convolución apuntado por rcx con movd (un float por eso el *$4$) a xmm1, shifteamos 4 bytes con pslldq, ya que queremos propagar este valor para que multiplique las 3 componentes (rgb) a la vez, movemos un quadword shifteamos y hacemos un packed add (queremos copiar el valor del float) shifteamos xmm3 y volvemos a sumar una vez más, para que cada doubleword de xmm3 tenga el flaot. Luego multiplicamos el registro con el valor del pixel del kernel, contra los valores del pixel que desempaquetamos en xmm0 dejando en xmm0 este valor y lo acumulamos en xmm2. De vuelta repetimos esto con $xmm4/5/6$ y acumulamos en $xmm7/9/10$
 
 \begin{codesnippet}
 \begin{verbatim}
@@ -172,6 +183,7 @@ r12 apunta a la matriz resultado, ecx tiene la cantidad de filas, y la parte baj
     jmp .ciclo_kernel
 \end{verbatim}
 \end{codesnippet}
+
 rdx mantiene el contador para iterar sobre la fila, si este es igual a 2r saltamos a sumar\_fila\_kernel de lo contrario adelantamos rdx y rsi en pixel\_size (que es un \%define con el valor $4$) y entramos al ciclo de vuelta.
 
 
@@ -187,7 +199,7 @@ rdx mantiene el contador para iterar sobre la fila, si este es igual a 2r saltam
 \end{codesnippet}
 
 
-\noindent En sumar fila limpiamos rdx, para volver a poder iterar de $0$ a $2r$, le restamos $2r$ a rsi, este iteraba sobre la fila para la matriz mas grande y le sumamos al mismo la cantidad de columnas, es decir rsi apunta al comienzo de la fila siguiente, incrementamos rcx asi en el proximo ciclo apunta a la siguiente fila tambien y saltamos al ciclo de vuelta.
+ En sumar fila limpiamos rdx, para volver a poder iterar de $0$ a $2r$, le restamos $2r$ a rsi, este iteraba sobre la fila para la matriz mas grande y le sumamos al mismo la cantidad de columnas, es decir rsi apunta al comienzo de la fila siguiente, incrementamos rcx asi en el proximo ciclo apunta a la siguiente fila tambien y saltamos al ciclo de vuelta.
 
 \begin{codesnippet}
 \begin{verbatim}
@@ -199,6 +211,9 @@ rdx mantiene el contador para iterar sobre la fila, si este es igual a 2r saltam
     movd     xmm7, ebx
     add      rbx, rdi
     movd     [ r13 + rbx ], xmm2           
+    ..
+    movd	 [ r13 + rbx + 4], xmm7
+    ..
     movd     ebx, xmm7
     pxor     xmm7, xmm7
     xor rsi, rsi
@@ -210,7 +225,7 @@ rdx mantiene el contador para iterar sobre la fila, si este es igual a 2r saltam
 \end{verbatim}
 \end{codesnippet}
 
-En .insert hacemos casi lo contrario a levantar, convertimos los floats empaquetados que estaban en xmm2 a doublewords empaquetados y re-empaquetamos a word y luego a byte. Luego sumamos rbx e rdi para obtener la posición en la que vamos a insertar el pixel (los 4 bytes) e insertamos el pixel. Una vez que esto pasa ponemos rsi y rcx en $0$ y vemos si llegamos a la ultima columna que teniamos que iterar, si pasa esto saltamos a sumar\_fila sino sumamos pixel\_size a rdi y saltamos al ciclo del kernel de vuelta.
+En .insert hacemos casi lo contrario a levantar, convertimos los floats empaquetados que estaban en xmm2 a doublewords empaquetados y re-empaquetamos a word y luego a byte. Luego sumamos rbx e rdi para obtener la posición en la que vamos a insertar el pixel (los 4 bytes) e insertamos el pixel, de vuelta repitiendo para los 4 pixeles con el offset $+4/8/12$. Una vez que esto pasa ponemos rsi y rcx en $0$ y vemos si llegamos a la ultima columna que teniamos que iterar, si pasa esto saltamos a sumar\_fila sino sumamos 4*pixel\_size a rdi y saltamos al ciclo del kernel de vuelta.
 
 \begin{codesnippet}
 \begin{verbatim}
@@ -221,7 +236,7 @@ En .insert hacemos casi lo contrario a levantar, convertimos los floats empaquet
 \end{verbatim}
 \end{codesnippet}
 
-\noindent En .sumar\_fila lo que hacemos es sumarle a rdi lo que faltaba para llegar a la proxima columna, $2r$ y le sumamos a r15 la cantida de columnas, r15 en este caso mantiene (acorde al rdi) hasta que columna tenemos que iterar. Basicamente r15 empieza en cols $-2r$ y se le van sumando el total de columnas, en la segunda iteracion tiene $2$cols $-2r$ etc. Aca saltamos a ciclo\_matriz y no ciclo\_kernel, este contiene lo siguiente.
+ En .sumar\_fila lo que hacemos es sumarle a rdi lo que faltaba para llegar a la proxima columna, $2r$ y le sumamos a r15 la cantida de columnas, r15 en este caso mantiene (acorde al rdi) hasta que columna tenemos que iterar. Basicamente r15 empieza en cols $-2r$ y se le van sumando el total de columnas, en la segunda iteracion tiene $2$cols $-2r$ etc. Aca saltamos a ciclo\_matriz y no ciclo\_kernel, este contiene lo siguiente.
 
 \begin{codesnippet}
 \begin{verbatim}
@@ -231,7 +246,7 @@ En .insert hacemos casi lo contrario a levantar, convertimos los floats empaquet
 \end{verbatim}
 \end{codesnippet}
 
-\noindent Si rdi es mayor que rax (que marcaba el ultimo pixel sobre el que podiamos iterar) saltamos al final, desarmamos el stackframe y retornamos.
+ Si rdi es mayor que rax (que marcaba el ultimo pixel sobre el que podiamos iterar) saltamos al final, desarmamos el stackframe y retornamos.
 
 \section{Resultados}
 
@@ -239,10 +254,11 @@ En .insert hacemos casi lo contrario a levantar, convertimos los floats empaquet
 
 \noindent \textbf{Nota:} todos los tests fueron corridos sobre una PC con procesador Intel Core2Duo E8440.
 \\
-\noindent Para analizar las implementaciones de C y assembly, corrimos 1000 iteraciones de cada implementación de diferencia sobre una imagen de 2308x2308 (16mb) donde las implementaciones de C se compilaron con gcc y clang usando los flags de optimización -O0, -O1, -O2, -O3 y -Os. Basicamente los flags de -O\# con \# un número entre $0,3$ intentan optimizar principalmente para velocidad y luego tamaño, $0$ siendo el menos 'optimizado' y $3$ el más optimizado, mientras que -Os optimiza principalmente por tamaño del ejecutable, algunas cosas notables son que por ejemplo (luego de hacer un disassembly) notamos que a partir de -O2 gcc ya no armaba un stackframe, ni resguardaba rbp, y pusheaba a medida que necesitaba los registros, alineando rsp cuando fuese necesario, diferencias observables entre -O2 y -O3 fue el uso de operaciones SIMD, por ejemplo de empaquetado y desempaquetado, multiplicaciones packed etc en -O3 (para el blur), mientras que esto no pasaba en -O2, extrañamente la performance es la misma y tal vez se debe a otros factores como el modelo de procesador (Intel c2d E840). Se adjuntan los objdump del build en distintas optimizaciones. \newline
+\newline
+ Para analizar las implementaciones de C y assembly, corrimos 1000 iteraciones de cada implementación de diferencia sobre una imagen de 2308x2308 (16mb) donde las implementaciones de C se compilaron con gcc y clang usando los flags de optimización -O0, -O1, -O2, -O3 y -Os. Basicamente los flags de -O\# con \# un número entre $0,3$ intentan optimizar principalmente para velocidad y luego tamaño, $0$ siendo el menos 'optimizado' y $3$ el más optimizado, mientras que -Os optimiza principalmente por tamaño del ejecutable, por ejemplo, luego de hacer un disassembly, notamos que a partir de -O2 gcc ya no armaba un stackframe, ni resguardaba rbp, y pusheaba a medida que necesitaba los registros, alineando rsp cuando fuese necesario usar la pila, diferencias observables entre -O2 y -O3 fue el uso de operaciones SIMD, por ejemplo de empaquetado y desempaquetado, multiplicaciones packed etc en -O3 (para el blur), mientras que esto no pasaba en -O2, extrañamente la performance es la misma y tal vez se debe a otros factores como el modelo de procesador (Intel c2d E840) o que en general gcc hace muchos mas accesos a memoria y estos hacen sombra a la performance ganada por las instrucciones. \newline
 
 
-\noindent A continuación dejamos los gráfico con el promedio (con y sin outliers) de la diferencia bajo distintos flags de optimización y en assembly.
+ A continuación dejamos los gráfico con el promedio (con y sin outliers) de la diferencia bajo distintos flags de optimización y en assembly.
  \newpage
  
 \begin{figure}[h]
@@ -256,14 +272,14 @@ Como podemos observar, la versión en assembler usando instrucciones vectorizada
 
 \newpage 
 
-\noindent En el siguiente experimento queria ver si el tamaño de la imagen iba a modificar la performance (incrementar el tiempo de ejecucion) del algoritmo debido a cache misses. Para esto corrimos diferencia en Assembly y C, de vuelta bajo gcc y clang, pero esta vez con el flag -O2, ya que me parecio que era el sweet spot para esta implementación ya que los flags de optimización no garantizan que corra con mejor performance, sobre imágenes que iban de 256kb a 64mb como se ve en la figura (Los tamaños utilizados están en el shellscript convertir.sh que es el que usamos para generar las imagenes). 
+ En el siguiente experimento queria ver si el tamaño de la imagen iba a modificar la performance (incrementar el tiempo de ejecucion) del algoritmo debido a cache misses. Para esto corrimos diferencia en Assembly y C, de vuelta bajo gcc y clang, pero esta vez con el flag -O2, ya que me parecio que era el sweet spot para esta implementación ya que los flags de optimización no garantizan que corra con mejor performance, sobre imágenes que iban de 256kb a 64mb como se ve en la figura (Los tamaños utilizados están en el shellscript convertir.sh que es el que usamos para generar las imagenes). 
 
 \begin{figure}[h]
 	\includegraphics[scale=0.60]{imagenes/test_performance_size_ASM.png}
 	\caption{Diferencia en asm, escala logarítmica}
 \end{figure}
 
-\noindent Lo que se obtuvo es una curva que sube suavemente, lo cual implicaria que el algoritmo tiene un crecimiento bastante predecible hasta el tamaño donde se lo probó (imágenes de 4000x4000 pixels con un tamaño de 64mb).
+ Lo que se obtuvo es una curva que sube suavemente, lo cual implicaria que el algoritmo tiene un crecimiento bastante predecible hasta el tamaño donde se lo probó (imágenes de 4000x4000 pixels con un tamaño de 64mb).
 
 \begin{figure}[h]
 	\includegraphics[scale=0.60]{imagenes/test_performance_size_ASM_not_log.png}
@@ -281,8 +297,17 @@ Lo mismo pasa con las implementaciones en C, en este caso gcc con -O2.
 
 
 \subsection{Blur}
+Primero corrimos un tests parecido al de diferencia donde probamos todas las implementaciones de blur bajo distintos compiladores y tambien corrimos una versión vectorizada pero que solo trataba un pixel a la vez (sus 4 componentes) esta es llamada v1 y la que operaba 4 pixels (16 bytes) es llamada v2. Todo esto sobre una imagen de 1160x1160, radio $= 15$ y 100 iteraciones.
 
-\noindent Una de las hipótesis que teniamos con blur es que dada una imagen con un radio pequeño iba a correr mas lento que con un radio mas grande, pero a medida que el radio domine la cantidad de pixeles sobre las cuales va a aplicar la matriz de convolución el tiempo de ejecución iba a bajar. Esto lo pudimos probar corriendo blur sobre una imagen de tamaño fijo (en este caso 584x584 pixels) e incrementando el radio como se ve en la siguiente imagen
+\begin{figure}[h]
+	\includegraphics[scale=0.62]{imagenes/tests_blur_promedio.png}
+	\caption{Blur, cambiando los radios}
+\end{figure}
+
+Como vemos la versión de assembler que opera sobre 4 pixels es más de 3 veces mas rápida que cualquiera de las versiones de C, y es casi dos veces mas rapida que la versión que opera sobre un pixel, el cambio de codigo es mínimo, asi que no se justificaria nunca el no pasar a operar sobre 16 pixeles. Otra cosa a notar es que el rol entre gcc y clang cambió a diferencia de la diferencia de imagenes donde gcc era siempre mas rápido que clang aca pasa lo contrario, e inclusive la versión de clang en -O1 es la más rápida en general, esto también nos hace pensar que los flags de optimización no siempre son una solución efectiva si lo que se busca es codigo de alta performance, para esto la solución siempre va a ser escribir puramente codigo assembler. No solo el código es más fiel (la desviación sobre assembler es la más pequeña de todas) sino que más rápido en todos los casos.
+\newline
+
+ Una de las hipótesis que teniamos con blur es que dada una imagen con un radio pequeño iba a correr mas lento que con un radio mas grande, pero a medida que el radio domine la cantidad de pixeles sobre las cuales va a aplicar la matriz de convolución el tiempo de ejecución iba a bajar. Esto lo pudimos probar corriendo blur sobre una imagen de tamaño fijo (en este caso 584x584 pixels) e incrementando el radio como se ve en la siguiente imagen
 
 \begin{figure}[h]
 	\includegraphics[scale=0.62]{imagenes/test_radio_size_ASM.png}
@@ -303,6 +328,6 @@ Para comparar al algoritmo en C vs asm hicimos lo mismo que blur, corrimos los d
 
 \section{Conclusión}
 
-\noindent Para el algoritmo de diferencia, se justificaria totalmente hacer una implementación en SIMD, no solo por el hecho de que corre mas rápido, sino que además implementarlo en assembly fue bastante fácil ($<$ 20 lineas). 
+ Para el algoritmo de diferencia, se justificaria totalmente hacer una implementación en SIMD, no solo por el hecho de que corre mas rápido, sino que además implementarlo en assembly fue bastante fácil ($<$ 20 lineas). 
 
 \end{document}

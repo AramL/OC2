@@ -21,7 +21,7 @@ echo "**Corriendo mediciones blur ASM vs C"
 echo "Blur 4 pixels"
 for j in {1..20}
 do
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-1160x1160 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
 done
 
@@ -51,7 +51,7 @@ echo "Blur 1 pixel
 "
 for j in {1..20}
 do
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-1160x1160 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
 done
 
@@ -68,11 +68,13 @@ make OPTFLAGS=-Os
 
 for r in {1..20}
 do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
   echo ""
   echo $r
 done
+
+echo "" >> ./python/tests_blur/test_blur_ASM_C
 
 reset
 
@@ -82,12 +84,13 @@ make CC=clang OPTFLAGS=-Os
 
 for r in {1..20}
 do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
   echo ""
   echo $r
 done
 
+echo "" >> ./python/tests_blur/test_blur_ASM_C
 
 reset
 
@@ -97,11 +100,13 @@ make OPTFLAGS=-O3
 
 for r in {1..20}
 do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
   echo ""
   echo $r
 done
+
+echo "" >> ./python/tests_blur/test_blur_ASM_C
 
 reset
 
@@ -111,12 +116,13 @@ make CC=clang OPTFLAGS=-O3
 
 for r in {1..20}
 do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
   echo ""
   echo $r
 done
 
+echo "" >> ./python/tests_blur/test_blur_ASM_C
 
 reset
 
@@ -126,11 +132,13 @@ make OPTFLAGS=-O2
 
 for r in {1..20}
 do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
   echo ""
   echo $r
 done
+
+echo "" >> ./python/tests_blur/test_blur_ASM_C
 
 reset
 
@@ -140,11 +148,13 @@ make CC=clang OPTFLAGS=-O2
 
 for r in {1..20}
 do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
   echo ""
   echo $r
 done
+
+echo "" >> ./python/tests_blur/test_blur_ASM_C
 
 reset
 
@@ -154,11 +164,13 @@ make OPTFLAGS=-O1
 
 for r in {1..20}
 do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
   echo ""
   echo $r
 done
+
+echo "" >> ./python/tests_blur/test_blur_ASM_C
 
 reset
 
@@ -168,11 +180,13 @@ make CC=clang OPTFLAGS=-O1
 
 for r in {1..20}
 do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
   echo ""
   echo $r
 done
+
+echo "" >> ./python/tests_blur/test_blur_ASM_C
 
 reset
 
@@ -182,11 +196,13 @@ make OPTFLAGS=-O0
 
 for r in {1..20}
 do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
   echo ""
   echo $r
 done
+
+echo "" >> ./python/tests_blur/test_blur_ASM_C
 
 reset
 
@@ -196,7 +212,7 @@ make CC=clang OPTFLAGS=-O0
 
 for r in {1..20}
 do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
   echo ""
   echo $r
@@ -205,7 +221,7 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/tests_blur/graficar.py 12 ./python/tests_blur/test_blur_ASM_C "blur (ASM vs C)" "CPU Ticks"  "asm v1 (SSE4)" "asm v2 (SSE4)" "gcc (-Os)" "clang (-Os)" "gcc (-O3)" "clang (-O3)""gcc (-O2)" "clang (-O2)""gcc (-O1)" "clang (-O1)" "gcc (-O0)" "clang (-O0)"
+python ./python/graficarAlt.py 12 ./python/tests_blur/test_blur_ASM_C "blur (ASM vs C)" "CPU Ticks"  "asm v2" "asm v1" "gcc (-Os)" "clang (-Os)" "gcc (-O3)" "clang (-O3)" "gcc (-O2)" "clang (-O2)" "gcc (-O1)" "clang (-O1)" "gcc (-O0)" "clang (-O0)"
 
 echo "" 
 echo "dame las imagenes"

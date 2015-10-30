@@ -15,7 +15,7 @@ def liftData(ctype, filename, titulo, yaxis, *args):
 def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
     if len(comp) > 10:
-        fig = plt.figure(figsize=(26, 5))
+        fig = plt.figure(figsize=(30, 5))
     else:
         fig = plt.figure(figsize=(15, 5))
     ax = fig.add_subplot(1,2,1)
@@ -33,7 +33,7 @@ def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     if len(comp) < 7:
         ax.bar( range(1, int(ctype) + 1),  medians, align='center', color=col[0: int(ctype) + 1], zorder = 10, width = 0.7)
     else:
-        ax.bar( range(1, int(ctype) + 1),  medians,  color=col[0: int(ctype) + 1], zorder = 10)
+        ax.bar( range(1, int(ctype) + 1),  medians, align='center', color=col[0: int(ctype) + 1], zorder = 10)
     plt.title(titulo)
     labels = [i for i in args]
     plt.ylabel(yaxis +' (mediana)' )
@@ -43,6 +43,7 @@ def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     plt.savefig(filename+' (mediana).png', bbox_inches = 'tight')
     plt.xticks()
     val_strings = ["%10.10f" % x for x in medians ]
+    print labels 
     with open(filename + '_mediana.txt', 'w') as file_:
         for k in range(1, len(comp)):
             file_.write(labels[k] + " " + val_strings[k] + "\n")
@@ -50,7 +51,7 @@ def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
 def drawStdDev(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
     if len(comp) > 10:
-        fig = plt.figure(figsize=(22, 5))
+        fig = plt.figure(figsize=(30, 5))
     else:
         fig = plt.figure(figsize=(15, 5))
     ax = fig.add_subplot(1,2,1)
@@ -84,7 +85,7 @@ def drawStdDev(ctype, filename, titulo, yaxis, comp, *args):
 def drawMean(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
     if len(comp) > 10:
-        fig = plt.figure(figsize=(22, 5))
+        fig = plt.figure(figsize=(30, 5))
     else:
         fig = plt.figure(figsize=(15, 5))
     ax = fig.add_subplot(1,2,1)
@@ -117,7 +118,7 @@ def drawMean(ctype, filename, titulo, yaxis, comp, *args):
 
 def drawPlotMean(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
-    fig = plt.figure(figsize=(26, 5))
+    fig = plt.figure(figsize=(30, 5))
     ax = fig.add_subplot(1,2,1)
     col = ['r','b','g','y','c','m']
     dmean = []
@@ -137,7 +138,7 @@ def drawPlotMean(ctype, filename, titulo, yaxis, comp, *args):
 
 def drawPlotMeanLog(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
-    fig = plt.figure(figsize=(26, 5))
+    fig = plt.figure(figsize=(30, 5))
     ax = fig.add_subplot(1,2,1)
     col = ['r','b','g','y','c','m']
     dmean = []
