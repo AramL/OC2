@@ -8,7 +8,7 @@ echo "Creando imagenes.."
 
 
 #Tests de tamaño
-convert ./backup/pokemon-2.bmp -resize 292x290   ./tests_size/pokemon-292x292.bmp
+convert ./backup/pokemon-2.bmp -resize 292x292   ./tests_size/pokemon-292x292.bmp
 convert ./backup/pokemon-2.bmp -resize 416x416   ./tests_size/pokemon-416x416.bmp
 convert ./backup/pokemon-2.bmp -resize 584x584   ./tests_size/pokemon-584x584.bmp
 convert ./backup/pokemon-2.bmp -resize 824x824   ./tests_size/pokemon-824x824.bmp

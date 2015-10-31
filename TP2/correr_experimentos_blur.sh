@@ -230,7 +230,7 @@ date
 echo ""
 for i in {1..100}
 do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 5 15 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
 done
 
