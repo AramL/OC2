@@ -45,7 +45,7 @@ def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     val_strings = ["%10.10f" % x for x in medians ]
     print labels 
     with open(filename + '_mediana.txt', 'w') as file_:
-        for k in range(1, len(comp)):
+        for k in range(0, len(comp)):
             file_.write(labels[k] + " " + val_strings[k] + "\n")
 
 def drawStdDev(ctype, filename, titulo, yaxis, comp, *args):
@@ -79,7 +79,7 @@ def drawStdDev(ctype, filename, titulo, yaxis, comp, *args):
     plt.xticks()
     val_strings = ["%10.10f" % x for x in stddev ]
     with open(filename + '_stddev.txt', 'w') as file_:
-        for k in range(1, len(comp)):
+        for k in range(0, len(comp)):
             file_.write(labels[k] + " " + val_strings[k] + "\n")
 
 def drawMean(ctype, filename, titulo, yaxis, comp, *args):
@@ -113,7 +113,7 @@ def drawMean(ctype, filename, titulo, yaxis, comp, *args):
     plt.xticks()
     val_strings = ["%10.10f" % x for x in means ]
     with open(filename + '_promedio.txt', 'w') as file_:
-        for k in range(1, len(comp)):
+        for k in range(0, len(comp)):
             file_.write(labels[k] + " " + val_strings[k] + "\n")
 
 def drawPlotMean(ctype, filename, titulo, yaxis, comp, *args):

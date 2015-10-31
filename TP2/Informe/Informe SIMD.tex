@@ -262,27 +262,67 @@ En .insert hacemos casi lo contrario a levantar, convertimos los floats empaquet
  \newpage
  
 \begin{figure}[h]
-\includegraphics[scale=0.71]{imagenes/test_difrencia_ASM_C_PROMEDIO_Os}
+\centerline{\includegraphics[scale=0.71]{imagenes/test_difrencia_ASM_C_PROMEDIO_Os}}
 \caption{Promedio, 1000 iteraciones sobre una imagen de 2308x2308 pixels de 16mb.}
 \end{figure}
 
-Como podemos observar, la versión en assembler usando instrucciones vectorizadas es más de dos veces mas rapida que cualquiera de las otras implementaciones. En particular es 
+Como podemos observar, la versión en assembler usando instrucciones vectorizadas es más de dos veces mas rapida que cualquiera de las otras implementaciones. En particular es  . Otra cosa a observar es que la versión en assembler usando registros de propósito general es más lenta que cualquiera de las versiones -O3 y -O2 de los compiladores, leyendo el manual de optimización de intel vimos en la sección 3.5.1.5 y citamos: "Avoid ROTATE by register or ROTATE by immediate instructions. If possible, replace with a ROTATE by 1 instruction."
+Interesantemente al reemplazar los ror rax, 8 por ror rax, 1 y desplegar en 8 instrucciones (4 veces se hacia cada ror por lo tanto 24 instrucciones) vimos drásticamente afectada la performance del algoritmo, pero para mal, es decir corre más lento que cualquiera de las otras implementaciones. Dejamos a continuación los valores númericos del promedio la desviación, la mediana y la esperanza.
 
 
+
+
+
+
+\begin{center}
+        \begin{tabular}[c]{|c|c|c|c|c|}
+    \hline
+        \textbf{Tipo} & \textbf{Promedio} & \textbf{Esperanza} & \textbf{Desviación} & \textbf{Mediana}\\
+        \hline
+\textit{asm (SSE)} &   1.152.187 & 1 & 1 & 1\\
+        \hline
+\textit{asm v1} &   1.151.544   & 1 & 1 & 1\\
+        \hline
+\textit{asm v2} &   1.151.544   & 1 & 1 & 1 \\
+        \hline
+\textit{asm v3} &   1.151.544   & 1 & 1 & 1\\
+        \hline
+\textit{gcc -Os} &  761.937  & 1 & 1 & 1\\
+        \hline
+\textit{gcc -O3} &  1.152.847 & 1 & 1 & 1\\
+        \hline
+\textit{gcc -O2} &  1.152.765 & 1 & 1 & 1\\
+        \hline
+\textit{gcc -O1} &  725.420 & 1 & 1 & 1\\
+        \hline
+\textit{gcc -O0} & 123  & 1 & 1 & 1\\
+        \hline
+\textit{clang -Os} &    649.248 & 1 & 1 & 1\\
+        \hline
+\textit{clang -O3} &    1.153.061 & 1 & 1 & 1\\
+        \hline
+\textit{clang -O2} &    1.152.798 & 1 & 1 & 1\\
+        \hline
+\textit{clang -O1} &    1.155.718 & 1 & 1 & 1\\
+        \hline
+\textit{clang -O0} & 123  & 1 & 1 & 1\\
+        \hline
+    \end{tabular}
+\end{center}
 
 \newpage 
 
  En el siguiente experimento queria ver si el tamaño de la imagen iba a modificar la performance (incrementar el tiempo de ejecucion) del algoritmo debido a cache misses. Para esto corrimos diferencia en Assembly y C, de vuelta bajo gcc y clang, pero esta vez con el flag -O2, ya que me parecio que era el sweet spot para esta implementación ya que los flags de optimización no garantizan que corra con mejor performance, sobre imágenes que iban de 256kb a 64mb como se ve en la figura (Los tamaños utilizados están en el shellscript convertir.sh que es el que usamos para generar las imagenes). 
 
 \begin{figure}[h]
-	\includegraphics[scale=0.60]{imagenes/test_performance_size_ASM.png}
+	\centerline{\includegraphics[scale=0.60]{imagenes/test_performance_size_ASM.png}}
 	\caption{Diferencia en asm, escala logarítmica}
 \end{figure}
 
  Lo que se obtuvo es una curva que sube suavemente, lo cual implicaria que el algoritmo tiene un crecimiento bastante predecible hasta el tamaño donde se lo probó (imágenes de 4000x4000 pixels con un tamaño de 64mb).
 
 \begin{figure}[h]
-	\includegraphics[scale=0.60]{imagenes/test_performance_size_ASM_not_log.png}
+	\centerline{\includegraphics[scale=0.60]{imagenes/test_performance_size_ASM_not_log.png}}
 	\caption{Diferencia en asm, escala no logarítmica}
 \end{figure}
 
@@ -291,7 +331,7 @@ Como podemos observar, la versión en assembler usando instrucciones vectorizada
 Lo mismo pasa con las implementaciones en C, en este caso gcc con -O2.
 
 \begin{figure}[h]
-	\includegraphics[scale=0.60]{imagenes/test_performance_size_C.png}
+	\centerline{\includegraphics[scale=0.60]{imagenes/test_performance_size_C.png}}
 	\caption{Diferencia en C, escala logarítmica}
 \end{figure}
 
@@ -307,12 +347,45 @@ Primero corrimos un tests parecido al de diferencia donde probamos todas las imp
 Como vemos la versión de assembler que opera sobre 4 pixels es más de 3 veces mas rápida que cualquiera de las versiones de C, y es casi dos veces mas rapida que la versión que opera sobre un pixel, el cambio de codigo es mínimo, asi que no se justificaria nunca el no pasar a operar sobre 16 pixeles. Otra cosa a notar es que el rol entre gcc y clang cambió a diferencia de la diferencia de imagenes donde gcc era siempre mas rápido que clang aca pasa lo contrario, e inclusive la versión de clang en -O1 es la más rápida en general, esto también nos hace pensar que los flags de optimización no siempre son una solución efectiva si lo que se busca es codigo de alta performance, para esto la solución siempre va a ser escribir puramente codigo assembler. No solo el código es más fiel (la desviación sobre assembler es la más pequeña de todas) sino que más rápido en todos los casos.
 \newline
 
+\begin{center}
+        \begin{tabular}[c]{|c|c|c|c|c|}
+    \hline
+        \textbf{Tipo} & \textbf{Promedio} & \textbf{Esperanza} & \textbf{Desviación} & \textbf{Mediana}\\
+\textit{asm v2} &	1.152.187 & 1 & 1 & 1\\
+		\hline
+\textit{asm v1} &	1.151.544   & 1 & 1 & 1 \\
+		\hline
+\textit{gcc -Os} &	761.937 & 1 & 1 & 1 \\
+		\hline
+\textit{gcc -O3} &	1.152.847 & 1 & 1 & 1 \\
+		\hline
+\textit{gcc -O2} &	1.152.765 & 1 & 1 & 1 \\
+		\hline
+\textit{gcc -O1} &	725.420 & 1 & 1 & 1 \\
+		\hline
+\textit{gcc -O0} & 123  & 1 & 1 & 1 \\
+		\hline
+\textit{clang -Os} &	649.248 & 1 & 1 & 1 \\
+		\hline
+\textit{clang -O3} &	1.153.061 & 1 & 1 & 1 \\
+		\hline
+\textit{clang -O2} &	1.152.798 & 1 & 1 & 1 \\
+		\hline
+\textit{clang -O1} &	1.155.718 & 1 & 1 & 1 \\
+		\hline
+\textit{clang -O0} & 123 & 1 & 1 & 1 \\
+		\hline
+	\end{tabular}
+\end{center}
+
  Una de las hipótesis que teniamos con blur es que dada una imagen con un radio pequeño iba a correr mas lento que con un radio mas grande, pero a medida que el radio domine la cantidad de pixeles sobre las cuales va a aplicar la matriz de convolución el tiempo de ejecución iba a bajar. Esto lo pudimos probar corriendo blur sobre una imagen de tamaño fijo (en este caso 584x584 pixels) e incrementando el radio como se ve en la siguiente imagen
 
+
 \begin{figure}[h]
-	\includegraphics[scale=0.62]{imagenes/test_radio_size_ASM.png}
+	\centerline{\includegraphics[scale=0.62]{imagenes/test_radio_size_ASM.png}}
 	\caption{Blur, cambiando los radios}
 \end{figure}
+
 
 El algoritmo llega a un punto crítico cuando el radio es equivalente a la dimensión/2, es decir cuando el algoritmo se comporta como $O(n^4)$ sobre la dimensión.
 
@@ -322,9 +395,9 @@ El algoritmo llega a un punto crítico cuando el radio es equivalente a la dimen
 Para comparar al algoritmo en C vs asm hicimos lo mismo que blur, corrimos los dos sobre la misma imagen y calculamos su promedio.
 
 
-\begin{center}
-    \includegraphics[scale=0.6]{imagenes/test_blur_ASM_C.png}
-\end{center}
+\begin{figure}[h]
+	\centerline{\includegraphics[scale=0.6]{imagenes/test_blur_ASM_C.png}}
+\end{figure}
 
 \section{Conclusión}
 
