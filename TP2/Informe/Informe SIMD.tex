@@ -5,7 +5,7 @@
 \usepackage{graphicx}
 %\usepackage{makeidx}
 \usepackage{paralist} %itemize inline
-
+\usepackage{enumitem}
 \input{codesnippet}
 
 \usepackage{fancyhdr}
@@ -261,56 +261,105 @@ En .insert hacemos casi lo contrario a levantar, convertimos los floats empaquet
  A continuación dejamos los gráfico con el promedio (con y sin outliers) de la diferencia bajo distintos flags de optimización y en assembly.
  \newpage
  
+ 
+%REHACER 
 \begin{figure}[h]
 \centerline{\includegraphics[scale=0.71]{imagenes/test_difrencia_ASM_C_PROMEDIO_Os}}
 \caption{Promedio, 1000 iteraciones sobre una imagen de 2308x2308 pixels de 16mb.}
 \end{figure}
 
-Como podemos observar, la versión en assembler usando instrucciones vectorizadas es más de dos veces mas rapida que cualquiera de las otras implementaciones. En particular es  . Otra cosa a observar es que la versión en assembler usando registros de propósito general es más lenta que cualquiera de las versiones -O3 y -O2 de los compiladores, leyendo el manual de optimización de intel vimos en la sección 3.5.1.5 y citamos: "Avoid ROTATE by register or ROTATE by immediate instructions. If possible, replace with a ROTATE by 1 instruction."
+Como podemos observar, la versión en assembler usando instrucciones vectorizadas es más de dos veces mas rapida que cualquiera de las otras implementaciones. En particular es. Otra cosa a observar es que la versión en assembler usando registros de propósito general es más lenta que cualquiera de las versiones -O3 y -O2 de los compiladores, leyendo el manual de optimización de intel vimos en la sección 3.5.1.5 y citamos: "Avoid ROTATE by register or ROTATE by immediate instructions. If possible, replace with a ROTATE by 1 instruction."
 Interesantemente al reemplazar los ror rax, 8 por ror rax, 1 y desplegar en 8 instrucciones (4 veces se hacia cada ror por lo tanto 24 instrucciones) vimos drásticamente afectada la performance del algoritmo, pero para mal, es decir corre más lento que cualquiera de las otras implementaciones. Dejamos a continuación los valores númericos del promedio la desviación, la mediana y la esperanza.
-
-
-
-
 
 
 \begin{center}
         \begin{tabular}[c]{|c|c|c|c|c|}
     \hline
-        \textbf{Tipo} & \textbf{Promedio} & \textbf{Esperanza} & \textbf{Desviación} & \textbf{Mediana}\\
+        \textbf{Tipo} &  \textbf{Esperanza} & \textbf{Desviación} & \textbf{Mediana}\\
         \hline
-\textit{asm (SSE)} &   1.152.187 & 1 & 1 & 1\\
+\textit{asm (SSE)} &   1.152.187  & 1 & 1\\
         \hline
-\textit{asm v1} &   1.151.544   & 1 & 1 & 1\\
+\textit{asm v1} &   1.151.544    & 1 & 1\\
         \hline
-\textit{asm v2} &   1.151.544   & 1 & 1 & 1 \\
+\textit{asm v2} &   1.151.544    & 1 & 1 \\
         \hline
-\textit{asm v3} &   1.151.544   & 1 & 1 & 1\\
+\textit{asm v3} &   1.151.544    & 1 & 1\\
         \hline
-\textit{gcc -Os} &  761.937  & 1 & 1 & 1\\
+\textit{gcc -Os} &  761.937   & 1 & 1\\
         \hline
-\textit{gcc -O3} &  1.152.847 & 1 & 1 & 1\\
+\textit{gcc -O3} &  1.152.847 & 1 & 1\\
         \hline
-\textit{gcc -O2} &  1.152.765 & 1 & 1 & 1\\
+\textit{gcc -O2} &  1.152.765 & 1 & 1\\
         \hline
-\textit{gcc -O1} &  725.420 & 1 & 1 & 1\\
+\textit{gcc -O1} &  725.420 & 1 & 1\\
         \hline
-\textit{gcc -O0} & 123  & 1 & 1 & 1\\
+\textit{gcc -O0} & 123  & 1 & 1\\
         \hline
-\textit{clang -Os} &    649.248 & 1 & 1 & 1\\
+\textit{clang -Os} &    649.248 & 1 & 1\\
         \hline
-\textit{clang -O3} &    1.153.061 & 1 & 1 & 1\\
+\textit{clang -O3} &    1.153.061 & 1 & 1\\
         \hline
-\textit{clang -O2} &    1.152.798 & 1 & 1 & 1\\
+\textit{clang -O2} &    1.152.798  & 1 & 1\\
         \hline
-\textit{clang -O1} &    1.155.718 & 1 & 1 & 1\\
+\textit{clang -O1} &    1.155.718  & 1 & 1\\
         \hline
-\textit{clang -O0} & 123  & 1 & 1 & 1\\
+\textit{clang -O0} & 123  & 1 & 1 \\
         \hline
     \end{tabular}
 \end{center}
 
-\newpage 
+%REHACER
+
+Además de esto escribimos varias versiones de assembler usando registro de propósito general, a las cuales llamaremos asm v1-4. Ahora pasamos a explicar brevemente como estan implementadas.
+
+\begin{itemize}[label={}]
+\item[] \textbf{asm v1:} Levanta de a 8 bytes y luego trabaja sobre estos 2 pixeles por medio de shifts rotaciones y dos llamadas a una funcion que calcula la norma infinito de los mismos.
+\item[] \textbf{asm v2:} Lo mismo que lo anterior, excepto que las rotaciones por inmediatos estan 'desenrolladas' por varias llamadas a ror reg, 1, esto viene de que al leer el manual de optimización de intel nos encontramos con y cito: section 3.5.1.5: ``avoid ROTATE by register or ROTATE by immediate instructions. If possible, replace with a ROTATE by 1 instruction."
+\item[] \textbf{asm v3:} Una idea parecida a v1, excepto que en vez de rotaciones usamos puramente shifts.
+\item[] \textbf{asm v4:} Lo mismo que v3 pero las llamadas a la función que calcula las normas infinitos estan inlineadas
+\item[] \textbf{asm v5:} Lo mismo que v4, solo que ahora la función que aplica la norma infinito tiene menos instrucciones y opera sobre 4 bytes en vez de 8 por ciclo.
+\end{itemize}
+
+En general se intento evitar accesos a memoria, comparado a lo que hace gcc que son 15+ accesos por iteración, hacemos 3 accesos a memoria pidiendo entre 8 a 4 bytes.
+
+Pasamos todas estas implementaciones sobre 2000 iteraciones sobre una imagen de 16mb de 2308x2308 pixels y obtuvimos los siguientes resultados:
+
+\begin{figure}[h]
+	\centerline{\includegraphics[scale=0.8]{imagenes/test_diferencia_ASM_imp}}
+	%\caption{Diferencia en asm, escala logarítmica}
+\end{figure}
+
+\begin{center}
+        \begin{tabular}[c]{|c|c|c|c|c|}
+    \hline
+        \textbf{Tipo} &  \textbf{Esperanza (ticks)} & \textbf{Desviación (ticks)} & \textbf{Mediana (ticks)}\\
+        \hline
+\textit{asm (SSE)} &    56.680.048  & 2.023.564 & 56.059.389\\
+        \hline
+\textit{asm v5} &   173.458.584    & 33.815.428 & 149.441.206\\
+        \hline
+\textit{asm v4} &   189.075.813    & 37.004.652 & 162.500.233 \\
+        \hline
+\textit{asm v3} &  197.540.668  & 38.514.532 & 169.892.176\\
+        \hline
+\textit{asm v2} &  307.955.171   & 59.536.896 & 262.879.128\\
+        \hline
+\textit{asm v1} &  189.969.936 & 37.223.783 & 162.727.425\\
+        \hline
+\textit{gcc -O3} &  121.772.855 & 23.099.911 & 105.157.858\\
+        \hline
+    \end{tabular}
+\end{center}
+
+Como se puede apreciar, la Esperanza (media aritmética sobre el total de iteraciones) de la versión SSE es \textbf{2.14} veces más rápida que la version de gcc con flag de optimización -O3, además su desviación es mucho más pequeña que cualquiera de las otras implementaciones, lo cual muestra que es mucho más estable, esto pasa en general para la mayoria de las implementaciones que hicimos en assembler.
+
+Por otro lado ninguna de las versiones que usan solo registros de propósito general pasan en velocidad a la versión de gcc, creemos que esto se debe a que gcc esta alineando su código por medio de operaciones nops para que tenga mejor branching.
+
+
+
+
+
+\newpage
 
  En el siguiente experimento queria ver si el tamaño de la imagen iba a modificar la performance (incrementar el tiempo de ejecucion) del algoritmo debido a cache misses. Para esto corrimos diferencia en Assembly y C, de vuelta bajo gcc y clang, pero esta vez con el flag -O2, ya que me parecio que era el sweet spot para esta implementación ya que los flags de optimización no garantizan que corra con mejor performance, sobre imágenes que iban de 256kb a 64mb como se ve en la figura (Los tamaños utilizados están en el shellscript convertir.sh que es el que usamos para generar las imagenes). 
 
@@ -401,6 +450,6 @@ Para comparar al algoritmo en C vs asm hicimos lo mismo que blur, corrimos los d
 
 \section{Conclusión}
 
- Para el algoritmo de diferencia, se justificaria totalmente hacer una implementación en SIMD, no solo por el hecho de que corre mas rápido, sino que además implementarlo en assembly fue bastante fácil ($<$ 20 lineas). 
+ Para el algoritmo de diferencia, se justificaria totalmente hacer una implementación en SIMD, no solo por el hecho de que corre más de dos veces más rapido que cualquiera de las otras implementaciones, sino que además fue más facil implementarlo que su version de C y todavía mas facil que la versión con registros de propósito general. 
 
 \end{document}
