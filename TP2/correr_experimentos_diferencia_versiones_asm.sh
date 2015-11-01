@@ -32,7 +32,7 @@ echo "Corriendo test versiones asm diferencia"
 
 echo "Corriendo ASM simd (128bits)"
 echo ""
-for i in {1..300} 
+for i in {1..2000} 
 do 
   ./build/tp2 -i asm diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests_ver_asm/test_difrencia_ASM_versions #| cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests_ver_asm/test_difrencia_ASM_versions
   echo -n " " >> ./python/tests_ver_asm/test_difrencia_ASM_versions
@@ -59,7 +59,7 @@ echo "Corriendo ASM no simd v4"
 echo ""
 
 echo "" >> ./python/tests_ver_asm/test_difrencia_ASM_versions
-for i in {1..300} 
+for i in {1..2000} 
 do 
   ./build/tp2 -i asm diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests_ver_asm/test_difrencia_ASM_versions
   echo -n " " >> ./python/tests_ver_asm/test_difrencia_ASM_versions
@@ -91,7 +91,7 @@ echo "Corriendo ASM no simd v4"
 echo ""
 
 echo "" >> ./python/tests_ver_asm/test_difrencia_ASM_versions
-for i in {1..300} 
+for i in {1..2000} 
 do 
   ./build/tp2 -i asm diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests_ver_asm/test_difrencia_ASM_versions
   echo -n " " >> ./python/tests_ver_asm/test_difrencia_ASM_versions
@@ -121,7 +121,7 @@ echo "Corriendo ASM no simd v3"
 echo ""
 
 echo "" >> ./python/tests_ver_asm/test_difrencia_ASM_versions
-for i in {1..300} 
+for i in {1..2000} 
 do 
   ./build/tp2 -i asm diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests_ver_asm/test_difrencia_ASM_versions
   echo -n " " >> ./python/tests_ver_asm/test_difrencia_ASM_versions
@@ -150,7 +150,7 @@ echo "Corriendo ASM no simd ror unrolleado asm v2"
 echo ""
 
 echo "" >> ./python/tests_ver_asm/test_difrencia_ASM_versions
-for i in {1..300} 
+for i in {1..2000} 
 do 
   ./build/tp2 -i asm diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests_ver_asm/test_difrencia_ASM_versions
   echo -n " " >> ./python/tests_ver_asm/test_difrencia_ASM_versions
@@ -174,7 +174,7 @@ echo "Corriendo ASM no simd ror sin unroll asm v1"
 echo ""
 
 echo "" >> ./python/tests_ver_asm/test_difrencia_ASM_versions
-for i in {1..300} 
+for i in {1..2000} 
 do 
   ./build/tp2 -i asm diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests_ver_asm/test_difrencia_ASM_versions
   echo -n " " >> ./python/tests_ver_asm/test_difrencia_ASM_versions
@@ -194,7 +194,7 @@ make OPTFLAGS=-O3
 echo "Corriendo diferencia C gcc -O3"
 echo ""
 echo "" >> ./python/tests_ver_asm/test_difrencia_ASM_versions
-for i in {1..300} 
+for i in {1..2000} 
 do 
   ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests_ver_asm/test_difrencia_ASM_versions
   echo -n " " >> ./python/tests_ver_asm/test_difrencia_ASM_versions
