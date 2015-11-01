@@ -60,21 +60,18 @@ diff_asm:
     ;Calculo los valores absolutos
     sub r12d, ebp
     mov ebp, r12d
-    sar ebp, 0x1f
-    xor r12d, ebp
-    sub r12d, ebp
+    neg ebp
+    cmovge r12d, ebp
 
     sub r13d, r8d
     mov r8d, r13d
-    sar r8d, 0x1f
-    xor r13d, r8d
-    sub r13d, r8d
+    neg r8d
+    cmovge r13d, r8d
 
     sub r14d, r9d
     mov r9d, r14d
-    sar r9d, 0x1f
-    xor r14d, r9d
-    sub r14d, r9d
+    neg r9d
+    cmovge r14d, r9d
 
     cmp r12w, r13w
     jg .z_y
