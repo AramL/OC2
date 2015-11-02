@@ -253,15 +253,14 @@ En .insert hacemos casi lo contrario a levantar, convertimos los floats empaquet
 
 \subsection{Diferencia}
 
-\noindent \textbf{Nota:} todos los tests fueron corridos sobre una PC con procesador Intel Core2Duo E8440.
+\noindent \textbf{Nota:} todos los tests fueron corridos sobre una PC con procesador Intel Core2Duo E8400 que cuenta con 64kb de cache L1 para datos, 64kb de cahce L1 para instruccionnes y 6mb de cache L2 compartido para data e instrucciones por los dos nucleos.
 \\
 \newline
  Para analizar las implementaciones de C y assembly, corrimos 1000 iteraciones de cada implementación de diferencia sobre una imagen de 2308x2308 (16mb) donde las implementaciones de C se compilaron con gcc y clang usando los flags de optimización -O0, -O1, -O2, -O3 y -Os. Basicamente los flags de -O\# con \# un número entre $0,3$ intentan optimizar principalmente para velocidad y luego tamaño, $0$ siendo el menos 'optimizado' y $3$ el más optimizado, mientras que -Os optimiza principalmente por tamaño del ejecutable, por ejemplo, luego de hacer un disassembly, notamos que a partir de -O2 gcc ya no armaba un stackframe, ni resguardaba rbp, y pusheaba a medida que necesitaba los registros, alineando rsp cuando fuese necesario usar la pila, diferencias observables entre -O2 y -O3 fue el uso de operaciones SIMD, por ejemplo de empaquetado y desempaquetado, multiplicaciones packed etc en -O3 (para el blur), mientras que esto no pasaba en -O2, extrañamente la performance es la misma y tal vez se debe a otros factores como el modelo de procesador (Intel c2d E840) o que en general gcc hace muchos mas accesos a memoria y estos hacen sombra a la performance ganada por las instrucciones. \newline
 
 
  A continuación dejamos los gráfico con el promedio (con y sin outliers) de la diferencia bajo distintos flags de optimización y en assembly.
- \newpage
- 
+
  
 %REHACER 
 \begin{figure}[h]
@@ -278,29 +277,29 @@ Interesantemente al reemplazar los ror rax, 8 por ror rax, 1 y desplegar en 8 in
     \hline
         \textbf{Tipo} &  \textbf{Esperanza} & \textbf{Desviación} & \textbf{Mediana}\\
         \hline
-\textit{asm (SSE)} &  56043648  & 1 & 1\\
+\textit{asm (SSE)} &  56.043.648  & 3.719.499 & 54.745.299\\
         \hline
-\textit{asm} &   185730157    & 1 & 1\\
+\textit{asm} &   185.730.157    & 35.225.868 & 163.627.996 \\
 		\hline
-\textit{gcc -Os} &  483066761   & 1 & 1\\
+\textit{gcc -Os} &  483.066.761   & 86.386.164 & 425.219.445\\
         \hline
-\textit{gcc -O3} &  122860749 & 1 & 1\\
+\textit{gcc -O3} &  122.860.749 & 23.118.334 & 106.125.907\\
         \hline
-\textit{gcc -O2} &  116990809 & 1 & 1\\
+\textit{gcc -O2} &  116.990.809 & 22.296.448 & 100.375.353\\
         \hline
-\textit{gcc -O1} & 152638557 & 1 & 1\\
+\textit{gcc -O1} & 152.638.557 & 28.306.860 & 133.249.693\\
         \hline
-\textit{gcc -O0} & 484505949  & 1 & 1\\
+\textit{gcc -O0} & 484.505.949  & 84.107.766 & 441.267.745\\
         \hline
-\textit{clang -Os} &  175719296 & 1 & 1\\
+\textit{clang -Os} &  175.719.296 & 32.586.563 & 153.610.569\\
         \hline
-\textit{clang -O3} &   162637196 & 1 & 1\\
+\textit{clang -O3} &   162.637.196 & 31.045.244 & 139.688.334\\
         \hline
-\textit{clang -O2} &    159943847 & 1 & 1\\
+\textit{clang -O2} &    159.943.847 & 29.501.029 & 139.728.946\\
         \hline
-\textit{clang -O1} &    178052400  & 1 & 1\\
+\textit{clang -O1} &    178.052.400  & 33.145.132 & 155.390.607\\
         \hline
-\textit{clang -O0} & 932036522  & 1 & 1 \\
+\textit{clang -O0} & 932.036.522  & 148.813.063 & 896.191.006 \\
         \hline
     \end{tabular}
 \end{center}
@@ -354,11 +353,7 @@ Por otro lado ninguna de las versiones que usan solo registros de propósito gen
 
 
 
-
-
-\newpage
-
- En el siguiente experimento queria ver si el tamaño de la imagen iba a modificar la performance (incrementar el tiempo de ejecucion) del algoritmo debido a cache misses. Para esto corrimos diferencia en Assembly y C, de vuelta bajo gcc y clang, pero esta vez con el flag -O2, ya que me parecio que era el sweet spot para esta implementación ya que los flags de optimización no garantizan que corra con mejor performance, sobre imágenes que iban de 256kb a 64mb como se ve en la figura (Los tamaños utilizados están en el shellscript convertir.sh que es el que usamos para generar las imagenes). 
+Una de nuestras hipótesis era que el tamaño del cache iba a afectar la performance de nuestro algoritmo. Para esto corrimos la diferencia en Assembly y C sobre imágenes que iban de 256kb a 64mb como se ve en la figura, de vuelta bajo gcc y clang, pero esta vez con el flag de optimización -O2, ya que por el test anterior era el que mejor se comportaba sobre la diferencia.  
 
 \begin{figure}[h]
 	\centerline{\includegraphics[scale=0.60]{imagenes/test_performance_size_ASM.png}}
@@ -388,18 +383,18 @@ Primero corrimos un tests parecido al de diferencia donde probamos todas las imp
 
 \begin{figure}[h]
 	\includegraphics[scale=0.75]{imagenes/test_blur_ASM_C_.png}
-	\caption{Promedio sobre 100 iteraciones del blur aplicado a una imagen de 1160x1160 con radio 15.}
+	\caption{Promedio sobre 300 iteraciones del blur aplicado a una imagen de 1160x1160 con radio 3.}
 \end{figure}
 
 Como vemos la versión de assembler que opera sobre 4 pixels es más de 3 veces mas rápida que cualquiera de las versiones de C, y 1.6 veces más rapida que la versión que opera sobre un pixel, el cambio de codigo es entre un pixel y cuatro es mínimo, solo se usan mas registros pero se hacen las mismas operaciones y se cambia un offset, asi que no se justificaria nunca el no pasar a operar sobre 4 pixeles.
 
- Otra cosa a notar es que el rol entre gcc y clang cambió, a diferencia de la diferencia de imagenes donde gcc era siempre mas rápido que clang aca pasa lo contrario, e inclusive la versión de clang en -O1 es la más rápida en general, esto también nos hace pensar que los flags de optimización no siempre son una solución efectiva si lo que se busca es codigo de alta performance. Una de las razones que creemos que c se comporta tan mal con el blur es por los saltos de fila, lo cual nos inclina a decir que ocurren muchos cache misses durante la iteración sobre el kernel, y esto no es la única perdida de performance, sino que además que gcc y clang utilizan el stack para guardar contadores y hacen varias multiplicaciones adentro del ciclo para calcular los offsets dentro de la matriz, lo cual nosotros pudimos evitar totalmente en la versión de assembler. 
-\newline
 
 \begin{center}
+
         \begin{tabular}[c]{|c|c|c|c|c|}
     \hline
         \textbf{Tipo}  & \textbf{Esperanza} & \textbf{Desviación} & \textbf{Mediana}\\
+        \hline
 \textit{asm 4px} &	2.106.291.807 & 301.117.707 & 2.168.926.731 \\
 		\hline
 \textit{asm 1px} &	3.497.413.560 & 574.758.539 & 3.883.153.464 \\
@@ -423,7 +418,10 @@ Como vemos la versión de assembler que opera sobre 4 pixels es más de 3 veces 
 	\end{tabular}
 \end{center}
 
- Una de las hipótesis que teniamos con blur es que dada una imagen con un radio pequeño iba a correr mas lento que con un radio mas grande, pero a medida que el radio domine la cantidad de pixeles sobre las cuales va a aplicar la matriz de convolución el tiempo de ejecución iba a bajar. Esto lo pudimos probar corriendo blur sobre una imagen de tamaño fijo (en este caso 584x584 pixels) e incrementando el radio como se ve en la siguiente imagen
+ Otra cosa a notar es que el rol entre gcc y clang cambió, a diferencia de la diferencia de imagenes donde gcc era siempre mas rápido que clang aca pasa lo contrario, e inclusive la versión de clang en -O1 es la más rápida en general, esto también nos hace pensar que los flags de optimización no siempre son una solución efectiva si lo que se busca es codigo de alta performance. Una de las razones que creemos que c se comporta tan mal con el blur es por los saltos de fila, lo cual nos inclina a decir que ocurren muchos cache misses durante la iteración sobre el kernel, y esto no es la única perdida de performance, sino que además que gcc y clang utilizan el stack para guardar contadores y hacen varias multiplicaciones adentro del ciclo para calcular los offsets dentro de la matriz, lo cual nosotros pudimos evitar totalmente en la versión de assembler. 
+
+
+ Otra de las hipótesis que teniamos con blur es que dada una imagen con un radio pequeño iba a correr mas lento que con un radio mas grande, pero a medida que el radio domine la cantidad de pixeles sobre las cuales va a aplicar la matriz de convolución el tiempo de ejecución iba a bajar. Esto lo pudimos probar corriendo blur sobre una imagen de tamaño fijo (en este caso 584x584 pixels) e incrementando el radio como se ve en la siguiente imagen
 
 
 \begin{figure}[h]
@@ -434,7 +432,41 @@ Como vemos la versión de assembler que opera sobre 4 pixels es más de 3 veces 
 
 El algoritmo llega a un punto crítico cuando el radio es equivalente a la dimensión/2, es decir cuando el algoritmo se comporta como $O(n^4)$ sobre la dimensión, esto es fácil ver ya que dada una matriz cuadrada de tamaño $n^2$, si $r \sim n/2$, tenemos que por pixel hace $\sim n^2/2$ operaciones y hay $\sim n^2/2$ pixeles posibles para recorrer.
 
+Al igual que en diferencia también corrimos, esta vez solo la versión assembler de blur sobre imágenes de tamaño 64kb a 32mb, radio 3 y sigma 1, obtuvimos lo siguiente:
 
+\begin{figure}[h]
+	\centerline{\includegraphics[scale=0.72]{imagenes/test_radio_cambiando_tamanios_assembly.png}}
+	\caption{Blur, cambiando los radios}
+\end{figure}
+
+\newpage
+\begin{center}
+          \textbf{Test sobre tamaño}  \\ 
+          \hfill \\
+        \begin{tabular}[c]{|c|c|c|c|c|}
+        \hline
+      \textbf{Tipo}  & \textbf{Esperanza} & \textbf{Desviación} & \textbf{Mediana}\\
+
+    	\hline
+\textit{256kb} &	45.259.012 & 9.919.790 & 39.031.906 \\
+		\hline
+\textit{512kb} &	88.726.855 & 17.742.991 & 76.158.607 \\
+		\hline
+\textit{1mb} &	179.615.877 & 34.107.812 & 158.408.100  \\
+		\hline
+\textit{2mb} &	355.030.668 & 60.202.083 & 339.998.922  \\
+		\hline
+\textit{4mb} &	688.433.498 & 102.855.212 & 677.914.299  \\
+		\hline
+\textit{8mb} &	1.411.329.438 & 196.083.930 & 1.359.012.604  \\
+		\hline
+\textit{16mb} & 2.916.520.352 & 499.435.056 & 3.129.296.998  \\
+		\hline
+\textit{32mb} &	4.599.736.774 & 742.362.544 & 4.478.467.171  \\
+		\hline
+
+	\end{tabular}
+\end{center}
 
 \section{Conclusión}
 
