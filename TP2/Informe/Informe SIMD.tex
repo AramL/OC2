@@ -9,7 +9,7 @@
 \input{codesnippet}
 
 \usepackage{fancyhdr}
-
+\usepackage{natbib}
 \pagestyle{fancy}
 
 \renewcommand{\sectionmark}[1]{\markright{\thesection\ - #1}}
@@ -35,7 +35,8 @@
 \renewcommand{\baselinestretch}{1.1}  % line spacing
 
 
-
+%\usepackage{etoolbox}
+%\patchcmd{\bibliography}{\section*}{\section}{}{}
 
 % \setcounter{secnumdepth}{2}
 
@@ -277,33 +278,29 @@ Interesantemente al reemplazar los ror rax, 8 por ror rax, 1 y desplegar en 8 in
     \hline
         \textbf{Tipo} &  \textbf{Esperanza} & \textbf{Desviación} & \textbf{Mediana}\\
         \hline
-\textit{asm (SSE)} &   1.152.187  & 1 & 1\\
+\textit{asm (SSE)} &  56043648  & 1 & 1\\
         \hline
-\textit{asm v1} &   1.151.544    & 1 & 1\\
+\textit{asm} &   185730157    & 1 & 1\\
+		\hline
+\textit{gcc -Os} &  483066761   & 1 & 1\\
         \hline
-\textit{asm v2} &   1.151.544    & 1 & 1 \\
+\textit{gcc -O3} &  122860749 & 1 & 1\\
         \hline
-\textit{asm v3} &   1.151.544    & 1 & 1\\
+\textit{gcc -O2} &  116990809 & 1 & 1\\
         \hline
-\textit{gcc -Os} &  761.937   & 1 & 1\\
+\textit{gcc -O1} & 152638557 & 1 & 1\\
         \hline
-\textit{gcc -O3} &  1.152.847 & 1 & 1\\
+\textit{gcc -O0} & 484505949  & 1 & 1\\
         \hline
-\textit{gcc -O2} &  1.152.765 & 1 & 1\\
+\textit{clang -Os} &  175719296 & 1 & 1\\
         \hline
-\textit{gcc -O1} &  725.420 & 1 & 1\\
+\textit{clang -O3} &   162637196 & 1 & 1\\
         \hline
-\textit{gcc -O0} & 123  & 1 & 1\\
+\textit{clang -O2} &    159943847 & 1 & 1\\
         \hline
-\textit{clang -Os} &    649.248 & 1 & 1\\
+\textit{clang -O1} &    178052400  & 1 & 1\\
         \hline
-\textit{clang -O3} &    1.153.061 & 1 & 1\\
-        \hline
-\textit{clang -O2} &    1.152.798  & 1 & 1\\
-        \hline
-\textit{clang -O1} &    1.155.718  & 1 & 1\\
-        \hline
-\textit{clang -O0} & 123  & 1 & 1 \\
+\textit{clang -O0} & 932036522  & 1 & 1 \\
         \hline
     \end{tabular}
 \end{center}
@@ -384,45 +381,44 @@ Lo mismo pasa con las implementaciones en C, en este caso gcc con -O2.
 	\caption{Diferencia en C, escala logarítmica}
 \end{figure}
 
+\newpage
 
 \subsection{Blur}
 Primero corrimos un tests parecido al de diferencia donde probamos todas las implementaciones de blur bajo distintos compiladores y tambien corrimos una versión vectorizada pero que solo trataba un pixel a la vez (sus 4 componentes) esta es llamada v1 y la que operaba 4 pixels (16 bytes) es llamada v2. Todo esto sobre una imagen de 1160x1160, radio $= 15$ y 100 iteraciones.
 
 \begin{figure}[h]
-	\includegraphics[scale=0.62]{imagenes/tests_blur_promedio.png}
+	\includegraphics[scale=0.75]{imagenes/test_blur_ASM_C_.png}
 	\caption{Promedio sobre 100 iteraciones del blur aplicado a una imagen de 1160x1160 con radio 15.}
 \end{figure}
 
-Como vemos la versión de assembler que opera sobre 4 pixels es más de 3 veces mas rápida que cualquiera de las versiones de C, y es casi dos veces mas rapida que la versión que opera sobre un pixel, el cambio de codigo es mínimo, asi que no se justificaria nunca el no pasar a operar sobre 16 pixeles. Otra cosa a notar es que el rol entre gcc y clang cambió a diferencia de la diferencia de imagenes donde gcc era siempre mas rápido que clang aca pasa lo contrario, e inclusive la versión de clang en -O1 es la más rápida en general, esto también nos hace pensar que los flags de optimización no siempre son una solución efectiva si lo que se busca es codigo de alta performance, para esto la solución siempre va a ser escribir puramente codigo assembler. No solo el código es más fiel (la desviación sobre assembler es la más pequeña de todas) sino que más rápido en todos los casos.
+Como vemos la versión de assembler que opera sobre 4 pixels es más de 3 veces mas rápida que cualquiera de las versiones de C, y 1.6 veces más rapida que la versión que opera sobre un pixel, el cambio de codigo es entre un pixel y cuatro es mínimo, solo se usan mas registros pero se hacen las mismas operaciones y se cambia un offset, asi que no se justificaria nunca el no pasar a operar sobre 4 pixeles.
+
+ Otra cosa a notar es que el rol entre gcc y clang cambió, a diferencia de la diferencia de imagenes donde gcc era siempre mas rápido que clang aca pasa lo contrario, e inclusive la versión de clang en -O1 es la más rápida en general, esto también nos hace pensar que los flags de optimización no siempre son una solución efectiva si lo que se busca es codigo de alta performance. Una de las razones que creemos que c se comporta tan mal con el blur es por los saltos de fila, lo cual nos inclina a decir que ocurren muchos cache misses durante la iteración sobre el kernel, y esto no es la única perdida de performance, sino que además que gcc y clang utilizan el stack para guardar contadores y hacen varias multiplicaciones adentro del ciclo para calcular los offsets dentro de la matriz, lo cual nosotros pudimos evitar totalmente en la versión de assembler. 
 \newline
 
 \begin{center}
         \begin{tabular}[c]{|c|c|c|c|c|}
     \hline
-        \textbf{Tipo} & \textbf{Promedio} & \textbf{Esperanza} & \textbf{Desviación} & \textbf{Mediana}\\
-\textit{asm v2} &	1.152.187 & 1 & 1 & 1\\
+        \textbf{Tipo}  & \textbf{Esperanza} & \textbf{Desviación} & \textbf{Mediana}\\
+\textit{asm 4px} &	2.106.291.807 & 301.117.707 & 2.168.926.731 \\
 		\hline
-\textit{asm v1} &	1.151.544   & 1 & 1 & 1 \\
+\textit{asm 1px} &	3.497.413.560 & 574.758.539 & 3.883.153.464 \\
 		\hline
-\textit{gcc -Os} &	761.937 & 1 & 1 & 1 \\
+\textit{gcc -Os} &	8.843.585.499 & 1.578.879.058 & 10.084.543.303  \\
 		\hline
-\textit{gcc -O3} &	1.152.847 & 1 & 1 & 1 \\
+\textit{gcc -O3} &	9.130.861.305 & 1.539.043.241 & 10.196.606.596  \\
 		\hline
-\textit{gcc -O2} &	1.152.765 & 1 & 1 & 1 \\
+\textit{gcc -O2} &	8.896.692.812 & 1.594.654.086 & 10.158.618.532  \\
 		\hline
-\textit{gcc -O1} &	725.420 & 1 & 1 & 1 \\
+\textit{gcc -O1} &	7.147.828.723 & 1.206.676.801 & 7.982.797.657  \\
 		\hline
-\textit{gcc -O0} & 123  & 1 & 1 & 1 \\
+\textit{clang -Os} & 4.880.678.639 & 778.651.350 & 5.377.046.157  \\
 		\hline
-\textit{clang -Os} &	649.248 & 1 & 1 & 1 \\
+\textit{clang -O3} &	4.832.604.511 & 788.668.977 & 5.378.602.122  \\
 		\hline
-\textit{clang -O3} &	1.153.061 & 1 & 1 & 1 \\
+\textit{clang -O2} &	4.800.626.481 & 791.235.023 & 5.378.756.337  \\
 		\hline
-\textit{clang -O2} &	1.152.798 & 1 & 1 & 1 \\
-		\hline
-\textit{clang -O1} &	1.155.718 & 1 & 1 & 1 \\
-		\hline
-\textit{clang -O0} & 123 & 1 & 1 & 1 \\
+\textit{clang -O1} &	4.333.126.690 & 711.630.020 & 4.833.148.446  \\
 		\hline
 	\end{tabular}
 \end{center}
@@ -436,20 +432,22 @@ Como vemos la versión de assembler que opera sobre 4 pixels es más de 3 veces 
 \end{figure}
 
 
-El algoritmo llega a un punto crítico cuando el radio es equivalente a la dimensión/2, es decir cuando el algoritmo se comporta como $O(n^4)$ sobre la dimensión.
+El algoritmo llega a un punto crítico cuando el radio es equivalente a la dimensión/2, es decir cuando el algoritmo se comporta como $O(n^4)$ sobre la dimensión, esto es fácil ver ya que dada una matriz cuadrada de tamaño $n^2$, si $r \sim n/2$, tenemos que por pixel hace $\sim n^2/2$ operaciones y hay $\sim n^2/2$ pixeles posibles para recorrer.
 
 
-\newpage 
-
-Para comparar al algoritmo en C vs asm hicimos lo mismo que blur, corrimos los dos sobre la misma imagen y calculamos su promedio.
-
-
-\begin{figure}[h]
-	\centerline{\includegraphics[scale=0.6]{imagenes/test_blur_ASM_C.png}}
-\end{figure}
 
 \section{Conclusión}
 
  Para el algoritmo de diferencia, se justificaria totalmente hacer una implementación en SIMD, no solo por el hecho de que corre más de dos veces más rapido que cualquiera de las otras implementaciones, sino que además fue más facil implementarlo que su version de C y todavía mas facil que la versión con registros de propósito general. 
+
+\addcontentsline{toc}{section}{Referencias}
+\bibliographystyle{alpha}
+
+\bibliography{Bibliografia}
+
+\nocite{*}
+
+
+
 
 \end{document}
