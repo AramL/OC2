@@ -351,6 +351,9 @@ Como se puede apreciar, la Esperanza (media aritmética sobre el total de iterac
 
 Por otro lado ninguna de las versiones que usan solo registros de propósito general pasan en velocidad a la versión de gcc, creemos que esto se debe a que gcc esta alineando su código por medio de operaciones nops para que tenga mejor branching.
 
+Por último también tenemos que la versión que 'desenrolla' la rotación corre 1.5 veces más lento que la versión que no lo hacia. Esto se debe a que la recomendación del manual de optimización es para procesadores a partir de la arquitectura Ivy Bridge y nuestor procesador, C2D, es la arquitectura Penryn que es mucho más vieja.
+ \newline \hfill
+
 
 
 Una de nuestras hipótesis era que el tamaño del cache iba a afectar la performance de nuestro algoritmo. Para esto corrimos la diferencia en Assembly y C sobre imágenes que iban de 64kb a 64mb como se ve en la figura, de vuelta bajo gcc y clang, pero esta vez con el flag de optimización -O2, ya que por el test anterior era el que mejor se comportaba sobre la diferencia. 
