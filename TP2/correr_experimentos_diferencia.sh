@@ -17,8 +17,8 @@ git checkout ./python/tests/placeholder
 
 
 
-echo ""
-echo "**Corriendo mediciones diferencia ASM vs C"
+# echo ""
+# echo "**Corriendo mediciones diferencia ASM vs C"
 
 
 # make clean 
@@ -390,6 +390,18 @@ echo " "
 echo "**Corriendo mediciones performance sobre tamaño en difrencia"
 echo "**Diferencia en ASM"
 
+
+
+for i in {1..1000}
+do 
+  ./build/tp2 -i asm diff  ./experimentos/tests_size/game-136x136.bmp ./experimentos/tests_size/pokemon-136x136.bmp  | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_performance_size_ASM
+  echo -n " " >> ./python/tests/test_performance_size_ASM
+done
+
+
+echo "" >> ./python/tests/test_performance_size_ASM
+
+
 for i in {1..1000}
 do 
   ./build/tp2 -i asm diff  ./experimentos/tests_size/game-292x292.bmp ./experimentos/tests_size/pokemon-292x292.bmp  | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_performance_size_ASM
@@ -475,7 +487,7 @@ done
 echo " "
 echo "**graficando"
 
-python ./python/graficarAlt.py 9 ./python/tests/test_performance_size_ASM "diferencia ASM" "CPU Ticks"  256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
+python ./python/graficarAlt.py 10 ./python/tests/test_performance_size_ASM "diferencia ASM" "CPU Ticks"  64kb 256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb 64mb
 
 
 

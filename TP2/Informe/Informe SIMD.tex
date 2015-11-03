@@ -321,7 +321,7 @@ En general se intento evitar accesos a memoria, comparado a lo que hace gcc que 
 Pasamos todas estas implementaciones sobre 2000 iteraciones sobre una imagen de 16mb de 2308x2308 pixels y obtuvimos los siguientes resultados:
 
 \begin{figure}[h]
-	\centerline{\includegraphics[scale=0.8]{imagenes/test_diferencia_ASM_imp}}
+	\centerline{\includegraphics[scale=1]{imagenes/test_diferencia_ASM_imp}}
 	%\caption{Diferencia en asm, escala logarítmica}
 \end{figure}
 
@@ -353,28 +353,86 @@ Por otro lado ninguna de las versiones que usan solo registros de propósito gen
 
 
 
-Una de nuestras hipótesis era que el tamaño del cache iba a afectar la performance de nuestro algoritmo. Para esto corrimos la diferencia en Assembly y C sobre imágenes que iban de 256kb a 64mb como se ve en la figura, de vuelta bajo gcc y clang, pero esta vez con el flag de optimización -O2, ya que por el test anterior era el que mejor se comportaba sobre la diferencia.  
+Una de nuestras hipótesis era que el tamaño del cache iba a afectar la performance de nuestro algoritmo. Para esto corrimos la diferencia en Assembly y C sobre imágenes que iban de 64kb a 64mb como se ve en la figura, de vuelta bajo gcc y clang, pero esta vez con el flag de optimización -O2, ya que por el test anterior era el que mejor se comportaba sobre la diferencia. 
 
 \begin{figure}[h]
-	\centerline{\includegraphics[scale=0.60]{imagenes/test_performance_size_ASM.png}}
+	\centerline{\includegraphics[scale=0.78]{imagenes/test_performance_size_ASM_bar.png}}
 	\caption{Diferencia en asm, escala logarítmica}
 \end{figure}
 
- Lo que se obtuvo es una curva que sube suavemente, lo cual implicaria que el algoritmo tiene un crecimiento bastante predecible hasta el tamaño donde se lo probó (imágenes de 4000x4000 pixels con un tamaño de 64mb).
+Y los siguientes valores
 
-\begin{figure}[h]
-	\centerline{\includegraphics[scale=0.60]{imagenes/test_performance_size_ASM_not_log.png}}
-	\caption{Diferencia en asm, escala no logarítmica}
-\end{figure}
 
-\newpage 
+\begin{center}
+        \begin{tabular}[c]{|c|c|c|c|c|}
+    \hline
+        \textbf{Tipo} &  \textbf{Esperanza (ticks)} & \textbf{Desviación (ticks)} & \textbf{Mediana (ticks)}\\
+        \hline
+\textit{64kb} &    78.063  & 223.209 & 60.300\\
+        \hline
+\textit{256kb} &   368.823    & 286.970 & 291.676\\
+        \hline
+\textit{512kb} &  1.017.418   & 960.937 & 860.229 \\
+        \hline
+\textit{1mb} &  2.923.201  & 1.160.558 & 2.530.638\\
+        \hline
+\textit{2mb} &  7.912.487   & 1.085.181 & 7.547.283\\
+        \hline
+\textit{4mb} &  14.056.689 & 1.302.569 & 13.741.051\\
+        \hline
+\textit{8mb} &  28.452.651 & 1.293.358 & 28.296.252\\
+        \hline
+\textit{16mb} &  55.610.396 & 2.150.184 & 55.004.058\\
+        \hline
+\textit{32mb} &  112.007.095 & 2.896.770 & 111.689.064\\
+        \hline
+\textit{64mb} &  219.320.476 & 2.945.521 & 218.553.592\\
+        \hline
+    \end{tabular}
+\end{center}
 
-Lo mismo pasa con las implementaciones en C, en este caso gcc con -O2.
+Recordemos brevemente que nuestro procesador tiene dos niveles de cache, un primer L1 con 64kb para datos y otros 64kb para instrucciones y un segundo nivel L2 compartido por ambos y además compartido por los dos cores. Mirando la tabla vemos que una vez que tenemos una imagen mas grande que el L1D, tenemos un incremento de 4.7 veces más ciclos en vez de 4, que es lo que se esperaria al cuadruplicar el tamaño de la imagen. Luego tenemos otro crecimiento mayor de 1mb a 2mb, donde en vez de tardar el doble tarda 2.7 veces más, una vez que pasamos la barrera de los 6mb, nuestro algoritmo sigue creciendo pero parece que tiende a $2$ ciclos\_medida\_anterior, que es lo que esperariamos de doblar el tamaño de las imágenes.
+Luego de hacer esto corrimos cachegrind, que es una herramienta que viene con el programa Valgrind que sirve para analizar el cache y los branches, en un par de casos particulares para observar que está pasando con la cache. Notemos que LL es last level cache que en este caso para el Core2Duo es el nivel L2.
+\begin{center}
+	\begin{tabular}[c]{|c|c|c|c|c|c|c|}
+    \hline
+        \textbf{asm} &  \textbf{L1i miss rate} & \textbf{LLi miss rate} & \textbf{L1d miss rate} & \textbf{LLd miss rate} & \textbf{LL miss rate} & \textbf{branch mispredict}\\
+        \hline
+\textit{64kb} &    0.01\%  & 0.01\% & 12.9\% & 0.2\% & 0.0\% & 0.9\% \\
+        \hline
+\textit{256kb} &   0.00\%    & 0.00\% & 13.1\% & 0.1\% & 0.0\% & 0.2\% \\
+        \hline
+\textit{512kb} & 0.00\%    & 0.00\% & 13.1\%   &   0.1\% & 0.0\% & 0.01\% \\
+        \hline
+\textit{1mb} &  0.00\%    & 0.00\% & 13.1\%  & 0.00\%  & 0.0\% & 0.00\% \\
+        \hline
+\textit{2mb} &  0.00\%    & 0.00\% & 13.1\% & 13.0\% & 2.7\% & 0.00\% \\
+        \hline
+\textit{8mb} &  0.00\%    & 0.00\% & 13.1\% & 13.1\% & 2.7\% & 0.00\% \\
+        \hline
+    \end{tabular}
+    
+    
+    	\begin{tabular}[c]{|c|c|c|c|c|c|c|}
+    \hline
+        \textbf{C} &  \textbf{L1i miss rate} & \textbf{LLi miss rate} & \textbf{L1d miss rate} & \textbf{LLd miss rate} & \textbf{LL miss rate} & \textbf{branch mispredict}\\
+        \hline
+\textit{64kb} &    0.01\%  & 0.01\% & 1.8\% & 0.2\% & 0.0\% & 0.9\% \\
+        \hline
+\textit{256kb} &   0.00\%    & 0.00\% & 1.8\% & 0.1\% & 0.0\% & 0.3\% \\
+        \hline
+\textit{512kb} & 0.00\%    & 0.00\% & 1.8\%   &   0.1\% & 0.0\% & 0.02\% \\
+        \hline
+\textit{1mb} &  0.00\%    & 0.00\% & 1.8\%  & 0.00\%  & 0.0\% & 0.01\% \\
+        \hline
+\textit{2mb} &  0.00\%    & 0.00\% & 1.8\% & 1.8\% & 0.3\% & 0.01\% \\
+        \hline
+\textit{8mb} &  0.00\%    & 0.00\% & 1.8\% & 1.8\% & 0.3\% & 0.00\% \\
+        \hline
+    \end{tabular}
+\end{center}
 
-\begin{figure}[h]
-	\centerline{\includegraphics[scale=0.60]{imagenes/test_performance_size_C.png}}
-	\caption{Diferencia en C, escala logarítmica}
-\end{figure}
+Aca vemos varias cosas, por un lado, algo que era de esperarse es que el instruction miss rate sea bajísimo ya que nuestro binario esta siempre por debajo de 70kb. Por otro lado es notable ver que los miss rates de L1d se mantienen siempre por el 13\% contra los de gcc que están estables en 1.8\%, sin embargo nuestro algoritmo corre varias veces más rapido! El branch misprediction también era de esperarse que fuese bajo ya que iteramos casi linealmente sobre la matriz y no paramos hasta el final, los valores mas altos sobre las imagenes más pequeñas se lo adjudicamos a que el número de branches es mucho menor. De echo los mispredicts en assembler siempre rondan acerca de 5.000, mientras que gcc llega a alcanzar, en el último caso los 200.000, pero estos se ahogan sobre el total de branches que es todavía mucho mayor que la versión de assembler.
 
 \newpage
 
@@ -446,8 +504,10 @@ Al igual que en diferencia también corrimos, esta vez solo la versión assemble
         \begin{tabular}[c]{|c|c|c|c|c|}
         \hline
       \textbf{Tipo}  & \textbf{Esperanza} & \textbf{Desviación} & \textbf{Mediana}\\
+          	\hline
+\textit{64kb} &	9.721.155 & 2.912.904 & 7.939.300 \\
+		\hline
 
-    	\hline
 \textit{256kb} &	45.259.012 & 9.919.790 & 39.031.906 \\
 		\hline
 \textit{512kb} &	88.726.855 & 17.742.991 & 76.158.607 \\
@@ -466,6 +526,48 @@ Al igual que en diferencia también corrimos, esta vez solo la versión assemble
 		\hline
 
 	\end{tabular}
+\end{center}
+
+Acá al igual que en diferencia vemos resultados diferentes, aunque cuando pasamos de 64kb a 256kb tenemos un incremento de 4.7 veces más ciclos, después de esto tenemos crecimientos casi lineales, la cantidad de ciclos aumenta por un multiplicador de 1.9, sobre el tamaño. De vuelta corrimos cache grind para un par de casos particulares, 30 iteraciones con radio 3. 
+
+
+\begin{center}
+	\begin{tabular}[c]{|c|c|c|c|c|c|c|}
+    \hline
+        \textbf{asm} &  \textbf{L1i miss rate} & \textbf{LLi miss rate} & \textbf{L1d miss rate} & \textbf{LLd miss rate} & \textbf{LL miss rate} & \textbf{branch mispredict}\\
+        \hline
+\textit{64kb} &    0.01\%  & 0.01\% & 12.9\% & 0.2\% & 0.0\% & 0.9\% \\
+        \hline
+\textit{256kb} &   0.00\%    & 0.00\% & 13.1\% & 0.1\% & 0.0\% & 0.2\% \\
+        \hline
+\textit{512kb} & 0.00\%    & 0.00\% & 13.1\%   &   0.1\% & 0.0\% & 0.01\% \\
+        \hline
+\textit{1mb} &  0.00\%    & 0.00\% & 13.1\%  & 0.00\%  & 0.0\% & 0.00\% \\
+        \hline
+\textit{2mb} &  0.00\%    & 0.00\% & 13.1\% & 13.0\% & 2.7\% & 0.00\% \\
+        \hline
+\textit{8mb} &  0.00\%    & 0.00\% & 13.1\% & 13.1\% & 2.7\% & 0.00\% \\
+        \hline
+    \end{tabular}
+    
+    
+    	\begin{tabular}[c]{|c|c|c|c|c|c|c|}
+    \hline
+        \textbf{C} &  \textbf{L1i miss rate} & \textbf{LLi miss rate} & \textbf{L1d miss rate} & \textbf{LLd miss rate} & \textbf{LL miss rate} & \textbf{branch mispredict}\\
+        \hline
+\textit{64kb} &    0.01\%  & 0.01\% & 1.8\% & 0.2\% & 0.0\% & 0.9\% \\
+        \hline
+\textit{256kb} &   0.00\%    & 0.00\% & 1.8\% & 0.1\% & 0.0\% & 0.3\% \\
+        \hline
+\textit{512kb} & 0.00\%    & 0.00\% & 1.8\%   &   0.1\% & 0.0\% & 0.02\% \\
+        \hline
+\textit{1mb} &  0.00\%    & 0.00\% & 1.8\%  & 0.00\%  & 0.0\% & 0.01\% \\
+        \hline
+\textit{2mb} &  0.00\%    & 0.00\% & 1.8\% & 1.8\% & 0.3\% & 0.01\% \\
+        \hline
+\textit{8mb} &  0.00\%    & 0.00\% & 1.8\% & 1.8\% & 0.3\% & 0.00\% \\
+        \hline
+    \end{tabular}
 \end{center}
 
 \section{Conclusión}

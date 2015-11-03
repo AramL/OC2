@@ -1,243 +1,212 @@
 #!/bin/bash
 
-rm -rf ./python/tests_blur/*
-git checkout ./python/tests_blur/placeholder
+# rm -rf ./python/tests_blur/*
+# git checkout ./python/tests_blur/placeholder
 
 
 
-reset
+# reset
 
-echo "corriendo los experimentos de blur"
+# echo "corriendo los experimentos de blur"
 
 
 
-make clean
+# make clean
 
-make OPTFLAGS=-O3
+# make OPTFLAGS=-O3
 
 
-echo " "
-echo "**Corriendo mediciones blur ASM vs C"
-echo "Blur 4 pixels"
-echo ""
-date
-echo ""
-for i in {1..500}
-do
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
-  echo -n " " >> ./python/tests_blur/test_blur_ASM_C
-done
+# echo " "
+# echo "**Corriendo mediciones blur ASM vs C"
+# echo "Blur 4 pixels"
+# echo ""
+# date
+# echo ""
+# for i in {1..300}
+# do
+#   ./build/tp2 -i asm blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+#   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
+# done
 
-echo "" >> ./python/tests_blur/test_blur_ASM_C
+# echo "" >> ./python/tests_blur/test_blur_ASM_C
 
-echo ""
-echo "med asm terminadas"
+# echo ""
+# echo "med asm terminadas"
 
-reset
+# reset
 
 
-make clean
+# make clean
 
 
-mv ./filtros/blur_asm.asm ./filtros/blur_asm_4_pixels.asm
-mv ./filtros/blur_asm_1_pixel.asm ./filtros/blur_asm.asm
+# mv ./filtros/blur_asm.asm ./filtros/blur_asm_4_pixels.asm
+# mv ./filtros/blur_asm_1_pixel.asm ./filtros/blur_asm.asm
 
-make
+# make
 
-mv ./filtros/blur_asm.asm ./filtros/blur_asm_1_pixel.asm
-mv ./filtros/blur_asm_4_pixels.asm ./filtros/blur_asm.asm
+# mv ./filtros/blur_asm.asm ./filtros/blur_asm_1_pixel.asm
+# mv ./filtros/blur_asm_4_pixels.asm ./filtros/blur_asm.asm
 
 
-echo " "
-echo "**Corriendo mediciones blur ASM vs C"
-echo "Blur 1 pixel"
+# echo " "
+# echo "**Corriendo mediciones blur ASM vs C"
+# echo "Blur 1 pixel"
 
-echo ""
-date
-echo ""
-for i in {1..500}
-do
-  ./build/tp2 -i asm blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
-  echo -n " " >> ./python/tests_blur/test_blur_ASM_C
-done
+# echo ""
+# date
+# echo ""
+# for i in {1..300}
+# do
+#   ./build/tp2 -i asm blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+#   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
+# done
 
-echo "" >> ./python/tests_blur/test_blur_ASM_C
+# echo "" >> ./python/tests_blur/test_blur_ASM_C
 
-echo ""
-echo "med asm terminadas"
+# echo ""
+# echo "med asm terminadas"
 
-reset
+# reset
 
-make clean
+# make clean
 
-make OPTFLAGS=-Os
+# make OPTFLAGS=-Os
 
-echo ""
-date
-echo ""
-for i in {1..500}
-do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
-  echo -n " " >> ./python/tests_blur/test_blur_ASM_C
-done
+# echo ""
+# date
+# echo ""
+# for i in {1..300}
+# do
+#   ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+#   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
+# done
 
-echo "" >> ./python/tests_blur/test_blur_ASM_C
+# echo "" >> ./python/tests_blur/test_blur_ASM_C
 
-reset
+# reset
 
-make clean
+# make clean
 
-make CC=clang OPTFLAGS=-Os
+# make CC=clang OPTFLAGS=-Os
 
-echo ""
-date
-echo ""
-for i in {1..500}
-do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
-  echo -n " " >> ./python/tests_blur/test_blur_ASM_C
-done
+# echo ""
+# date
+# echo ""
+# for i in {1..300}
+# do
+#   ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+#   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
+# done
 
-echo "" >> ./python/tests_blur/test_blur_ASM_C
+# echo "" >> ./python/tests_blur/test_blur_ASM_C
 
-reset
+# reset
 
-make clean
+# make clean
 
-make OPTFLAGS=-O3
+# make OPTFLAGS=-O3
 
-echo ""
-date
-echo ""
-for i in {1..500}
-do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
-  echo -n " " >> ./python/tests_blur/test_blur_ASM_C
-done
+# echo ""
+# date
+# echo ""
+# for i in {1..300}
+# do
+#   ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+#   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
+# done
 
-echo "" >> ./python/tests_blur/test_blur_ASM_C
+# echo "" >> ./python/tests_blur/test_blur_ASM_C
 
-reset
+# reset
 
-make clean
+# make clean
 
-make CC=clang OPTFLAGS=-O3
+# make CC=clang OPTFLAGS=-O3
 
-echo ""
-date
-echo ""
-for i in {1..500}
-do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
-  echo -n " " >> ./python/tests_blur/test_blur_ASM_C
-done
+# echo ""
+# date
+# echo ""
+# for i in {1..300}
+# do
+#   ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+#   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
+# done
 
-echo "" >> ./python/tests_blur/test_blur_ASM_C
+# echo "" >> ./python/tests_blur/test_blur_ASM_C
 
-reset
+# reset
 
-make clean
+# make clean
 
-make OPTFLAGS=-O2
+# make OPTFLAGS=-O2
 
-echo ""
-date
-echo ""
-for i in {1..500}
-do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
-  echo -n " " >> ./python/tests_blur/test_blur_ASM_C
-done
+# echo ""
+# date
+# echo ""
+# for i in {1..300}
+# do
+#   ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+#   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
+# done
 
-echo "" >> ./python/tests_blur/test_blur_ASM_C
+# echo "" >> ./python/tests_blur/test_blur_ASM_C
 
-reset
+# reset
 
-make clean
+# make clean
 
-make CC=clang OPTFLAGS=-O2
+# make CC=clang OPTFLAGS=-O2
 
-echo ""
-date
-echo ""
-for i in {1..500}
-do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
-  echo -n " " >> ./python/tests_blur/test_blur_ASM_C
-done
+# echo ""
+# date
+# echo ""
+# for i in {1..300}
+# do
+#   ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+#   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
+# done
 
-echo "" >> ./python/tests_blur/test_blur_ASM_C
+# echo "" >> ./python/tests_blur/test_blur_ASM_C
 
-reset
+# reset
 
-make clean
+# make clean
 
-make OPTFLAGS=-O1
+# make OPTFLAGS=-O1
 
-echo ""
-date
-echo ""
-for i in {1..500}
-do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
-  echo -n " " >> ./python/tests_blur/test_blur_ASM_C
-done
+# echo ""
+# date
+# echo ""
+# for i in {1..300}
+# do
+#   ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+#   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
+# done
 
-echo "" >> ./python/tests_blur/test_blur_ASM_C
+# echo "" >> ./python/tests_blur/test_blur_ASM_C
 
-reset
+# reset
 
-make clean
+# make clean
 
-make CC=clang OPTFLAGS=-O1
+# make CC=clang OPTFLAGS=-O1
 
-echo ""
-date
-echo ""
-for i in {1..500}
-do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
-  echo -n " " >> ./python/tests_blur/test_blur_ASM_C
-done
+# echo ""
+# date
+# echo ""
+# for i in {1..300}
+# do
+#   ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
+#   echo -n " " >> ./python/tests_blur/test_blur_ASM_C
+# done
 
-echo "" >> ./python/tests_blur/test_blur_ASM_C
+# reset
 
-reset
 
-make clean
+# echo " "
+# echo "**graficando"
 
-make OPTFLAGS=-O0
-
-echo ""
-date
-echo ""
-for i in {1..500}
-do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
-  echo -n " " >> ./python/tests_blur/test_blur_ASM_C
-done
-
-echo "" >> ./python/tests_blur/test_blur_ASM_C
-
-reset
-
-make clean
-
-make CC=clang OPTFLAGS=-O0
-
-echo ""
-date
-echo ""
-for i in {1..500}
-do
-  ./build/tp2 -i c blur ./experimentos/tests_size/game-1160x1160.bmp 3 7 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_blur_ASM_C
-  echo -n " " >> ./python/tests_blur/test_blur_ASM_C
-done
-
-echo " "
-echo "**graficando"
-
-python ./python/graficarAlt.py 12 ./python/tests_blur/test_blur_ASM_C "blur (ASM vs C)" "CPU Ticks"  "asm v2" "asm v1" "gcc (-Os)" "clang (-Os)" "gcc (-O3)" "clang (-O3)" "gcc (-O2)" "clang (-O2)" "gcc (-O1)" "clang (-O1)" "gcc (-O0)" "clang (-O0)"
+# python ./python/graficarAlt.py 10 ./python/tests_blur/test_blur_ASM_C "blur (ASM vs C)" "CPU Ticks"  "asm 4px" "asm 1px" "gcc (-Os)" "clang (-Os)" "gcc (-O3)" "clang (-O3)" "gcc (-O2)" "clang (-O2)" "gcc (-O1)" "clang (-O1)"
 
 
 echo ""
@@ -249,17 +218,29 @@ reset
 
 make clean 
 
-make CC=clang OPTFLAGS=-O3
+make OPTFLAGS=-O3
+
 
 echo ""
 date
 echo ""
-for i in {1..100} 
+for i in {1..500} 
+do 
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-136x136.bmp 1 3 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_assembly
+  echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
+done
+echo "" >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
+
+reset
+
+echo ""
+date
+echo ""
+for i in {1..500} 
 do 
   ./build/tp2 -i asm blur ./experimentos/tests_size/game-292x292.bmp 1 3 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_assembly
   echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
 done
-
 echo "" >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
 
 
@@ -270,24 +251,25 @@ date
 echo ""echo "416x416
 "
 
-for i in {1..100} 
+for i in {1..500} 
 do 
   ./build/tp2 -i asm blur ./experimentos/tests_size/game-416x416.bmp 1 3 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_assembly
   echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
 done
+echo "" >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
+
 reset
+
 
 echo ""
 date
-echo ""echo "584x584
-"
+echo ""echo "584x584"
 
-for i in {1..100} 
+for i in {1..500} 
 do 
   ./build/tp2 -i asm blur ./experimentos/tests_size/game-584x584.bmp 1 3 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_assembly
   echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
 done
-
 echo "" >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
 
 reset
@@ -298,59 +280,69 @@ echo ""
 echo "824x824"
 
 
-for i in {1..100} 
+for i in {1..500} 
 do 
   ./build/tp2 -i asm blur ./experimentos/tests_size/game-824x824.bmp 1 3 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_assembly
   echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
 done
-
 echo "" >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
 
 reset
 
 echo ""
 date
-echo ""ech
-o "1160x1160"
+echo ""
+echo "1160x1160"
 
 
 
-for i in {1..100} 
+for i in {1..500} 
 do 
   ./build/tp2 -i asm blur ./experimentos/tests_size/game-1160x1160.bmp 1 3 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_assembly
   echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
 done
-
 echo "" >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
 
 reset
 
 echo ""
 date
-echo ""ech
-o "1632x1632"
+echo ""
+echo "1632x1632"
 
 
 
-for i in {1..100} 
+for i in {1..500} 
 do 
   ./build/tp2 -i asm blur ./experimentos/tests_size/game-1632x1632.bmp 1 3 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_assembly
   echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
 done
-
-
 echo "" >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
 
 echo ""
+reset
 date
-echo ""ech
-o "2308x2308"
+echo ""
+echo "2308x2308"
 
 
-
-for i in {1..100} 
+for i in {1..500} 
 do 
   ./build/tp2 -i asm blur ./experimentos/tests_size/game-2308x2308.bmp 1 3 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_assembly
+  echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
+done
+echo "" >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
+
+
+echo ""
+reset
+date
+echo ""
+echo "3264x3264"
+
+for i in {1..500} 
+do 
+  ./build/tp2 -i asm blur ./experimentos/tests_size/game-3264x3264.bmp 1 3 | cut -d':' -f2 | sed '9,9!d' | xargs echo -n | tee -a ./python/tests_blur/test_radio_cambiando_tamanios_assembly
   echo -n " " >> ./python/tests_blur/test_radio_cambiando_tamanios_assembly
 done
 
@@ -358,7 +350,9 @@ done
 
 
 
-python ./python/graficarAlt.py 7 ./python/tests_blur/test_radio_cambiando_tamanios_assembly "blur gcc (-O2)" "CPU Ticks" 256kb 512kb 1mb 2mb 4mb 8mb 16mb
+
+
+python ./python/graficarAlt.py 9 ./python/tests_blur/test_radio_cambiando_tamanios_assembly "blur asm" "CPU Ticks" 64kb 256kb 512kb 1mb 2mb 4mb 8mb 16mb 32mb
 
 
 echo ""
@@ -401,8 +395,7 @@ done
 
 echo ""
 date
-echo ""echo "" >> ./python/tests_blur/test_
-radio_size_ASM
+echo ""echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 
 for i in {1..100} 
@@ -413,8 +406,7 @@ done
 
 echo ""
 date
-echo ""echo "" >> ./python/tests_blur/test_
-radio_size_ASM
+echo ""echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 
 for i in {1..100} 
@@ -425,8 +417,7 @@ done
 
 echo ""
 date
-echo ""echo "" >> ./python/tests_blur/test_
-radio_size_ASM
+echo ""echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 
 for i in {1..100} 
@@ -437,8 +428,7 @@ done
 
 echo ""
 date
-echo ""echo "" >> ./python/tests_blur/test_
-radio_size_ASM
+echo ""echo "" >> ./python/tests_blur/test_radio_size_ASM
 
 
 for i in {1..100} 
