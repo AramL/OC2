@@ -522,13 +522,13 @@ Al igual que en diferencia también corrimos, esta vez solo la versión assemble
 		\hline
 \textit{16mb} & 2.916.520.352 & 499.435.056 & 3.129.296.998  \\
 		\hline
-\textit{32mb} &	4.599.736.774 & 742.362.544 & 4.478.467.171  \\
+\textit{32mb} & 4.625.658.596 & 742.362.544 & 4.478.467.171  \\
 		\hline
 
 	\end{tabular}
 \end{center}
 
-Acá al igual que en diferencia vemos resultados diferentes, aunque cuando pasamos de 64kb a 256kb tenemos un incremento de 4.7 veces más ciclos, después de esto tenemos crecimientos casi lineales, la cantidad de ciclos aumenta por un multiplicador de 1.9, sobre el tamaño. De vuelta corrimos cache grind para un par de casos particulares, 30 iteraciones con radio 3. 
+Acá al igual que en diferencia vemos resultados diferentes, aunque cuando pasamos de 64kb a 256kb tenemos un incremento de 4.7 veces más ciclos, después de esto tenemos crecimientos casi lineales, la cantidad de ciclos aumenta múltiplo de 1.9  sobre el tamaño. De vuelta corrimos cache grind para un par de casos particulares, 30 iteraciones con radio 3. 
 
 
 \begin{center}
@@ -536,17 +536,19 @@ Acá al igual que en diferencia vemos resultados diferentes, aunque cuando pasam
     \hline
         \textbf{asm} &  \textbf{L1i miss rate} & \textbf{LLi miss rate} & \textbf{L1d miss rate} & \textbf{LLd miss rate} & \textbf{LL miss rate} & \textbf{branch mispredict}\\
         \hline
-\textit{64kb} &    0.01\%  & 0.01\% & 12.9\% & 0.2\% & 0.0\% & 0.9\% \\
+\textit{64kb} &   0.00\%    & 0.00\% & 0.2\% & 0.0\% & 0.0\% & 7.8\% \\
         \hline
-\textit{256kb} &   0.00\%    & 0.00\% & 13.1\% & 0.1\% & 0.0\% & 0.2\% \\
+\textit{256kb} &   0.00\%    & 0.00\% & 0.2 \% & 0.0\% & 0.0\% & 7.9\% \\
         \hline
-\textit{512kb} & 0.00\%    & 0.00\% & 13.1\%   &   0.1\% & 0.0\% & 0.01\% \\
+\textit{512kb} & 0.00\%    & 0.00\% & 0.2\% & 0.0\% & 0.0\% & 7.9\% \\
         \hline
-\textit{1mb} &  0.00\%    & 0.00\% & 13.1\%  & 0.00\%  & 0.0\% & 0.00\% \\
+\textit{1mb} &   0.00\%    & 0.00\% & 0.2\% & 0.0\% & 0.0\% & 7.9\% \\
         \hline
-\textit{2mb} &  0.00\%    & 0.00\% & 13.1\% & 13.0\% & 2.7\% & 0.00\% \\
+\textit{2mb} &  0.00\%    & 0.00\% & 0.2\% & 0.0\% & 0.0\% & 7.9\% \\
         \hline
-\textit{8mb} &  0.00\%    & 0.00\% & 13.1\% & 13.1\% & 2.7\% & 0.00\% \\
+\textit{4mb} & 0.00\%    & 0.00\% & 0.8\% & 0.2\% & 0.0\% & 7.9\% \\
+        \hline
+\textit{8mb} & 0.00\%    & 0.00\% & 0.8\% & 0.2\% & 0.0\% & 7.9\% \\
         \hline
     \end{tabular}
     
@@ -555,28 +557,52 @@ Acá al igual que en diferencia vemos resultados diferentes, aunque cuando pasam
     \hline
         \textbf{C} &  \textbf{L1i miss rate} & \textbf{LLi miss rate} & \textbf{L1d miss rate} & \textbf{LLd miss rate} & \textbf{LL miss rate} & \textbf{branch mispredict}\\
         \hline
-\textit{64kb} &    0.01\%  & 0.01\% & 1.8\% & 0.2\% & 0.0\% & 0.9\% \\
+\textit{64kb} &    0.0\%  & 0.0\% & 0.0\% & 0.0\% & 0.0\% & 3.4\% \\
         \hline
-\textit{256kb} &   0.00\%    & 0.00\% & 1.8\% & 0.1\% & 0.0\% & 0.3\% \\
+\textit{256kb} &   0.0\%  & 0.0\% & 0.1\% & 0.0\% & 0.0\% & 3.4\%\\
         \hline
-\textit{512kb} & 0.00\%    & 0.00\% & 1.8\%   &   0.1\% & 0.0\% & 0.02\% \\
+\textit{512kb} &  0.0\%  & 0.0\% & 0.6\% & 0.0\% & 0.0\% & 3.4\% \\
         \hline
-\textit{1mb} &  0.00\%    & 0.00\% & 1.8\%  & 0.00\%  & 0.0\% & 0.01\% \\
+\textit{1mb} &  0.0\%  & 0.0\% & 0.6\% & 0.0\% & 0.0\% & 3.4\% \\
         \hline
-\textit{2mb} &  0.00\%    & 0.00\% & 1.8\% & 1.8\% & 0.3\% & 0.01\% \\
+\textit{2mb} &   0.0\%  & 0.0\% & 0.7\% & 0.0\% & 0.0\% & 3.4\% \\
         \hline
-\textit{8mb} &  0.00\%    & 0.00\% & 1.8\% & 1.8\% & 0.3\% & 0.00\% \\
+\textit{4mb} &  0.0\%  & 0.0\% & 0.7\% & 0.0\% & 0.0\% & 3.4\% \\
+        \hline
+\textit{8mb} &   0.0\%  & 0.0\% & 0.7\% & 0.0\% & 0.0\% & 3.4\% \\
         \hline
     \end{tabular}
 \end{center}
 
+Comparado a la diferencia tenemos misses en el cache mucho mas bajo, en el orden de 1000 misses por cada 1.000.000.000 reads. 
+
+Al analizar el branch prediction, esperabamos tener, usando alrededor del 10\% de branch misses ya que no pensamos en el branching al escribir el algoritmo. La razon seria que el branch prediction del C2D puede predecir entre uno de sus casos, branchs con comportamiento de loop, es decir que saltan $n-1$ veces a un target y la $n$-esima vez hacen un salto a otro lado, por ejemplo para nuestro algoritmo esto se podria aplicar al loop interno del kernel ya que con radio 3, entra 9 veces al ciclo y la decima vez salta a otros 4 pixels. Pero al intentar probar esto corriendo cachegrind con un radio más grande, r = $9$, es decir 81 ciclos, nos redución el branch miss rate a 2.4\%, pero como no es la única forma de predecir que tiene el procesador seguramente estos estan influyendo en el resultado.
+
+\begin{center}
+    	\begin{tabular}[c]{|c|c|c|c|c|c|c|}
+    \hline
+        \textbf{asm} &  \textbf{L1i miss rate} & \textbf{LLi miss rate} & \textbf{L1d miss rate} & \textbf{LLd miss rate} & \textbf{LL miss rate} & \textbf{branch mispredict}\\
+        \hline
+\textit{64kb} &    0.0\%  & 0.0\% & 0.0\% & 0.0\% & 0.0\% & 2.4\% \\
+        \hline
+\textit{256kb} &   0.0\%  & 0.0\% & 0.1\% & 0.0\% & 0.0\% & 2.4\%\\
+        \hline
+\textit{512kb} &  0.0\%  & 0.0\% & 0.6\% & 0.0\% & 0.0\% & 2.4\% \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\newpage 
+
 \section{Conclusión}
 
  Para el algoritmo de diferencia, se justificaria totalmente hacer una implementación en SIMD, no solo por el hecho de que corre más de dos veces más rapido que cualquiera de las otras implementaciones, sino que además fue más facil implementarlo que su version de C y todavía mas facil que la versión con registros de propósito general. 
+ 
+ Con respecto al blur, aunque implementarlo no fue tan fácil, de echo lo escribimos primero para un pixel y después nos dimos cuenta que podiamos operar sobre 4 haciendo un cambio muy simple, se justifica totalmente en el caso de que se quiera operar sobre imagenes grandes, arriba de los 16mb, y se quiera obtener una respuesta casi instantanea. Una última cosa que notamos es que el blur se podría adaptar fácilmente a cualquier otro algoritmo que use una convolución, por ejemplo una convolución laplaciana, operadores de Sobel o de Cross.
 
 \addcontentsline{toc}{section}{Referencias}
-\bibliographystyle{alpha}
-
+%\bibliographystyle{alpha}
+\bibliographystyle{unsrt}
 \bibliography{Bibliografia}
 
 \nocite{*}
