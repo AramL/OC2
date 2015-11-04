@@ -36,12 +36,12 @@ void mmu_copiar_pagina    (uint src, uint dst) {
     }
 }*/
 
-void mmu_inicializar_pagina(uint * pagina) {
+/*void mmu_inicializar_pagina(uint * pagina) {
     uint* pag = (uint *) pagina;
     for (uint i = 0; i < 1024; i++) {
         pag[i] = 0;
     }
-}
+}*/
 
 
 uint mmu_inicializar_dir_kernel() {
@@ -62,11 +62,10 @@ uint mmu_inicializar_dir_kernel() {
         mmu_inicializar_page_table(p_tabla, 1000* (p_tabla/0x20)); 
     */
 
-    /* Testeamos que desmapea esta pagina correctamente
+    /*Testeamos que desmapea esta pagina correctamente
         ej 3
     mmu_unmapear_pagina(0x3FF000, 0x27000);
-    
-    */
+   */
     return 0x27000;
     /* Devolvemos el cr3  (eax) */
 }

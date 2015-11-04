@@ -22,8 +22,7 @@ const char reloj[] = "|/-\\";
 #define reloj_size 4
 
 
-void screen_actualizar_reloj_global()
-{
+void screen_actualizar_reloj_global(){
     static uint reloj_global = 0;
 
     reloj_global = (reloj_global + 1) % reloj_size;
@@ -31,14 +30,12 @@ void screen_actualizar_reloj_global()
     screen_pintar(reloj[reloj_global], C_BW, 49, 79);
 }
 
-void screen_pintar(uchar c, uchar color, uint fila, uint columna)
-{
+void screen_pintar(uchar c, uchar color, uint fila, uint columna) {
     p[fila][columna].c = c;
     p[fila][columna].a = color;
 }
 
-uchar screen_valor_actual(uint fila, uint columna)
-{
+uchar screen_valor_actual(uint fila, uint columna) {
     return p[fila][columna].c;
 }
 
@@ -87,8 +84,7 @@ void print_dec(uint numero, int size, uint x, uint y, unsigned short attr) {
 }
 
 
-void screen_pintar_rect(uchar letra, uchar color, int fila, int columna, int alto, int ancho)
-{
+void screen_pintar_rect(uchar letra, uchar color, int fila, int columna, int alto, int ancho) {
     int f, c;
     for (f = fila; f < fila + alto; f++)
     {
