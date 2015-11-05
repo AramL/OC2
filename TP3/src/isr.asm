@@ -72,7 +72,7 @@ global _isr32
         call game_atender_tick
         add esp, 4
         popad  
-    iret
+		iret
 ;;
 ;; Rutina de atención del TECLADO
 ;; -------------------------------------------------------------------------- ;;
@@ -81,26 +81,10 @@ global _isr33
         pushad
         call fin_intr_pic1
         in al, 0x60
-        push 20
-        push 79
-        push 0xF
-        test al, 0x80
-        
-
-        ;call anteder_teclado
-        jz .pintar
-
-
-        jmp .end
-
-        .pintar:
-        xchg bx, bx
-        add al, 35
         push eax
-        call screen_pintar
-
-        .end:
-        add esp, 16 
+        ;call anteder_teclado
+        ;xchg bx, bx     
+        pop eax
         popad  
     iret
 ;;
@@ -108,6 +92,9 @@ global _isr33
 ;; -------------------------------------------------------------------------- ;;
 global _isr46:
 _isr46:
-    in al, 0x42
+	pushad
+	call fin_intr_pic1
+    mov eax,0x42
+    popad
     iret 
 
