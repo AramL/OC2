@@ -9,7 +9,8 @@
 #include "i386.h"
 
 uint proxima_pagina_libre = 0x100000;
-
+uint memoria_A;
+uint memoria_B;
 /* Atributos paginas */
 /* -------------------------------------------------------------------------- */
 uint mmu_proxima_pagina_fisica_libre() {
@@ -19,7 +20,35 @@ uint mmu_proxima_pagina_fisica_libre() {
 }
 
 void mmu_inicializar() {
+    memoria_A = mmu_proxima_pagina_fisica_libre();
+    memoria_B = mmu_proxima_pagina_fisica_libre();
+/*
+    jugador_t * jugadiur;
+    jugadiur->index = 0;
+    jugadiur->x_cucha = 2;
+    jugadiur->y_cucha = 2;
+    typedef struct perro_t
+    {
 
+        // ~~~ para ser completado ~~~
+        uint index;  // indice de 0 a 15
+        struct jugador_t *jugador;
+
+        uint id;     // id unica tarea
+        uint tipo;   // raza del perro
+        uint libre;  // libre: -true- slot disponible para lanzar perro  / -false- ya hay un perro vivo
+
+        uint x;
+        uint y;
+
+        uint huesos;
+        uint indice_reloj;
+
+    } perro_t;
+    perro_t perrin;
+    perrin->index = 0;
+    perrin->jugador = jugadiur;
+    */
 }
 
 
@@ -28,7 +57,7 @@ void mmu_copiar_pagina    (uint src, uint dst) {
     uint* source = (uint *)src;
     uint* destination = (uint *) dst;
     uint i = 0;
-    while( i < 1024) {
+    while ( i < 1024) {
         destination[i] = source[i];
         i++;
     }
@@ -37,7 +66,7 @@ void mmu_copiar_pagina    (uint src, uint dst) {
 void mmu_inicializar_pagina(uint * pagina) {
     uint* pag = (uint *) pagina;
     uint i = 0;
-    while( i < 1024) {
+    while ( i < 1024) {
         pag[i] = 0;
         i++;
     }
@@ -55,17 +84,17 @@ uint mmu_inicializar_dir_kernel() {
      */
     /* Inicializamos las tablas cada tabla direcciona 4k, empezando en 0 porque tenemos identity mapping */
     int p_tabla = 0;
-    for(p_tabla = 0x0; p_tabla < 0x3FFFFF; p_tabla += 0x1000)
-       mmu_mapear_pagina(p_tabla, 0x27000, p_tabla, 0x3); 
+    for (p_tabla = 0x0; p_tabla < 0x3FFFFF; p_tabla += 0x1000)
+        mmu_mapear_pagina(p_tabla, 0x27000, p_tabla, 0x3);
     /*
     for(int p_tabla = 0x28000; p_tabla < 0x29000; p_tabla += 0x20)
-        mmu_inicializar_page_table(p_tabla, 1000* (p_tabla/0x20)); 
+        mmu_inicializar_page_table(p_tabla, 1000* (p_tabla/0x20));
     */
 
     /*Testeamos que desmapea esta pagina correctamente
         ej 3
     mmu_unmapear_pagina(0x3FF000, 0x27000);
-   */
+    */
     return 0x27000;
     /* Devolvemos el cr3  (eax) */
 }
@@ -81,10 +110,10 @@ uint mmu_xy2virtual(uint x, uint y) {
     return 0x8000000 + x * 0x1000 + y * 80 * 0x1000;
 }
 
-/*
+
 
 uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_tipo) {
-    //Copiar el codigo del perro al lugar donde empieza (dependiendo de A o B)
+    //Copiar el codigo del perro al lugar donde empieza 5(dependiendo de A o B)
     //puse 0x7FFFFFF por q es cacho de memoria virtual q no se va a usar en ningun momento segun el enunciado
 
     mmu_mapear_pagina(0x7FFFFFF,  k_cr3, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x3); //soy un genioh!
@@ -108,22 +137,28 @@ uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_
     mmu_copiar_pagina(codigo_tarea, 0x7FFFFFF);
     mmu_unmapear_pagina(0x7FFFFFF, k_cr3);
     mmu_mapear_pagina(mmu_xy2virtual(perro->jugador->x_cucha, perro->jugador->y_cucha),  k_cr3, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x1);
+
+
     //hacer una PD para el perro en una pagina libre, limpiarla y hacer <esto>
     uint pd_perro =  mmu_proxima_pagina_fisica_libre();
-    mmu_inicializar_pagina(pd_perro);
+    mmu_inicializar_pagina((uint *)pd_perro);
     int p_tabla = 0;
 
     for (p_tabla = 0x0; p_tabla < 0x3FFFFF; p_tabla += 0x1000)
-        mmu_mapear_pagina(p_tabla, pd_perro, p_tabla, 0x3);
-
+        mmu_mapear_pagina(p_tabla, pd_perro, p_tabla, 0x1); //, 0x3); le saque el read write por q me parece q no deberia poder escribir :D
     //  </esto>
 
-    //pedir pagina fisica libre(si no existe para ese jugador y mapearla a 0x400000)
+    // mapear dir compartida a 0x400000
+    if (index_jugador == JUGADOR_A) {
+        mmu_mapear_pagina(0x400000, pd_perro, memoria_A, 0x3);
+    } else {
+        mmu_mapear_pagina(0x400000, pd_perro, memoria_B, 0x3);
+    }
     //mapear posicion en el mapa como rw 0x401000
-
+    mmu_mapear_pagina(0x7FFFFFF,  pd_perro, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x3);
     return 0;
 }
-*/
+
 
 
 void mmu_mapear_pagina  (uint virtual, uint cr3, uint fisica, uint attrs) {
@@ -137,18 +172,19 @@ void mmu_mapear_pagina  (uint virtual, uint cr3, uint fisica, uint attrs) {
         uint proxima_pag = mmu_proxima_pagina_fisica_libre();
         mmu_inicializar_page_directory(pd, proxima_pag, 0x3);
         int tab_c = proxima_pag;
-        for(; tab_c < proxima_pag + 0x1000; tab_c +=0x4)
+        for (; tab_c < proxima_pag + 0x1000; tab_c += 0x4)
             mmu_inicializar_page_table((page_table *)tab_c, 0, 0);
     }
 
     uint posicion_DT = (virtual >> 12) & 0x3FF;/*FF3;*/
     uint add = pd->page_base_address_31_12 << 12;
-    page_table *pt = (page_table *)  (add + (posicion_DT *4));                    /* Muevo a la derecha 12 bits y limpio la parte alta */
+    page_table *pt = (page_table *)  (add + (posicion_DT * 4));                   /* Muevo a la derecha 12 bits y limpio la parte alta */
 
-    mmu_inicializar_page_table(pt, fisica, attrs); 
+    mmu_inicializar_page_table(pt, fisica, attrs);
     /* Copio la direccion fisica shifteada dejando 12 bits para los atributos y
-        le pego los mismos al final 
+        le pego los mismos al final
      */
+    tlbflush();
 }
 
 uint mmu_unmapear_pagina(uint virtual, uint cr3) {
@@ -162,9 +198,10 @@ uint mmu_unmapear_pagina(uint virtual, uint cr3) {
 
     uint add = pd->page_base_address_31_12 << 12;
 
-    page_table *pt = (page_table *) (add + (posicion_DT *4));
+    page_table *pt = (page_table *) (add + (posicion_DT * 4));
 
     pt->present = 0;
+    tlbflush();
     return 0;
 }
 

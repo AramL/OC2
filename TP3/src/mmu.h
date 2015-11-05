@@ -56,7 +56,7 @@ uint mmu_proxima_pagina_fisica_libre();
 void mmu_inicializar_pagina(uint * pagina);
 
 // copia los bytes
-void mmu_copiar_pagina    (uint src, uint dst);
+void mmu_copiar_pagina(uint src, uint dst);
 
 // pide una pagina para usar de directorio. Luego inicializa las entradas que iran con identity mapping.
 uint mmu_inicializar_dir_kernel();
