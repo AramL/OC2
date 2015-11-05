@@ -164,7 +164,7 @@ void screen_pintar_reloj_perro(perro_t *perro)
     }
 
     screen_pintar('1' + perro->index, C_BW, POSICION_RELOJES_F    , columna + perro->index * 2);
-    screen_pintar(                  c,  col, POSICION_RELOJES_F + 2, columna + perro->index * 2);
+    screen_pintar(c,  col, POSICION_RELOJES_F + 2, columna + perro->index * 2);
 }
 
 void screen_pintar_reloj_perros(jugador_t *j)
@@ -275,5 +275,16 @@ void screen_stop_game_show_winner(jugador_t *j) {
     // a partir de aca se termina el unviverso (STOP GAME)
     __asm __volatile( "cli\n" : : : );
     while(1){}
+}
+
+void mostrar_reloj() {
+	int i = 0;	
+	for(i=0;i<5;i++){
+		char c = reloj[i];
+		//screen_pintar(c,  0x5, 0, 70);
+		screen_pintar_rect(c, C_FG_WHITE, 0, 79, 1, 1);
+
+	}
+
 }
 
