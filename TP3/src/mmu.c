@@ -22,33 +22,15 @@ uint mmu_proxima_pagina_fisica_libre() {
 void mmu_inicializar() {
     memoria_A = mmu_proxima_pagina_fisica_libre();
     memoria_B = mmu_proxima_pagina_fisica_libre();
-/*
-    jugador_t * jugadiur;
+
+    jugador_t * jugadiur = (jugador_t *) mmu_proxima_pagina_fisica_libre();
     jugadiur->index = 0;
     jugadiur->x_cucha = 2;
     jugadiur->y_cucha = 2;
-    typedef struct perro_t
-    {
 
-        // ~~~ para ser completado ~~~
-        uint index;  // indice de 0 a 15
-        struct jugador_t *jugador;
-
-        uint id;     // id unica tarea
-        uint tipo;   // raza del perro
-        uint libre;  // libre: -true- slot disponible para lanzar perro  / -false- ya hay un perro vivo
-
-        uint x;
-        uint y;
-
-        uint huesos;
-        uint indice_reloj;
-
-    } perro_t;
-    perro_t perrin;
+    perro_t *perrin=(perro_t *) mmu_proxima_pagina_fisica_libre();
     perrin->index = 0;
     perrin->jugador = jugadiur;
-    */
 }
 
 

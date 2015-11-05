@@ -282,7 +282,7 @@ void mostrar_reloj() {
 	for(i=0;i<5;i++){
 		char c = reloj[i];
 		//screen_pintar(c,  0x5, 0, 70);
-		screen_pintar_rect(c, C_FG_WHITE, 0, 79, 1, 1);
+		screen_pintar_rect(c, C_FG_WHITE, 0, 78, 2, 2);
 
 	}
 

@@ -12,6 +12,7 @@ extern GDT_DESC
 extern IDT_DESC
 extern idt_inicializar
 extern screen_inicializar
+extern mmu_inicializar
 extern mmu_inicializar_dir_kernel
 extern resetear_pic
 extern habilitar_pic
@@ -95,8 +96,7 @@ BITS 32
     imprimir_texto_mp  inicializando_mp_msg, inicializando_mp_len, 0x07, 4, 0
 
     ; Inicializar el manejador de memoria
-    zcall mmu_inicializar_dir_kernel
-
+    call mmu_inicializar_dir_kernel
     mov cr3, eax
 
     ;xchg bx, bx
@@ -104,6 +104,7 @@ BITS 32
     mov eax, cr0
     or     eax, 0x80000000
     mov cr0, eax
+    call mmu_inicializar
     ;:xchg bx, bx
     ; Cargar directorio de paginas
 
