@@ -14,10 +14,7 @@ def liftData(ctype, filename, titulo, yaxis, *args):
 
 def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
-    if len(comp) > 10:
-        fig = plt.figure(figsize=(30, 5))
-    else:
-        fig = plt.figure(figsize=(15, 5))
+    fig = plt.figure(figsize=(24, 5))
     ax = fig.add_subplot(1,2,1)
     medians = []
     for v in comp:
@@ -50,10 +47,7 @@ def drawMedian(ctype, filename, titulo, yaxis, comp, *args):
 
 def drawStdDev(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
-    if len(comp) > 10:
-        fig = plt.figure(figsize=(30, 5))
-    else:
-        fig = plt.figure(figsize=(15, 5))
+    fig = plt.figure(figsize=(30, 5))
     ax = fig.add_subplot(1,2,1)
     stddev = []
     for v in comp:
@@ -84,10 +78,7 @@ def drawStdDev(ctype, filename, titulo, yaxis, comp, *args):
 
 def drawMean(ctype, filename, titulo, yaxis, comp, *args):
     plt.switch_backend('Qt4Agg')
-    if len(comp) > 10:
-        fig = plt.figure(figsize=(30, 5))
-    else:
-        fig = plt.figure(figsize=(15, 5))
+    fig = plt.figure(figsize=(24, 5))
     ax = fig.add_subplot(1,2,1)
     means = []
     for v in comp:

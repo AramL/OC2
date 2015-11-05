@@ -13,6 +13,8 @@ extern IDT_DESC
 extern idt_inicializar
 extern screen_inicializar
 extern mmu_inicializar_dir_kernel
+extern resetear_pic
+extern habilitar_pic
 ;; Defines
 %define NULL    0
 
@@ -97,12 +99,12 @@ BITS 32
 
     mov cr3, eax
 
-    xchg bx, bx
+    ;xchg bx, bx
     ; Inicializar el directorio de paginas
     mov eax, cr0
     or     eax, 0x80000000
     mov cr0, eax
-    xchg bx, bx
+    ;:xchg bx, bx
     ; Cargar directorio de paginas
 
     ; Habilitar paginacion
@@ -118,13 +120,18 @@ BITS 32
     ; Cargar IDT
     lidt [IDT_DESC]      ; igual que con la gdt
     ; Configurar controlador de interrupciones
-
+    call resetear_pic
+    call habilitar_pic
     ; Cargar tarea inicial
 
     ; Habilitar interrupciones
-    ;sti 
+
+    sti
+    ;xchg bx, bx 
     ; Inicializar pantalla
-    call screen_inicializar
+    
+    ;call screen_inicializar
+    
     ;call screen_pintar_puntajes
     ; Saltar a la primera tarea: Idle
 
