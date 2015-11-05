@@ -12,7 +12,6 @@
 
 /* Definicion de la GDT */
 /* -------------------------------------------------------------------------- */
-
 gdt_entry gdt[GDT_COUNT] = {
     /* Descriptor nulo*/
     /* Offset = 0x00 */
@@ -31,6 +30,7 @@ gdt_entry gdt[GDT_COUNT] = {
         (unsigned char)     0x00,           /* g            */
         (unsigned char)     0x00,           /* base[31:24]  */
     },
+
     [GDT_IDX_CS_CERO_DESC] = (gdt_entry) {
         (unsigned short)    0xF3FF,         /* limit[0:15]  */
         (unsigned short)    0x0000,         /* base[0:15]   */
