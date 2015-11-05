@@ -277,14 +277,18 @@ void screen_stop_game_show_winner(jugador_t *j) {
     while(1){}
 }
 
-void mostrar_reloj() {
-	int i = 0;	
-	for(i=0;i<5;i++){
-		char c = reloj[i];
-		//screen_pintar(c,  0x5, 0, 70);
-		screen_pintar_rect(c, C_FG_WHITE, 0, 78, 2, 2);
+int contador_reloj = 0;
 
-	}
+void mostrar_reloj() {
+		if(contador_reloj==5){
+			contador_reloj = 0;
+		}
+		char c = reloj[contador_reloj];
+		contador_reloj++;
+		//screen_pintar(c,  0x5, 0, 70);
+		screen_pintar_rect(c, C_FG_WHITE, 0, 78, 1, 1);
+
+	
 
 }
 
