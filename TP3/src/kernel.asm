@@ -133,11 +133,11 @@ BITS 32
 
     sti
     ;xchg bx, bx 
-     Inicializar pantalla
+    ;Inicializar pantalla
     
-    ;call screen_inicializar
+    call screen_inicializar
     
-    ;call screen_pintar_puntajes
+    call screen_pintar_puntajes
     ; Saltar a la primera tarea: Idle
 
     ; Ciclar infinitamente (por si algo sale mal...)
