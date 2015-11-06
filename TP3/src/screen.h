@@ -87,5 +87,8 @@ void screen_pintar_relojes();
 void screen_actualizar_posicion_mapa(uint x, uint y);
 void screen_stop_game_show_winner(jugador_t *j);
 void mostrar_reloj();
+void pintar_atender_teclado(unsigned char);
+
+
 
 #endif  /* !__SCREEN_H__ */

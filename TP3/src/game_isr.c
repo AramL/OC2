@@ -35,6 +35,7 @@ void game_atender_tick(perro_t *perro)
 }
 
 
+
 #define KB_w        0x11 // 0x91
 #define KB_s        0x1f // 0x9f
 #define KB_a        0x1e // 0x9e
@@ -62,6 +63,33 @@ void game_atender_tick(perro_t *perro)
 
 #define KB_shiftL   0x2a // 0xaa
 #define KB_shiftR   0x36 // 0xb6
+
+void atender_teclado(unsigned char tecla){
+	
+	switch (tecla)
+	{
+		// ~~~ completar ~~~
+		case KB_q: pintar_atender_teclado('q'); break;
+
+		case KB_a: pintar_atender_teclado('a'); break;
+
+
+		case KB_k: pintar_atender_teclado('k'); break;
+
+		case KB_z: pintar_atender_teclado('z'); break;
+		case KB_x: pintar_atender_teclado('x'); break;
+		case KB_c: pintar_atender_teclado('c'); break;
+
+		case KB_b: pintar_atender_teclado('b'); break;
+		case KB_n: pintar_atender_teclado('n'); break;
+		case KB_m: pintar_atender_teclado('m'); break;
+		default:break;
+	}
+	
+	
+}
+
+
 
 
 // ~~~ debe atender la interrupción de teclado, se le pasa la tecla presionada
