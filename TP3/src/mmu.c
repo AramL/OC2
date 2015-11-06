@@ -19,29 +19,33 @@ uint mmu_proxima_pagina_fisica_libre() {
     return ret;
 }
 
-void mmu_inicializar() {
+//void mmu_inicializar() {
+uint mmu_inicializar() {
     memoria_A = mmu_proxima_pagina_fisica_libre();
     memoria_B = mmu_proxima_pagina_fisica_libre();
-
+/*
+Esto era para para testear si funcaba inicializar memoria perro
     jugador_t * jugadiur = (jugador_t *) mmu_proxima_pagina_fisica_libre();
     jugadiur->index = 0;
     jugadiur->x_cucha = 2;
     jugadiur->y_cucha = 2;
 
-    perro_t *perrin=(perro_t *) mmu_proxima_pagina_fisica_libre();
+    perro_t *perrin = (perro_t *) mmu_proxima_pagina_fisica_libre();
     perrin->index = 0;
     perrin->jugador = jugadiur;
+    return mmu_inicializar_memoria_perro(perrin, 0, 0 );
+    */
 }
 
 
 
-void mmu_copiar_pagina    (uint src, uint dst) {
+void mmu_copiar_pagina(uint src, uint dst) {
     uint* source = (uint *)src;
     uint* destination = (uint *) dst;
     uint i = 0;
     while ( i < 1024) {
         destination[i] = source[i];
-        i++;
+        i += sizeof(uint);
     }
 }
 
@@ -97,8 +101,8 @@ uint mmu_xy2virtual(uint x, uint y) {
 uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_tipo) {
     //Copiar el codigo del perro al lugar donde empieza 5(dependiendo de A o B)
     //puse 0x7FFFFFF por q es cacho de memoria virtual q no se va a usar en ningun momento segun el enunciado
-
-    mmu_mapear_pagina(0x7FFFFFF,  k_cr3, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x3); //soy un genioh!
+    uint pagina_a_mapear = 0x7FFF000;
+    mmu_mapear_pagina(pagina_a_mapear,  k_cr3, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x3); //soy un genioh!
     uint codigo_tarea;
     int codigo = index_jugador * 10 + index_tipo;
     switch (codigo) {
@@ -116,8 +120,8 @@ uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_
         break;
     }
 
-    mmu_copiar_pagina(codigo_tarea, 0x7FFFFFF);
-    mmu_unmapear_pagina(0x7FFFFFF, k_cr3);
+    mmu_copiar_pagina(codigo_tarea, pagina_a_mapear);
+    mmu_unmapear_pagina(pagina_a_mapear, k_cr3);
     mmu_mapear_pagina(mmu_xy2virtual(perro->jugador->x_cucha, perro->jugador->y_cucha),  k_cr3, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x1);
 
 
@@ -138,12 +142,12 @@ uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_
     }
     //mapear posicion en el mapa como rw 0x401000
     mmu_mapear_pagina(0x7FFFFFF,  pd_perro, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x3);
-    return 0;
+    return pd_perro;
 }
 
 
 
-void mmu_mapear_pagina  (uint virtual, uint cr3, uint fisica, uint attrs) {
+void mmu_mapear_pagina(uint virtual, uint cr3, uint fisica, uint attrs) {
     cr3 = cr3 & 0xFFFFF000;
     uint pduint =  cr3;
     uint posicion_DR = (virtual >> 22) & 0x3FF;/*FF3;*/                                               /* Shifteo a la derecha 22 bits para obtener el offset en el DR */

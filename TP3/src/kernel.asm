@@ -102,9 +102,13 @@ BITS 32
     ;xchg bx, bx
     ; Inicializar el directorio de paginas
     mov eax, cr0
-    or     eax, 0x80000000
+    or  eax, 0x80000000
     mov cr0, eax
-    call mmu_inicializar
+    ;<esto estaba hecho para testear que ande bien inicializar_memoria_perro>
+    ;call mmu_inicializar
+    ;mov cr3,eax
+    ;imprimir_texto_mp  " ", 1, 0x33, 0, 0
+    ;</esto>
     ;:xchg bx, bx
     ; Cargar directorio de paginas
 
@@ -129,9 +133,9 @@ BITS 32
 
     sti
     ;xchg bx, bx 
-    ; Inicializar pantalla
+     Inicializar pantalla
     
-    call screen_inicializar
+    ;call screen_inicializar
     
     ;call screen_pintar_puntajes
     ; Saltar a la primera tarea: Idle

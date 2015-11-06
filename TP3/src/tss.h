@@ -52,7 +52,7 @@ typedef struct str_tss {
     unsigned short  ldt;
     unsigned short  unused10;
     unsigned short  dtrap;
-    unsigned short  iomap;
+    unsigned short  iomap;//poner con FFFF siempre
 } __attribute__((__packed__, aligned (8))) tss;
 
 void tss_inicializar();

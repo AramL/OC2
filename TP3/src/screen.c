@@ -287,13 +287,8 @@ void mostrar_reloj() {
 		contador_reloj++;
 		//screen_pintar(c,  0x5, 0, 70);
 		screen_pintar_rect(c, C_FG_WHITE, 0, 79, 1, 1);
-
-	
-
 }
 
 void pintar_atender_teclado(unsigned char c){
 	screen_pintar_rect(c, C_FG_WHITE, 0, 78, 1, 1);	
 	}
-
-
