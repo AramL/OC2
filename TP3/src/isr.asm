@@ -20,6 +20,7 @@ extern sched_tarea_actual
 
 extern screen_pintar
 extern game_atender_tick
+extern atender_teclado
 ;;
 ;; Definición de MACROS
 ;; -------------------------------------------------------------------------- ;;
@@ -82,7 +83,7 @@ global _isr33
         call fin_intr_pic1
         in al, 0x60
         push eax
-        ;call anteder_teclado
+        call atender_teclado
         ;xchg bx, bx     
         pop eax
         popad  
