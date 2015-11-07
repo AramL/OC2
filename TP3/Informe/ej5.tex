@@ -1,1 +1,104 @@
 \section*{Ejercicio 5.}
+
+\noindent Completamos el codigo para las interrupciones ISR32, ISR33 y ISR46 que son las interrupciones de reloj, de teclado y la interrupcion 46 respectivamente .
+
+
+\begin{codesnippet}
+\begin{verbatim}
+_isr32:
+        pushad
+        call fin_intr_pic1
+        sub esp, 4
+        call game_atender_tick
+        add esp, 4
+        popad  
+        iret
+		\end{verbatim}
+\end{codesnippet}
+
+\noindent Este codigo  guarda el estado de los registros, llama a la funcion \texttt{fin\_intr\_pic1} , alinea la pila y luego llama a \texttt{game\_atender\_tick} , que es una funcion que va atender esta interrupcion.\\
+\\
+Analogamente la interrupcion para teclado:
+
+\begin{codesnippet}
+\begin{verbatim}
+    _isr33:
+        pushad
+        call fin_intr_pic1
+        in al, 0x60
+        push eax
+        call atender_teclado
+        pop eax
+        popad  
+        iret    
+    \end{verbatim}
+\end{codesnippet}
+
+\noindent Donde \texttt{atender\_teclado} va a ser la funcion que atienda la interrupcion de teclado. Esta funcion recibe por parametro el codigo de caracter que esta siendo presionado, el cual pusheamos a la pila.
+\\
+\\
+La interrupcion 46 solo va a mover al registro eax el valor hexadecimal 0x42.
+
+\begin{codesnippet}
+\begin{verbatim}
+_isr46:
+    pushad
+    call fin_intr_pic1
+    mov eax,0x42
+    popad
+    iret    
+    \end{verbatim}
+\end{codesnippet}
+
+\newpage
+
+\noindent Luego completamos las funciones \texttt{game\_atender\_tick} y \texttt{atender\_teclado}.
+
+\begin{codesnippet}
+\begin{verbatim}
+void game_atender_tick(perro_t *perro)
+{
+    mostrar_reloj();
+}
+\end{verbatim}
+\end{codesnippet}
+
+\noindent Esta funcion, asi misma llama a la funcion \texttt{mostrar\_reloj} que esta defininida en screen.c
+
+\begin{codesnippet}
+\begin{verbatim}
+void mostrar_reloj() {
+        if(contador_reloj==5){
+           contador_reloj = 0;
+        }
+        char c = reloj[contador_reloj];
+        contador_reloj++;
+        screen_pintar_rect(c, C_FG_WHITE, 0, 79, 1, 1);
+}
+\end{verbatim}
+\end{codesnippet}
+
+\noindent Esta funcion usa la variable global \texttt{contador\_reloj} la cual se inicializa en 0, e itera por los caracteres definidos en el array \texttt{reloj}, luego llama a la funcion \texttt{screen\_pintar\_rect} la cual pinta en pantalla el caracter seleccionado, de color blanco en la posicion (0,79), en un cuadrado de 1x1.
+\\
+\\
+La funcion \texttt{atender\_teclado} tambien definida en screen.h, es basicamente un switch el cual dependiendo de que caracter llega por parametro, llama a la funcion \texttt{pintar\_atender\_teclado} con el codigo ascii correspondiente a esa tecla.
+
+\begin{codesnippet}
+\begin{verbatim}
+void atender_teclado(unsigned char tecla){
+   switch (tecla) {
+        case KB_q: pintar_atender_teclado('q'); break;
+        case KB_a: pintar_atender_teclado('a'); break;
+        case KB_k: pintar_atender_teclado('k'); break;
+        case KB_z: pintar_atender_teclado('z'); break;
+        case KB_x: pintar_atender_teclado('x'); break;
+        case KB_c: pintar_atender_teclado('c'); break;
+        case KB_b: pintar_atender_teclado('b'); break;
+        case KB_n: pintar_atender_teclado('n'); break;
+        case KB_m: pintar_atender_teclado('m'); break;
+        default:break;
+    }
+}
+
+\end{verbatim}
+\end{codesnippet}
