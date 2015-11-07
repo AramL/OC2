@@ -62,42 +62,20 @@
 \tableofcontents
 
 \newpage
+\addcontentsline{toc}{section}{Ejercicio 1.}
+\input{ej1}
+\addcontentsline{toc}{section}{Ejercicio 2.}
+\input{ej2}
+\addcontentsline{toc}{section}{Ejercicio 3.}
+\input{ej3}
+\addcontentsline{toc}{section}{Ejercicio 4.}
+\input{ej4}
+\addcontentsline{toc}{section}{Ejercicio 5.}
+\input{ej5}
+\addcontentsline{toc}{section}{Ejercicio 6.}
+\input{ej6}
+\addcontentsline{toc}{section}{Ejercicio 7.}
+\input{ej7}
 
-\section{Ejercicio 1.}
-\noindent Básicamente armamos la tabla de gdts, empezando en la posición $8$ del array, con 4 segmentos, dos de codigo nivel $0$ y $3$ y dos de datos nivel $0$ y nivel $3$, llamados respectivamente:
-
-\begin{codesnippet}
-\begin{verbatim}
-GDT_IDX_CS_CERO_DESC
-GDT_IDX_CS_TRES_DESC
-GDT_IDX_DS_CERO_DESC
-GDT_IDX_DS_TRES_DESC
-\end{verbatim}
-\end{codesnippet}
-
-\noindent Excepto el dpl y el tipo todos estos segmentos tienen un limite de 0x1E400, con base en 0x0000, ya que esto nos da 0x1F400 que son 500mb de memoria, esto es porque tenemos la granularidad en $1$ es decir contamos de a $4$k.
-
-Para pasar a modo protegido lo que hacemos es
-\begin{codesnippet}
-\begin{verbatim}
-    jmp 0x40:modoprotegido
-BITS 32
-    modoprotegido:
-    mov eax, 0x50
-    mov ss, ax
-    mov ds, ax
-    mov gs, ax
-    mov fs, ax
-    mov es, ax
-    mov ebp, 0x1337
-    mov esp, 0x28000
-\end{verbatim}
-\end{codesnippet}
-
-\noindent Hacemos un far jump con el offset para CS tenga el valor de nuestro codigo en nivel $0$ que es $8 << 3 = 0x40$ y ponemos el comando BITS 32 para que el ensamblador sepa que las proximas instrucciones sean generadas para un procesador de 32 bits, seteamos todos los registros de segmentos con el de datos de nivel $0$ ($10 << 3 = 0x50$) y definimos el stack esp en $0x28000$ como pide el enunciado. 
-\section{Ejercicio 2.}
-\section{Ejercicio 3.}
-\section{Ejercicio 4.}
-\section{Ejercicio 5.}
 
 \end{document}

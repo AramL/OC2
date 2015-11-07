@@ -1,0 +1,94 @@
+\section*{Ejercicio 3.}
+
+\noindent Para este punto programamos la función mmu\_mapear\_pagina:
+\begin{codesnippet}
+\begin{verbatim}
+void mmu_mapear_pagina(uint virtual, uint cr3, uint fisica, uint attrs) {
+    cr3 = cr3 & 0xFFFFF000;
+    uint pduint =  cr3;
+    uint posicion_DR = (virtual >> 22) & 0x3FF; 
+    pduint = pduint + (posicion_DR * 4);
+    page_directory *pd = (page_directory *)pduint;
+\end{verbatim}
+\end{codesnippet}
+
+\noindent Esta función recibe una dirección virtual, un cr3, una dirección física y los atributos. Primero conseguimos la dirección de cr3 por medio de un and contra 0xFFFFF000 y la guardamos en pduint. Luego shifteamos la dirección virtual a la derecha 22 bits para tener la posición de la entrada del directorio de páginas. Una vez que tenemos este valor se lo sumamos a pduint y casteamos el resultado a page\_directory *, donde page\_directory es el siguiente struct:
+
+\begin{codesnippet}
+\begin{verbatim}
+typedef struct page_directory {
+    unsigned char   present:1;
+    unsigned char   read_write:1;
+    unsigned char   user_supervisor:1;
+    unsigned char   page_level_write_through:1;
+    unsigned char   page_level_cache_disabled:1;
+    unsigned char   accessed:1;
+    unsigned char   ignored:1;
+    unsigned char   page_size:1;
+    unsigned char   global:1;
+    unsigned char   available_11_9:3;
+    unsigned int     page_base_address_31_12:20;
+} __attribute__((__packed__, aligned (4))) page_directory;
+\end{verbatim}
+\end{codesnippet}
+
+Luego nos fijamos si está presente, de no estarlo le pedimos una página física libre a mmu\_proxima\_fisica\_libre y la inicializamos con la función mmu\_inicializar\_page\_directory:
+\begin{codesnippet}
+\begin{verbatim}
+void mmu_inicializar_page_directory(page_directory * dir, uint addr, uint attrs) {
+    dir->present = attrs & 0x1;
+    dir->read_write =  (attrs >> 1) & 0x1;
+    dir->user_supervisor = (attrs >> 2) & 0x1;                  
+    dir->page_level_write_through = (attrs >> 3) & 0x1;
+    dir->page_level_cache_disabled = (attrs >> 4) & 0x1;
+    dir->accessed =  (attrs >> 5) & 0x1;
+    dir->ignored = (attrs >> 6) & 0x1;
+    dir->page_size   = (attrs >> 7) & 0x1;             
+    dir->global = (attrs >> 8) & 0x1;
+    dir->available_11_9 = (attrs >> 9) & 0x3;
+    dir->page_base_address_31_12 = addr >> 12;
+}
+\end{verbatim}
+\end{codesnippet}
+\noindent Luego usando la función mmu\_inicializar\_page\_table
+\begin{codesnippet}
+\begin{verbatim}
+void mmu_inicializar_page_table(page_table *tab, uint addr, uint attrs) {
+    tab->present = attrs & 0x1;
+    tab->read_write =  (attrs >> 1) & 0x1;
+    tab->user_supervisor = (attrs >> 2) & 0x1;                  
+    tab->page_level_write_through = (attrs >> 3) & 0x1;
+    tab->page_level_cache_disabled = (attrs >> 4) & 0x1;
+    tab->accessed =  (attrs >> 5) & 0x1;
+    tab->dirty_bit = (attrs >> 6) & 0x1;
+    tab->page_table_attr_indx = (attrs >> 7) & 0x1;             
+    tab->global = (attrs >> 8) & 0x1;
+    tab->available_11_9 = (attrs >> 9) & 0x3;
+    tab->page_base_address_31_12 = addr >> 12;
+}
+\end{verbatim}
+\end{codesnippet}
+ \noindent Ponemos todas las entradas de la page table a la que apunta, en no presente y con atributos en 0.
+\begin{codesnippet}
+\begin{verbatim}
+    if (pd->present == NULL) {
+        uint proxima_pag = mmu_proxima_pagina_fisica_libre();
+        mmu_inicializar_page_directory(pd, proxima_pag, 0x3);
+        int tab_c = proxima_pag;
+        for (; tab_c < proxima_pag + 0x1000; tab_c += 0x4)
+            mmu_inicializar_page_table((page_table *)tab_c, 0, 0);
+    }
+\end{verbatim}
+\end{codesnippet}
+
+Por último shifteamos la dirección virtual a la derecha 12 bits y lo guardamos en posicion\_DT esto nos va a servir para obtener la entrada en la tabla de páginas, luego shifteamos la entrada del directorio de página 12 bits a la izquierda para obtener la dirección base (múltiplo de 4k) y se lo sumamos a posicion\_DT, por último lo casteamos a tipo page\_table e inicializamos la página con la dirección física y los atributos que nos habian pasado usando de vuelta mmu\_inicializar\_page\_table.
+
+\begin{codesnippet}
+\begin{verbatim}
+    uint posicion_DT = (virtual >> 12) & 0x3FF;
+    uint add = pd->page_base_address_31_12 << 12;
+    page_table *pt = (page_table *)  (add + (posicion_DT * 4));                  
+    mmu_inicializar_page_table(pt, fisica, attrs);
+}
+\end{verbatim}
+\end{codesnippet}

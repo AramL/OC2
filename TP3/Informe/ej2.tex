@@ -1,0 +1,75 @@
+\section*{Ejercicio 2.}
+
+\noindent Tenemos que definir las interrupciones, para esto usamos el macro IDT\_ENTRY, este se encuentra en idt.c y lo llamamos con los siguientes valores adentro de la función idt\_inicializar, donde el primer valor es el número de la interrupción y el segundo el del dpl:
+
+\begin{codesnippet}
+\begin{verbatim}
+    IDT_ENTRY(0, 0);     /* Divide error                  */
+    IDT_ENTRY(2, 0);     /* NMI Interrupt                 */
+    IDT_ENTRY(3, 0);     /* Breakpoint - INT 3            */
+    IDT_ENTRY(4, 0);     /* Overflow                      */
+    IDT_ENTRY(5, 0);     /* BOUND Range Exceeded          */
+    IDT_ENTRY(6, 0);     /* Invalid opcode                */
+    IDT_ENTRY(7, 0);     /* Device Not Available          */
+    IDT_ENTRY(8, 0);     /* Double Fault                  */
+    IDT_ENTRY(9, 0);     /* Coprocessor segment overrun   */
+    IDT_ENTRY(10, 0);    /* Invalid TSS                   */
+    IDT_ENTRY(11, 0);    /* Segment not present           */
+    IDT_ENTRY(12, 0);    /* Stack-Segment Fault           */
+    IDT_ENTRY(13, 0);    /* General Protection            */
+    IDT_ENTRY(14, 0);    /* Page Fault                    */
+    IDT_ENTRY(16, 0);    /* x87 FPU Floating-Point Error  */
+    IDT_ENTRY(17, 0);    /* Alignment Check               */
+    IDT_ENTRY(18, 0);    /* Machine Check                 */
+    IDT_ENTRY(19, 0);    /* SIMD Floating-Point Exception */
+\end{verbatim}
+\end{codesnippet}
+
+\noindent Una vez echo esto en isr.asm usamos el macro 
+
+\begin{codesnippet}
+\begin{verbatim}
+%macro ISR 1
+global _isr%1
+
+_isr%1:
+    mov eax, %1
+    jmp $
+
+%endmacro
+\end{verbatim}
+\end{codesnippet}
+
+\noindent Para definir las 18 interrupciones.
+
+\begin{codesnippet}
+\begin{verbatim}
+ISR 0
+.
+.
+.
+ISR 19
+\end{verbatim}
+\end{codesnippet}
+
+
+\noindent Luego de esto en kernel.asm pusimos el siguiente codigo:
+
+\begin{codesnippet}
+\begin{verbatim}
+    call idt_inicializar
+    lidt [IDT_DESC]      ; igual que con la gdt
+\end{verbatim}
+\end{codesnippet}
+
+\noindent Es decir inicializamos la idt y la cargamos a su registro correspondiente. Para probar que esto andaba hicimos una división por zero:
+
+\begin{codesnippet}
+\begin{verbatim}
+    mov eax, 0
+    mov ebx, 0
+    div ebx
+\end{verbatim}
+\end{codesnippet}
+
+\noindent Lo cual hizo saltar la excepción 0, de divide error.

@@ -35,6 +35,8 @@ Esto era para para testear si funcaba inicializar memoria perro
     perrin->jugador = jugadiur;
     return mmu_inicializar_memoria_perro(perrin, 0, 0 );
     */
+
+    return 0;
 }
 
 
