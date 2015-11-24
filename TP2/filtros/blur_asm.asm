@@ -203,7 +203,7 @@ blur_asm:
     cvtps2dq xmm2, xmm2                 ;convierto a dw en xmm2
     packusdw xmm2, xmm8                 ;empaqueto en words
     packuswb xmm2, xmm8                 ;empaqueto en bytes
-
+    
     movd     [ r13 + rbx ], xmm2           ;muevo a memoria
 
     cvtps2dq xmm7, xmm7                 ;convierto a dw en xmm7

@@ -14,15 +14,6 @@ rm -rf ./python/tests_ver_asm/*
 git checkout ./python/tests_ver_asm/placeholder
 
 
-
-
-
-
-
-
-
-
-
 make clean
 
 make OPTFLAGS=-O3
@@ -183,7 +174,27 @@ done
 echo "" 
 
 
+make clean
 
+make CC=icc OPTFLAGS=-O3
+
+
+
+echo "Corriendo diferencia C icc -O3"
+echo ""
+echo "" >> ./python/tests_ver_asm/test_difrencia_ASM_versions
+for i in {1..2000} 
+do 
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests_ver_asm/test_difrencia_ASM_versions
+  echo -n " " >> ./python/tests_ver_asm/test_difrencia_ASM_versions
+done
+
+echo "" 
+
+
+
+
+reset
 
 make clean
 
@@ -202,6 +213,28 @@ done
 
 echo "" 
 
-python ./python/graficarAlt.py 7 ./python/tests_ver_asm/test_difrencia_ASM_versions "diferencia ASM" "CPU Ticks" "asm (SSE4)" "asm v5" "asm v4" "asm v3" "asm v2" "asm v1"  "gcc"
+
+make clean
+
+make CC=clang OPTFLAGS=-O3
+
+
+
+echo "Corriendo diferencia C clang -O3"
+echo ""
+echo "" >> ./python/tests_ver_asm/test_difrencia_ASM_versions
+for i in {1..2000} 
+do 
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests_ver_asm/test_difrencia_ASM_versions
+  echo -n " " >> ./python/tests_ver_asm/test_difrencia_ASM_versions
+done
+
+echo "" 
+
+reset
+
+echo "graficando"
+
+python ./python/graficarAlt.py 9 ./python/tests_ver_asm/test_difrencia_ASM_versions "diferencia ASM" "CPU Ticks" "asm (SSE4)" "asm v5" "asm v4" "asm v3" "asm v2" "asm v1" "icc" "gcc" "clang"
 
 

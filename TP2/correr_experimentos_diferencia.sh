@@ -91,6 +91,34 @@ echo ""
 
 reset
 
+
+make clean
+
+echo " "
+echo "**Compilando icc -Os"
+
+
+make CC=icc OPTFLAGS=-Os
+
+
+if [ $? -ne 0 ]; then
+  echo "  **Error de compilacion"
+  exit 1
+fi
+
+
+echo "" >> ./python/tests/test_difrencia_ASM_C
+
+for i in {1..1000} 
+do 
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  echo -n " " >> ./python/tests/test_difrencia_ASM_C
+done
+
+reset
+
+make clean
+
 echo " "
 echo "**Compilando gcc -Os"
 
@@ -141,12 +169,35 @@ done
 
 
 
-
-
 reset
 
 make clean
 
+echo " "
+echo "**Compilando icc -O3s"
+
+
+make CC=icc OPTFLAGS=-O3
+
+
+if [ $? -ne 0 ]; then
+  echo "  **Error de compilacion"
+  exit 1
+fi
+
+
+echo "" >> ./python/tests/test_difrencia_ASM_C
+
+for i in {1..1000} 
+do 
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  echo -n " " >> ./python/tests/test_difrencia_ASM_C
+done
+
+reset
+
+
+make clean
 
 
 echo " "
@@ -196,6 +247,31 @@ do
   echo -n " " >> ./python/tests/test_difrencia_ASM_C
 done
 
+
+reset
+
+make clean
+
+echo " "
+echo "**Compilando icc -O2"
+
+
+make CC=icc OPTFLAGS=-O2
+
+
+if [ $? -ne 0 ]; then
+  echo "  **Error de compilacion"
+  exit 1
+fi
+
+
+echo "" >> ./python/tests/test_difrencia_ASM_C
+
+for i in {1..1000} 
+do 
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  echo -n " " >> ./python/tests/test_difrencia_ASM_C
+done
 
 
 reset
@@ -260,6 +336,33 @@ reset
 
 make clean
 
+echo " "
+echo "**Compilando icc -O1"
+
+
+make CC=icc OPTFLAGS=-O1
+
+
+if [ $? -ne 0 ]; then
+  echo "  **Error de compilacion"
+  exit 1
+fi
+
+
+echo "" >> ./python/tests/test_difrencia_ASM_C
+
+for i in {1..1000} 
+do 
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  echo -n " " >> ./python/tests/test_difrencia_ASM_C
+done
+
+
+
+reset
+
+make clean
+
 
 echo " "
 echo "**Compilando gcc -O1"
@@ -311,6 +414,32 @@ done
 
 echo "" 
 
+reset
+
+make clean
+
+echo " "
+echo "**Compilando icc -O0"
+
+
+make CC=icc OPTFLAGS=-O0
+
+
+if [ $? -ne 0 ]; then
+  echo "  **Error de compilacion"
+  exit 1
+fi
+
+
+echo "" >> ./python/tests/test_difrencia_ASM_C
+
+for i in {1..1000} 
+do 
+  ./build/tp2 -i c diff ./experimentos/tests_size/game-2308x2308.bmp  ./experimentos/tests_size/pokemon-2308x2308.bmp | cut -d':' -f2 | sed '10,10!d' | xargs echo -n | tee -a ./python/tests/test_difrencia_ASM_C
+  echo -n " " >> ./python/tests/test_difrencia_ASM_C
+done
+
+reset 
 make clean
 
 echo " "
@@ -372,7 +501,7 @@ echo " "
 echo "**graficando"
 
 
-python ./python/graficarAlt.py 12 ./python/tests/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"   "asm (SSE4)" "asm" "gcc (-Os)" "clang (-Os)" "gcc (-O3)" "clang (-O3)" "gcc (-O2)" "clang (-O2)" "gcc (-O1)" "clang (-O1)" "gcc (-O0)" "clang (-O0)" 
+python ./python/graficarAlt.py 17 ./python/tests/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"   "asm (SSE4)" "asm" "icc (-Os)" "gcc (-Os)" "clang (-Os)" "icc (-O3)" "gcc (-O3)" "clang (-O3)" "icc (-O2)" "gcc (-O2)" "clang (-O2)" "icc (-O1)" "gcc (-O1)" "clang (-O1)" "icc (-O0)" "gcc (-O0)" "clang (-O0)" 
 #python ./python/graficarAlt.py 12 ./python/tests/test_difrencia_ASM_C "diferencia (ASM vs C)" "CPU Ticks"  "asm (AVX)" "asm (SIMD)" "asm" "gcc (-Os)" "clang (-Os)" "gcc (-O3)" "clang (-O3)" "gcc (-O2)" "clang (-O2)" "gcc (-O1)" "clang (-O1)" "gcc (-O0)" "clang (-O0)" 
 
 echo " "
