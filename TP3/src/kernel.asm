@@ -96,14 +96,13 @@ BITS 32
     imprimir_texto_mp  inicializando_mp_msg, inicializando_mp_len, 0x07, 4, 0
 
     ; Inicializar el manejador de memoria
-    call mmu_inicializar_dir_kernel
-    mov cr3, eax
+    call mmu_inicializar
+
 
     ;xchg bx, bx
     ; Inicializar el directorio de paginas
-    mov eax, cr0
-    or  eax, 0x80000000
-    mov cr0, eax
+    call mmu_inicializar_dir_kernel
+
     ;<esto estaba hecho para testear que ande bien inicializar_memoria_perro>
     ;call mmu_inicializar
     ;mov cr3,eax
@@ -113,11 +112,14 @@ BITS 32
     ; Cargar directorio de paginas
 
     ; Habilitar paginacion
-
+    mov cr3,eax
+    mov eax, cr0
+    or  eax, 0x80000000
+    mov cr0, eax
     ; Inicializar tss
-
     ; Inicializar tss de la tarea Idle
-
+    call tss_inicializar
+    
     ; Inicializar el scheduler
 
     ; Inicializar la IDT
@@ -128,7 +130,7 @@ BITS 32
     call resetear_pic
     call habilitar_pic
     ; Cargar tarea inicial
-
+    
     ; Habilitar interrupciones
 
     sti

@@ -1,6 +1,6 @@
 /* ** por compatibilidad se omiten tildes **
 ================================================================================
- TRABAJO PRACTICO 3 - System Programming - ORGANIZACION DE COMPUTADOR II - FCEN
+  TRABAJO PRACTICO 3 - System Programming - ORGANIZACION DE COMPUTADOR II - FCEN
 ================================================================================
 
     Definiciones globales del sistema.
@@ -29,7 +29,7 @@ typedef unsigned int   uint;
 #define KERNEL                  0x00001200 /* direccion fisica de comienzo del kernel */
 
 #define k_cr3					0x27000
-
+#define TSS_KERNEL_LIMIT		103 //por que cada tss son 104 bytes
 /* Indices en la gdt */
 /* -------------------------------------------------------------------------- */
 #define GDT_COUNT 30
@@ -46,6 +46,6 @@ typedef unsigned int   uint;
 
 /* Selectores de segmentos */
 /* -------------------------------------------------------------------------- */
-
-
+#define GDT_TSS_TAREA_INICIAL		13
+#define GDT_TSS_IDLE			14
 #endif  /* !__DEFINES_H__ */
