@@ -16,6 +16,7 @@ extern mmu_inicializar
 extern mmu_inicializar_dir_kernel
 extern resetear_pic
 extern habilitar_pic
+extern tss_inicializar
 ;; Defines
 %define NULL    0
 
