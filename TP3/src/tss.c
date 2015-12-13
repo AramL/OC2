@@ -16,6 +16,8 @@ tss tss_idle;
 tss tss_jugadorA[MAX_CANT_PERROS_VIVOS];
 tss tss_jugadorB[MAX_CANT_PERROS_VIVOS];
 
+void llenar_tss_idle(tss *);
+
 void tss_inicializar() {
     gdt[GDT_TSS_TAREA_INICIAL] = (gdt_entry) {
         (unsigned short)    TSS_KERNEL_LIMIT & 0xffff,                          /* limit[15:0]  */
@@ -51,35 +53,9 @@ void tss_inicializar() {
 
 
     //Inicializando la tss de Idle.
-    tss_idle.unused0 = 0;
-    tss_idle.esp0 = 0x27000; 
-    tss_idle.ss0 = 0x48;
-    tss_idle.unused1 = 0;
-    tss_idle.esp1 = 0;
-    tss_idle.ss1 = 0;
-    tss_idle.unused2 = 0;
-    tss_idle.esp2 = 0;
-    tss_idle.ss2 = 0;
-    tss_idle.unused3 = 0;
-    tss_idle.cr3 = rcr3();
-    tss_idle.eip = 0x16000; 
-    tss_idle.eflags = 0x202; 
-    tss_idle.esp = 0x27000;
-    tss_idle.ebp = 0x27000;
-    tss_idle.es = 0x48;
-    tss_idle.unused4 = 0;
-    tss_idle.cs = 0x40;
-    tss_idle.unused5 = 0;
-    tss_idle.ss = 0x48;
-    tss_idle.unused6 = 0;
-    tss_idle.ds = 0x48;
-    tss_idle.unused7 = 0;
-    tss_idle.fs = 0x60;
-    tss_idle.unused8 = 0;
-    tss_idle.gs = 0x48;
-    tss_idle.unused9 = 0;
-    tss_idle.unused10 = 0;
-    tss_idle.iomap = 0xFFFF;
+    llenar_tss_idle(&tss_idle);
+    llenar_tss_idle(&tss_inicial);
+
 }
 //0x1000
 //
@@ -116,3 +92,35 @@ void llenar_descriptor_tss_perro(tss* tss_perro, perro_t *perro, int index_jugad
     tss_perro->iomap = 0xFFFF; 
 }
 
+void llenar_tss_idle(tss* idle){
+    idle->unused0 = 0;
+    idle->esp0 = 0x27000; 
+    idle->ss0 = 0x48;
+    idle->unused1 = 0;
+    idle->esp1 = 0;
+    idle->ss1 = 0;
+    idle->unused2 = 0;
+    idle->esp2 = 0;
+    idle->ss2 = 0;
+    idle->unused3 = 0;
+    idle->cr3 = rcr3();
+    idle->eip = 0x16000; 
+    idle->eflags = 0x202; 
+    idle->esp = 0x27000;
+    idle->ebp = 0x27000;
+    idle->es = 0x48;
+    idle->unused4 = 0;
+    idle->cs = 0x40;
+    idle->unused5 = 0;
+    idle->ss = 0x48;
+    idle->unused6 = 0;
+    idle->ds = 0x48;
+    idle->unused7 = 0;
+    idle->fs = 0x60;
+    idle->unused8 = 0;
+    idle->gs = 0x48;
+    idle->unused9 = 0;
+    idle->unused10 = 0;
+    idle->iomap = 0xFFFF;
+
+}
