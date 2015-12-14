@@ -8,7 +8,7 @@
 #include "tss.h"
 #include "mmu.h"
 
-extern llenar_descriptor
+//extern llenar_descriptor
 
 tss tss_inicial;
 tss tss_idle;
@@ -35,7 +35,7 @@ void tss_inicializar() {
 
 	gdt[GDT_TSS_IDLE] = (gdt_entry) {
 		(unsigned short)    TSS_KERNEL_LIMIT & 0xffff, 			/* limit[15:0]  */
-		(unsigned short)    (unsigned 1int) (& tss_idle) & 0xffff,       /* base[15:0]   */
+		(unsigned short)    (unsigned in t) (& tss_idle) & 0xffff,       /* base[15:0]   */
 		(unsigned char)     ((unsigned int) (& tss_idle) >> 16) & 0xff, /* base[23:16]  */
 		(unsigned char)     0x9,           				/* type         */
 		(unsigned char)     0x0,           				/* ZERO         */
@@ -84,37 +84,37 @@ void tss_inicializar() {
 }
 //0x1000
 //
-void llenar_descriptor_tss_perro(tss* tess, perro_t *perro, int index_jugador, int index_tipo) {
+void llenar_tss_perro(tss* tess, perro_t *perro, int index_jugador, int index_tipo) {
 	//llenar_descriptor(&tss, i);
-	tess.unused0 = 0;
-	tess.esp0 = mmu_proxima_pagina_fisica_libre(); //Para mi ya habiamos mapeado la 0x27000 para el cr3 del kernel
-	tess.ss0 = 0x48;
-	tess.unused1 = 0;
-	tess.esp1 = 0;
-	tess.ss1 = 0;
-	tess.unused2 = 0;
-	tess.esp2 = 0;
-	tess.ss2 = 0;
-	tess.unused3 = 0;
-	tess.cr3 = mmu_inicializar_memoria_perro(perro, index_jugador, index_tipo);
-	tess.eip = 0x401000;
-	tess.eflags = 0x202; //fijarse por q era asi
-	tess.esp = 0x10000 + 0x1000 - 12;
-	tess.ebp = tess.esp;
-	tess.es = 0x48;
-	tess.unused4 = 0;
-	tess.cs = 0x40;
-	tess.unused5 = 0;
-	tess.ss = 0x48;
-	tess.unused6 = 0;
-	tess.ds = 0x48;
-	tess.unused7 = 0;
-	tess.fs = 0x60;
-	tess.unused8 = 0;
-	tess.gs = 0x48;
-	tess.unused9 = 0;
-	tess.unused10 = 0;
-	tess.iomap = 0xFFFF; //esto no me acuerdo por q era loco, nomacuerdo!
+	tess->unused0 = 0;
+	tess->esp0 = mmu_proxima_pagina_fisica_libre(); //Para mi ya habiamos mapeado la 0x27000 para el cr3 del kernel
+	tess->ss0 = 0x48;
+	tess->unused1 = 0;
+	tess->esp1 = 0;
+	tess->ss1 = 0;
+	tess->unused2 = 0;
+	tess->esp2 = 0;
+	tess->ss2 = 0;
+	tess->unused3 = 0;
+	tess->cr3 = mmu_inicializar_memoria_perro(perro, index_jugador, index_tipo);
+	tess->eip = 0x401000;
+	tess->eflags = 0x202; //fijarse por q era asi
+	tess->esp = 0x10000 + 0x1000 - 12;
+	tess->ebp = tess->esp;
+	tess->es = 0x4B;
+	tess->unused4 = 0;
+	tess->cs = 0x43;
+	tess->unused5 = 0;
+	tess->ss = 0x4B;
+	tess->unused6 = 0;
+	tess->ds = 0x4B;
+	tess->unused7 = 0;
+	tess->fs = 0x63;
+	tess->unused8 = 0;
+	tess->gs = 0x4B;
+	tess->unused9 = 0;
+	tess->unused10 = 0;
+	tess->iomap = 0xFFFF; //esto no me acuerdo por q era loco, nomacuerdo!
 
 }
 
