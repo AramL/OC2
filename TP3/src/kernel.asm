@@ -8,15 +8,29 @@
 global start
 
 ;; Externs
+
+;; GDT ;
+;; -------------------------------------------------------------------------- ;;
 extern GDT_DESC
+extern tss_inicializar
+
+;; IDT 
+;; -------------------------------------------------------------------------- ;;
 extern IDT_DESC
 extern idt_inicializar
-extern screen_inicializar
+
+;; Paginación 
+;; -------------------------------------------------------------------------- ;;
 extern mmu_inicializar
 extern mmu_inicializar_dir_kernel
+
+;; OTROS 
+;; -------------------------------------------------------------------------- ;;
+extern screen_inicializar
 extern resetear_pic
 extern habilitar_pic
-extern tss_inicializar
+extern llenar_descriptor_tss_perro
+extern dame_un_perro_laputamadre
 ;; Defines
 %define NULL    0
 
@@ -142,9 +156,17 @@ BITS 32
     
     call screen_inicializar
 
+    call dame_un_perro_laputamadre
 
-    xchg bx, bx
-    jmp 0x70:0                  ; y saltamos a la tarea idle  
+    ; El primer perro esta en la posición 15 de la gdt
+    ; 15 << 3 = 0x78
+    xchg bx, bx ; breakpoint
+    jmp 0x78:0
+
+
+    ; SALTAR A TAREA IDLE 
+    ;xchg bx, bx
+    ;jmp 0x70:0                  ; y saltamos a la tarea idle  
                                 ; (14 << 3, TI = 0, RPL: 0, ver define.h)
 
 
