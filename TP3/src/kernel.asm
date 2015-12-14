@@ -138,7 +138,15 @@ BITS 32
     ;Inicializar pantalla
     
     call screen_inicializar
-    
+
+    mov bx, 0x68 
+    ltr bx                    ; cargamos el selector de la tarea inicial 
+                                ; (13 << 3, TI = 0, RPL: 0, ver define.h)
+    xchg bx, bx
+    jmp 0x70:0                  ; y saltamos a la tarea idle  
+                                ; (14 << 3, TI = 0, RPL: 0, ver define.h)
+
+
     ;call screen_pintar_puntajes
     ; Saltar a la primera tarea: Idle
 

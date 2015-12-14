@@ -116,9 +116,6 @@ gdt_entry gdt[GDT_COUNT] = {
 
 };
 
-void llenar_entrada(uint ind, uint badd){
-
-}
 
 gdt_descriptor GDT_DESC = {
     sizeof(gdt) - 1,
