@@ -20,15 +20,13 @@
 
 // para el scheduler, lo importante de cada tarea es su indice en la gdt y
 // el perro al cual está asociada. Si el indice es null significará que está libre.
-typedef struct sched_task_t
-{
+typedef struct sched_task_t {
     unsigned int gdt_index;
 	perro_t *perro;
 } sched_task_t;
 
 // el scheduler posee un arreglo de tareas (cada una puede estar libre o asignada)
-typedef struct sched_t
-{
+typedef struct sched_t {
     sched_task_t tasks[MAX_CANT_TAREAS_VIVAS+1];
     ushort current;
 } sched_t;
