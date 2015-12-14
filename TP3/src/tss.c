@@ -119,7 +119,7 @@ void llenar_descriptor_tss_perro(int indice, perro_t *perro, int index_jugador, 
         tss_jugadorA[indice].eip      = 0x401000;
         tss_jugadorA[indice].eflags   = 0x202;
         tss_jugadorA[indice].esp      = 0x401000 + 0x1000 - 12;
-        tss_jugadorA[indice].ebp      = tss_jugadorA[indice].esp;
+        tss_jugadorA[indice].ebp      = 0x401000 + 0x1000 - 12;
         tss_jugadorA[indice].es       = 0x50;
         tss_jugadorA[indice].unused4  = 0;
         tss_jugadorA[indice].cs       = 0x40;
@@ -149,7 +149,7 @@ void llenar_descriptor_tss_perro(int indice, perro_t *perro, int index_jugador, 
         tss_jugadorB[indice].eip      = 0x401000;
         tss_jugadorB[indice].eflags   = 0x202;
         tss_jugadorB[indice].esp      = 0x401000 + 0x1000 - 12;
-        tss_jugadorB[indice].ebp      = tss_jugadorB[indice].esp;
+        tss_jugadorB[indice].ebp      = 0x401000 + 0x1000 - 12;
         tss_jugadorB[indice].es       = 0x50;
         tss_jugadorB[indice].unused4  = 0;
         tss_jugadorB[indice].cs       = 0x40;

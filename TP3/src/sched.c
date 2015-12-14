@@ -11,8 +11,8 @@ definicion de funciones del scheduler
 
 sched_t scheduler;
 
-void sched_inicializar()
-{
+void sched_inicializar() {
+
 }
 
 
@@ -21,8 +21,7 @@ int sched_buscar_indice_tarea(uint gdt_index) {
 }
 
 
-int sched_buscar_tarea_libre()
-{
+int sched_buscar_tarea_libre() {
 	int i = 0;
 
     return i;
@@ -30,28 +29,24 @@ int sched_buscar_tarea_libre()
 
 
 
-perro_t* sched_tarea_actual()
-{
+perro_t* sched_tarea_actual() {
     return scheduler.tasks[scheduler.current].perro;
 }
 
-void sched_agregar_tarea(perro_t *perro)
-{
+void sched_agregar_tarea(perro_t *perro) {
+
 }
 
-void sched_remover_tarea(unsigned int gdt_index)
-{
+void sched_remover_tarea(unsigned int gdt_index) {
 }
 
 
-uint sched_proxima_a_ejecutar()
-{
+uint sched_proxima_a_ejecutar() {
     return MAX_CANT_TAREAS_VIVAS;
 }
 
 
-ushort sched_atender_tick()
-{
+ushort sched_atender_tick() {
     return scheduler.tasks[scheduler.current].gdt_index;
 }
 
