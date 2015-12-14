@@ -46,6 +46,6 @@ typedef unsigned int   uint;
 
 /* Selectores de segmentos */
 /* -------------------------------------------------------------------------- */
-#define GDT_TSS_TAREA_INICIAL       13
-#define GDT_TSS_IDLE                14
+#define GDT_TSS_TAREA_INICIAL          13
+#define GDT_TSS_IDLE                   14
 #endif  /* !__DEFINES_H__ */
