@@ -88,6 +88,6 @@ void game_terminar_si_es_hora() {
 
 
 
-perro_t * dame_un_perro_laputamadre(){
-    return &jugadorA.perros[0];
+void dame_un_perro_laputamadre(){
+    llenar_descriptor_tss_perro(0, &jugadorA.perros[0], 0, 0);
 }

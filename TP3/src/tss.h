@@ -56,5 +56,7 @@ typedef struct str_tss {
 } __attribute__((__packed__, aligned (8))) tss;
 
 void tss_inicializar();
+void completar_tss_idle();
+void llenar_descriptor_tss_perro(int indice, perro_t *perro, int index_jugador, int index_tipo);
 
 #endif  /* !__TSS_H__ */
