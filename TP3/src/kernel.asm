@@ -132,16 +132,17 @@ BITS 32
     call habilitar_pic
     ; Cargar tarea inicial
     
-    ; Habilitar interrupciones
 
+    mov bx, 0x68            ; cargamos el selector de la tarea inicial 
+    ltr bx                  ; (13 << 3, TI = 0, RPL: 0, ver define.h) 
+                            
+    ; Habilitar interrupciones
     sti
     ;Inicializar pantalla
     
     call screen_inicializar
 
-    mov bx, 0x68 
-    ltr bx                    ; cargamos el selector de la tarea inicial 
-                                ; (13 << 3, TI = 0, RPL: 0, ver define.h)
+
     xchg bx, bx
     jmp 0x70:0                  ; y saltamos a la tarea idle  
                                 ; (14 << 3, TI = 0, RPL: 0, ver define.h)
