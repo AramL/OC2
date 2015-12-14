@@ -98,6 +98,7 @@ gdt_entry gdt[GDT_COUNT] = {
     /* Base address de la tarea idle : 0x00016000
      * Como ocupa solo 4k, ponemos granularidad en 1 y 0x0 de offset.
      */
+
     //[GDT_IDX_TAREA_IDLE] = (gdt_entry) {
     //    (unsigned short)    0x0000,         /* limit[0:15]  */
     //    (unsigned short)    0x6000,         /* base[0:15]   */

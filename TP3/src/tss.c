@@ -102,6 +102,7 @@ void tss_inicializar() {
 }
 //0x1000
 //
+
 void llenar_descriptor_tss_perro(int indice, perro_t *perro, int index_jugador, int index_tipo) {
     //llenar_descriptor(&tss, i);
     if(index_jugador == JUGADOR_A){
