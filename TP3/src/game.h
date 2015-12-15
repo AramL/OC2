@@ -10,6 +10,7 @@
 #include "defines.h"
 
 
+
 #define MAX_CANT_PERROS_VIVOS             8
 #define ESCONDITES_CANTIDAD               8
 #define MAX_SIN_CAMBIOS                 999
@@ -160,11 +161,11 @@ void game_terminar_si_es_hora();
 
 void dame_un_perro_laputamadre();
 
-void atender_pedido(int eax, int ecx);
+void game_atender_pedido(int eax, int ecx);
 
 
-int game_parado_en_escondite(uint x, uint y);
-uint game_huesos_en_posicion(uint x, uint y);
+uint game_parado_en_escondite(uint x, uint y);
+
 void game_sacar_hueso(uint x, uint y, perro_t * perro);
 int* game_dame_escondite(uint x, uint y);
 

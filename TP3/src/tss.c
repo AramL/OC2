@@ -203,16 +203,19 @@ void completar_tss_idle() {
     tss_idle.unused10      = 0;
     tss_idle.iomap         = 0xFFFF;
 }
+
 uint dame_indice_tss_libre(uint jugador) {
     uint i = 0;
     if (jugador == JUGADOR_A) {
         while (i < MAX_CANT_PERROS_VIVOS) {
-            if (indice_A[i] == FALSE)break;
+            if (indices_A[i] == FALSE)
+                break;
             i++;
         }
     } else {
         while (i < MAX_CANT_PERROS_VIVOS) {
-            if (indice_B[i] == FALSE)break;
+            if (indices_B[i] == FALSE)
+                break;
             i++;
         }
 

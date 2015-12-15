@@ -72,8 +72,9 @@ void sched_remover_tarea(unsigned int gdt_index) {
 	while (scheduler.tasks[i].gdt_index != gdt_index) {
 		i++;
 	}
-	perro* p = scheduler.tasks[i].perro;
-	if (p->jugador->index = JUGADOR_A) {
+
+	perro_t *p = scheduler.tasks[i].perro;
+	if (p->jugador->index == JUGADOR_A) {
 		indices_A[gdt_index - 15] = NULL;
 	} else {
 		indices_A[gdt_index - 15 - 8] = NULL;
@@ -131,8 +132,15 @@ uint sched_proxima_a_ejecutar() {
 
 
 ushort sched_atender_tick() {
+	<<< <<< < HEAD
 	game_atender_tick(scheduler.tasks[current].perro);
 	scheduler.current = sched_proxima_a_ejecutar();
 	game_perro_actual = scheduler.tasks[scheduler.current].perro;
 	return scheduler.tasks[scheduler.current].gdt_index;
+	== == == =
+	    game_atender_tick(scheduler.tasks[scheduler.current].perro);
+	scheduler.current = sched_proxima_a_ejecutar();
+	game_perro_actual = scheduler.tasks[scheduler.current].perro;
+	return scheduler.tasks[scheduler.current].gdt_index;
+	>>> >>> > b9326a8aae4e6e2db60a811e0aa96c10027ab7da
 }
