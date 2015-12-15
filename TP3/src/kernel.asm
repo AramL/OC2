@@ -31,6 +31,10 @@ extern resetear_pic
 extern habilitar_pic
 extern llenar_descriptor_tss_perro
 extern dame_un_perro_laputamadre
+
+extern sched_inicializar
+extern game_inicializar
+
 ;; Defines
 %define NULL    0
 
@@ -110,6 +114,9 @@ BITS 32
     ; Inicializar el juego
     imprimir_texto_mp  inicializando_mp_msg, inicializando_mp_len, 0x07, 4, 0
 
+    call game_inicializar
+
+
     ; Inicializar el manejador de memoria
     call mmu_inicializar
 
@@ -134,9 +141,8 @@ BITS 32
     ; Inicializar tss
     ; Inicializar tss de la tarea Idle
     call tss_inicializar
-    
     ; Inicializar el scheduler
-
+    call sched_inicializar
     ; Inicializar la IDT
     call idt_inicializar
     ; Cargar IDT
@@ -145,7 +151,6 @@ BITS 32
     call resetear_pic
     call habilitar_pic
     ; Cargar tarea inicial
-    
 
     mov bx, 0x68            ; cargamos el selector de la tarea inicial 
     ltr bx                  ; (13 << 3, TI = 0, RPL: 0, ver define.h) 
@@ -153,20 +158,20 @@ BITS 32
     ; Habilitar interrupciones
     sti
     ;Inicializar pantalla
-    
+    xchg bx, bx
     call screen_inicializar
-
-    call dame_un_perro_laputamadre
+    xchg bx, bx
+    ;call dame_un_perro_laputamadre
 
     ; El primer perro esta en la posición 15 de la gdt
     ; 15 << 3 = 0x78
     xchg bx, bx ; breakpoint
-    jmp 0x78:0
+    ;jmp 0x78:0
 
 
     ; SALTAR A TAREA IDLE 
     ;xchg bx, bx
-    ;jmp 0x70:0                  ; y saltamos a la tarea idle  
+    jmp 0x70:0                  ; y saltamos a la tarea idle  
                                 ; (14 << 3, TI = 0, RPL: 0, ver define.h)
 
 
