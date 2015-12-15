@@ -163,7 +163,7 @@ void dame_un_perro_laputamadre();
 void atender_pedido(int eax, int ecx);
 
 
-bool game_parado_en_escondite(uint x, uint y);
+int game_parado_en_escondite(uint x, uint y);
 uint game_huesos_en_posicion(uint x, uint y);
 void game_sacar_hueso(uint x, uint y, perro_t * perro);
 int* game_dame_escondite(uint x, uint y);

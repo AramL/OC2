@@ -135,7 +135,7 @@ void atender_pedido(int eax, int ecx){
         //game_perro_recibir_orden()
 }
 
-bool game_parado_en_escondite(uint x, uint y){
+int game_parado_en_escondite(uint x, uint y){
     int *escondite;
     escondite = game_dame_escondite(x ,y);
     return escondite = NULL  ? true : false;
