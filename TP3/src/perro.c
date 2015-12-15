@@ -4,7 +4,7 @@
 #include "screen.h"
 #include "tss.h"
 
-
+//NOTAS: EL ID ES EL INDICE DE LA GDT
 // realiza inicialización básica de un perro. El perro aun no está vivo ni por lanzarse. Setea jugador, indice, etc
 void game_perro_inicializar(perro_t *perro, jugador_t *j, uint index, uint id)
 {
@@ -53,7 +53,9 @@ void game_perro_reciclar_y_lanzar(perro_t *perro, uint tipo)
 // el perro descargó sus huesos o realizó una acción no válida y caputó, hay que sacarlo del sistema.
 void game_perro_termino(perro_t *perro)
 {
-//	~~~ completar ~~~
+//~~~ completar ~~~
+
+sched_remover_tarea(perro->id);
 }
 
 // transforma código de dirección en valores x e y

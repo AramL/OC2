@@ -15,8 +15,8 @@ tss tss_idle;
 
 tss tss_jugadorA[MAX_CANT_PERROS_VIVOS];
 tss tss_jugadorB[MAX_CANT_PERROS_VIVOS];
-uint indices_A[MAX_CANT_PERROS_VIVOS];
-uint indices_B[MAX_CANT_PERROS_VIVOS];
+extern uint indices_A[MAX_CANT_PERROS_VIVOS];
+extern uint indices_B[MAX_CANT_PERROS_VIVOS];
 
 int entrada_libre = 15;
 

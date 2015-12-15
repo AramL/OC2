@@ -82,6 +82,8 @@ void sched_remover_tarea(unsigned int gdt_index) {
 	p->libre = TRUE;
 	screen_pintar_reloj_perro(p);
 	scheduler.tasks[i].gdt_index = NULL;
+	if (i == scheduler.current)
+		scheduler.current = NULL;
 }
 
 

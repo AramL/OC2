@@ -21,6 +21,7 @@ extern sched_tarea_actual
 extern screen_pintar
 extern game_atender_tick
 extern atender_teclado
+extern GDT_TSS_IDLE
 ;;
 ;; Definición de MACROS
 ;; -------------------------------------------------------------------------- ;;
@@ -35,6 +36,10 @@ xor eax,eax
  shr cx,3
  push ecx
  call sched_remover_tarea
+ MOV ebx,[GDT_TSS_IDLE]
+ shl ebx, 3
+ mov [sched_tarea_selector],ebx
+ jmp far [sched_tarea_offset]
  pop ecx
  mov eax, %1
  jmp $
