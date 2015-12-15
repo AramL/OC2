@@ -106,7 +106,8 @@ uint sched_proxima_a_ejecutar() {
 
 
 ushort sched_atender_tick() {
-	return scheduler.tasks[scheduler.current].gdt_index;
+	game_atender_tick(scheduler.tasks[current].perro)
+	return sched_proxima_a_ejecutar();
 }
 
 
