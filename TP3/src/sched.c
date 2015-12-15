@@ -132,15 +132,9 @@ uint sched_proxima_a_ejecutar() {
 
 
 ushort sched_atender_tick() {
-	<<< <<< < HEAD
-	game_atender_tick(scheduler.tasks[current].perro);
+	game_atender_tick(scheduler.tasks[scheduler.current].perro);
 	scheduler.current = sched_proxima_a_ejecutar();
 	game_perro_actual = scheduler.tasks[scheduler.current].perro;
 	return scheduler.tasks[scheduler.current].gdt_index;
-	== == == =
-	    game_atender_tick(scheduler.tasks[scheduler.current].perro);
-	scheduler.current = sched_proxima_a_ejecutar();
-	game_perro_actual = scheduler.tasks[scheduler.current].perro;
-	return scheduler.tasks[scheduler.current].gdt_index;
-	>>> >>> > b9326a8aae4e6e2db60a811e0aa96c10027ab7da
+	
 }

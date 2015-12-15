@@ -69,6 +69,8 @@ typedef struct jugador_t
 } jugador_t;
 
 extern jugador_t jugadorA, jugadorB;
+uint indices_A[MAX_CANT_PERROS_VIVOS];
+uint indices_B[MAX_CANT_PERROS_VIVOS];
 
 /*
 ================================================================================

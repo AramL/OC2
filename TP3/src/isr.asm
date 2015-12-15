@@ -21,10 +21,10 @@ extern sched_remover_tarea
 
 extern screen_pintar
 extern game_atender_tick
-extern GDT_TSS_IDLE
+;extern GDT_TSS_IDLE
 extern game_atender_teclado
 extern game_atender_pedido
-
+%define GDT_TSS_IDLE 14
 ;;
 ;; Definición de MACROS
 ;; -------------------------------------------------------------------------- ;;
