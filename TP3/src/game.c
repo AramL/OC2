@@ -20,7 +20,7 @@ int escondites[ESCONDITES_CANTIDAD][3] = { // TRIPLAS DE LA FORMA (X, Y, HUESOS)
 jugador_t jugadorA;
 jugador_t jugadorB;
 
-perro_t *game_perro_actual = NULL;
+perro_t *game_perro_actual  ;
 int ultimo_cambio = MAX_SIN_CAMBIOS;
 
 void ASSERT_OR_ERROR(uint value, char* error_msg) {
@@ -63,12 +63,6 @@ void game_inicializar() {
     return 0;
 }*/
 
-
-
-
-
-
-
 // termina si se agotaron los huesos o si hace tiempo que no hay ningun cambio
 void game_terminar_si_es_hora() {
     int i;
@@ -89,28 +83,21 @@ void game_terminar_si_es_hora() {
 }
 
 
-
-
-
 void dame_un_perro_laputamadre() {
     llenar_descriptor_tss_perro(0, &jugadorA.perros[0], 0, 0);
 }
 
 
-
-void game_atender_pedido(int eax, int ecx){
+uint game_atender_pedido(int eax, int ecx){
     if(eax == 1)
-        ;
-        //game_perro_mover(perro_actual(), ecx);
+        game_perro_mover(game_perro_actual, ecx);
     if(eax == 2)
-        ;
-        //game_perro_cavar(perro_actual());
+        game_perro_cavar(game_perro_actual);
     if(eax == 3)
-        ;
-        //game_perro_olfatear(perro_actual());
+        game_perro_olfatear(game_perro_actual);
     if(eax == 4)
-        ;
-        //game_perro_recibir_orden()
+        return  (game_perro_actual->jugador)->index ? jugadorB.orden : jugadorA.orden;
+    return 0;
 }
 
 uint game_parado_en_escondite(uint x, uint y){
