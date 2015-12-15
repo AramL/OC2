@@ -53,7 +53,7 @@ void game_inicializar() {
 
 
 // devuelve la cantidad de huesos que hay en la posición pasada como parametro
-/*uint game_huesos_en_posicion(uint x, uint y) {
+uint game_huesos_en_posicion(uint x, uint y) {
     int i;
     for (i = 0; i < ESCONDITES_CANTIDAD; i++)
     {
@@ -61,7 +61,7 @@ void game_inicializar() {
             return escondites[i][2];
     }
     return 0;
-}*/
+}
 
 // termina si se agotaron los huesos o si hace tiempo que no hay ningun cambio
 void game_terminar_si_es_hora() {
@@ -90,11 +90,11 @@ void dame_un_perro_laputamadre() {
 
 uint game_atender_pedido(int eax, int ecx){
     if(eax == 1)
-        game_perro_mover(game_perro_actual, ecx);
+        return game_perro_mover(game_perro_actual, ecx);
     if(eax == 2)
-        game_perro_cavar(game_perro_actual);
+        return game_perro_cavar(game_perro_actual);
     if(eax == 3)
-        game_perro_olfatear(game_perro_actual);
+        return game_perro_olfatear(game_perro_actual);
     if(eax == 4)
         return  (game_perro_actual->jugador)->index ? jugadorB.orden : jugadorA.orden;
     return 0;
@@ -106,7 +106,7 @@ uint game_parado_en_escondite(uint x, uint y){
     return escondite != NULL ? 1 : 0;
 }
 
-uint game_huesos_en_posicion(uint x, uint y){
+uint game_huesos_en_posicion_cavar(uint x, uint y){
     int *escondite;
     escondite = game_dame_escondite(x ,y);
     return escondite != NULL ? escondite[3] : 0;

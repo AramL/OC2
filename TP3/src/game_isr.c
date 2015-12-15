@@ -29,8 +29,10 @@ uint game_syscall_manejar(uint syscall, uint param1)
 void game_atender_tick(perro_t *perro)
 {
 
-	if (perro != NULL)
+	if (perro != NULL){
 		screen_actualizar_reloj_perro(perro);
+		//breakpoint();
+	}
 	mostrar_reloj();
 	ultimo_cambio--;
 	game_terminar_si_es_hora();

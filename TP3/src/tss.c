@@ -64,8 +64,8 @@ void tss_inicializar() {
         indices_A[i]=FALSE;
         gdt[entrada_libre] = (gdt_entry) {
             (unsigned short)    TSS_KERNEL_LIMIT & 0xffff,                          /* limit[15:0]  */
-            (unsigned short)    (unsigned int) (&tss_jugadorA[i]) & 0xffff,        /* base[15:0]   */
-            (unsigned char)     ((unsigned int) (&tss_jugadorA[i]) >> 16) & 0xff,  /* base[23:16]  */
+            (unsigned short)    (unsigned int) (&tss_jugadorA[i]) & 0xffff,         /* base[15:0]   */
+            (unsigned char)     ((unsigned int) (&tss_jugadorA[i]) >> 16) & 0xff,   /* base[23:16]  */
             (unsigned char)     0x9,                                                /* type         */
             (unsigned char)     0x0,                                                /* ZERO         */
             (unsigned char)     0x0,                                                /* dpl          */
@@ -75,18 +75,18 @@ void tss_inicializar() {
             (unsigned char)     0x0,                                                /* ZERO         */
             (unsigned char)     0x0,                                                /* ZERO         */
             (unsigned char)     0x0,                                                /* g            */
-            (unsigned char)     ((unsigned int) (&tss_jugadorA[i]) >> 24) & 0xff,  /* base[31:24]  */
+            (unsigned char)     ((unsigned int) (&tss_jugadorA[i]) >> 24) & 0xff,   /* base[31:24]  */
         };
         entrada_libre++;
     }
 
-    /* GDT e indicejugador B */
+    /* GDT e indice jugador B */
     for (i = 0; i < MAX_CANT_PERROS_VIVOS; i++) {
         indices_B[i]=FALSE;
         gdt[entrada_libre] = (gdt_entry) {
             (unsigned short)    TSS_KERNEL_LIMIT & 0xffff,                          /* limit[15:0]  */
-            (unsigned short)    (unsigned int) (&tss_jugadorB[i]) & 0xffff,        /* base[15:0]   */
-            (unsigned char)     ((unsigned int) (&tss_jugadorB[i]) >> 16) & 0xff,  /* base[23:16]  */
+            (unsigned short)    (unsigned int) (&tss_jugadorB[i]) & 0xffff,         /* base[15:0]   */
+            (unsigned char)     ((unsigned int) (&tss_jugadorB[i]) >> 16) & 0xff,   /* base[23:16]  */
             (unsigned char)     0x9,                                                /* type         */
             (unsigned char)     0x0,                                                /* ZERO         */
             (unsigned char)     0x0,                                                /* dpl          */
@@ -96,7 +96,7 @@ void tss_inicializar() {
             (unsigned char)     0x0,                                                /* ZERO         */
             (unsigned char)     0x0,                                                /* ZERO         */
             (unsigned char)     0x0,                                                /* g            */
-            (unsigned char)     ((unsigned int) (&tss_jugadorB[i]) >> 24) & 0xff,  /* base[31:24]  */
+            (unsigned char)     ((unsigned int) (&tss_jugadorB[i]) >> 24) & 0xff,   /* base[31:24]  */
         };
         entrada_libre++;
     }
@@ -125,17 +125,17 @@ void llenar_descriptor_tss_perro(int indice, perro_t *perro, int index_jugador, 
         tss_jugadorA[indice].eflags   = 0x202;
         tss_jugadorA[indice].esp      = 0x401000 + 0x1000 - 12;
         tss_jugadorA[indice].ebp      = 0x401000 + 0x1000 - 12;
-        tss_jugadorA[indice].es       = 0x50;
+        tss_jugadorA[indice].es       = 0x5B;
         tss_jugadorA[indice].unused4  = 0;
-        tss_jugadorA[indice].cs       = 0x40;
+        tss_jugadorA[indice].cs       = 0x4B;
         tss_jugadorA[indice].unused5  = 0;
-        tss_jugadorA[indice].ss       = 0x50;
+        tss_jugadorA[indice].ss       = 0x5B;
         tss_jugadorA[indice].unused6  = 0;
-        tss_jugadorA[indice].ds       = 0x50;
+        tss_jugadorA[indice].ds       = 0x5B;
         tss_jugadorA[indice].unused7  = 0;
-        tss_jugadorA[indice].fs       = 0x50;
+        tss_jugadorA[indice].fs       = 0x5B;
         tss_jugadorA[indice].unused8  = 0;
-        tss_jugadorA[indice].gs       = 0x50;
+        tss_jugadorA[indice].gs       = 0x5B;
         tss_jugadorA[indice].unused9  = 0;
         tss_jugadorA[indice].unused10 = 0;
         tss_jugadorA[indice].iomap    = 0xFFFF;
@@ -155,17 +155,17 @@ void llenar_descriptor_tss_perro(int indice, perro_t *perro, int index_jugador, 
         tss_jugadorB[indice].eflags   = 0x202;
         tss_jugadorB[indice].esp      = 0x401000 + 0x1000 - 12;
         tss_jugadorB[indice].ebp      = 0x401000 + 0x1000 - 12;
-        tss_jugadorB[indice].es       = 0x50;
+        tss_jugadorB[indice].es       = 0x5B;
         tss_jugadorB[indice].unused4  = 0;
-        tss_jugadorB[indice].cs       = 0x40;
+        tss_jugadorB[indice].cs       = 0x4B;
         tss_jugadorB[indice].unused5  = 0;
-        tss_jugadorB[indice].ss       = 0x50;
+        tss_jugadorB[indice].ss       = 0x5B;
         tss_jugadorB[indice].unused6  = 0;
-        tss_jugadorB[indice].ds       = 0x50;
+        tss_jugadorB[indice].ds       = 0x5B;
         tss_jugadorB[indice].unused7  = 0;
-        tss_jugadorB[indice].fs       = 0x50;
+        tss_jugadorB[indice].fs       = 0x5B;
         tss_jugadorB[indice].unused8  = 0;
-        tss_jugadorB[indice].gs       = 0x50;
+        tss_jugadorB[indice].gs       = 0x5B;
         tss_jugadorB[indice].unused9  = 0;
         tss_jugadorB[indice].unused10 = 0;
         tss_jugadorB[indice].iomap    = 0xFFFF;

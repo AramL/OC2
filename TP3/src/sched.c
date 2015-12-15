@@ -95,10 +95,10 @@ uint sched_proxima_a_ejecutar() {
 	uint index_mismo_jugador = 0;
 	uint hay_perro = TRUE;
 	uint offset = 0;
-	if(scheduler.current == 0){
+	/*if(scheduler.current == 0){
 		//breakpoint();
 		return 0;
-	}
+	}*/
 	//if(scheduler.tasks[(curri<MAX_CANT_TAREAS_VIVAS):1?curri+1]
 	if (curri > 8) {
 		index = 9;
@@ -139,6 +139,10 @@ ushort sched_atender_tick() {
 	game_atender_tick(scheduler.tasks[scheduler.current].perro);
 	scheduler.current = sched_proxima_a_ejecutar();
 	game_perro_actual = scheduler.tasks[scheduler.current].perro;
+	if(scheduler.current != 0){
+		print_dec(scheduler.current, 2, 50, 25, C_BG_BLACK | C_FG_WHITE);
+		breakpoint();
+	}
 	return scheduler.tasks[scheduler.current].gdt_index;
 	
 }

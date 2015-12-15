@@ -33,6 +33,7 @@ extern game_atender_pedido
 global _isr%1
 
 _isr%1:
+xchg bx, bx
 pushad
  str cx
  shr cx,3
@@ -103,7 +104,6 @@ global _isr33
         in al, 0x60
         push eax
         call game_atender_teclado
-        ;xchg bx, bx     
         pop eax
         popad  
     iret
@@ -112,11 +112,24 @@ global _isr33
 ;; -------------------------------------------------------------------------- ;;
 global _isr46:
     _isr46:
-        pushad
-        call fin_intr_pic1
+        push ecx
+        push edx
+        push ebx
+        push esp
+        push ebp
+        push esi
+        push edi
         push ecx
         push eax
         call game_atender_pedido
-        popad
+        jmp 0x70:0
+        add esp, 8
+        pop edi
+        pop esi
+        pop ebp
+        pop esp
+        pop ebx
+        pop edx
+        pop ecx
         iret 
 

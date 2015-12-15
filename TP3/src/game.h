@@ -166,5 +166,7 @@ uint game_atender_pedido(int eax, int ecx);
 uint game_parado_en_escondite(uint x, uint y);
 void game_sacar_hueso(uint x, uint y, perro_t * perro);
 int* game_dame_escondite(uint x, uint y);
+perro_t* game_perro_en_posicion_j(jugador_t *j, uint x, uint y);
+uint game_huesos_en_posicion_cavar(uint x, uint y);
 
 #endif  /* !__GAME_H__ */

@@ -78,14 +78,37 @@ uint game_dir2xy(/* in */ direccion dir, /* out */ int *x, /* out */ int *y)
 uint game_perro_mover(perro_t *perro, direccion dir)
 {
     int x, y;
-    uint res = game_dir2xy(dir, &x, &y);
+    game_dir2xy(dir, &x, &y);
     int nuevo_x = perro->x + x;
     int nuevo_y = perro->y + y;
-    int viejo_x = perro->x;
-    int viejo_y = perro->y;
+    //int viejo_x = perro->x;
+    //int viejo_y = perro->y;
 
+    if(!game_es_posicion_valida(nuevo_x, nuevo_y))
+    	return 0;
+
+    if(game_perro_en_posicion_j(perro->jugador, nuevo_x, nuevo_y) != NULL)
+    	return 0;
+
+    uint dir_fisica = mmu_xy2fisica(nuevo_x, nuevo_y);
+    uint dir_virtual = mmu_xy2virtual(nuevo_x, nuevo_y);
+
+    mmu_mapear_pagina(0x7FFFFFF, rcr3(), dir_fisica, 0x3);
+    mmu_copiar_pagina(0x401000, 0x7FFFFFF);
+
+    mmu_mapear_pagina(0x401000, rcr3(), dir_fisica, 0x7);
+	mmu_mapear_pagina(dir_virtual, rcr3(), dir_fisica, 0x5);
+
+    mmu_unmapear_pagina(0x7FFFFFF, rcr3());
+
+    screen_borrar_perro(perro);
+    perro->x = nuevo_x;
+    perro->y = nuevo_y;
+    screen_pintar_perro(perro);
+    game_perro_ver_si_en_cucha(perro);
+    return 1;
     // ~~~ completar ~~~
-    return nuevo_x + nuevo_y + viejo_x + viejo_y + res; // uso todas las variables para que no tire warning->error.
+    // return nuevo_x + nuevo_y + viejo_x + viejo_y + res; // uso todas las variables para que no tire warning->error.
 }
 
 
@@ -156,12 +179,22 @@ perro_t* game_perro_en_posicion(uint x, uint y) {
     return NULL;
 }
 
+perro_t* game_perro_en_posicion_j(jugador_t *j, uint x, uint y){
+	int i;
+	for (i = 0; i < MAX_CANT_PERROS_VIVOS; i++){
+        if (!j->perros[i].libre && j->perros[i].x == x && j->perros[i].y == y)
+            return &j->perros[i];
+	}
+	return NULL;
+}
+
 
 
 uint game_perro_cavar(perro_t *perro){
-    if(game_parado_en_escondite(perro->x, perro->y) && game_huesos_en_posicion(perro->x, perro->y) 
+    if(game_parado_en_escondite(perro->x, perro->y) && game_huesos_en_posicion_cavar(perro->x, perro->y) 
         && (perro->huesos < 10)){
         game_sacar_hueso(perro->x, perro->y, perro);
+    	return 1;
     }
     return 0;
 }

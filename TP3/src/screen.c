@@ -105,12 +105,15 @@ void screen_pintar_linea_v(uchar c, uchar color, int fila, int columna, int alto
 
 void screen_inicializar()
 {
+
     screen_pintar_rect(' ', C_BG_BLACK | C_FG_WHITE, 0, 0, VIDEO_FILS, VIDEO_COLS);
     screen_pintar_rect(' ', C_BG_RED   | C_FG_WHITE, 45, 33, 5, 7);
     screen_pintar_rect(' ', C_BG_BLUE  | C_FG_WHITE, 45, 40, 5, 7);
 
     screen_pintar_relojes();
     screen_pintar_puntajes();
+
+
 
     int i, j;
     for (i = 0; i < MAPA_ALTO; i++)
