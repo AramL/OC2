@@ -110,7 +110,6 @@ void screen_inicializar()
     screen_pintar_rect(' ', C_BG_RED   | C_FG_WHITE, 45, 33, 5, 7);
     screen_pintar_rect(' ', C_BG_BLUE  | C_FG_WHITE, 45, 40, 5, 7);
 
-
     screen_pintar_relojes();
     screen_pintar_puntajes();
 
