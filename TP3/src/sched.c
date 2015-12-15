@@ -63,7 +63,7 @@ void sched_agregar_tarea(perro_t *perro, uint gdt_index) {
     }
 
 }
-//Pre: existe el gdt_index
+//Pre: existe el gdt_index (preguntarlo, despues)
 void sched_remover_tarea(unsigned int gdt_index) {
 	//librerar el indice del array de TSSs
 	//ponerle al perro libre = true
@@ -72,8 +72,14 @@ void sched_remover_tarea(unsigned int gdt_index) {
 	while(scheduler.tasks[i].gdt_index != gdt_index){
 		i++;
 	}
-
-    scheduler.tasks[current].gdt_index = 0;
+	perro* p = scheduler.tasks[i].perro;
+	if (p->jugador->index = JUGADOR_A){
+		indices_A[gdt_index - 15] = NULL;
+	}else{
+	indices_A[gdt_index - 15 - 8] = NULL;	
+	}
+	p->libre = TRUE;
+    scheduler.tasks[i].gdt_index = NULL;
 }
 
 
