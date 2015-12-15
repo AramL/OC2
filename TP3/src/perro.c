@@ -14,6 +14,7 @@ void game_perro_inicializar(perro_t *perro, jugador_t *j, uint index, uint id)
 	perro->libre = TRUE;
 
 //	~~~ completar si es necesario ~~~
+
 }
 
 // toma un perro ya existente libre y lo recicla seteando x e y a la cucha.
@@ -26,13 +27,14 @@ void game_perro_reciclar_y_lanzar(perro_t *perro, uint tipo)
 	perro->y = j->y_cucha;
 	perro->tipo = tipo;
 	perro->libre = FALSE;
-
+	perro->huesos = 0;
 	// ahora debo llamar a rutinas que inicialicen un nuevo mapa de
 	// memoria para el nuevo perro, que carguen su tss correspondiente,
 	// lo scheduleen y finalmente lo pinten en pantalla
 
 	// ~~~ completar ~~~
 	uint indice_array_tss = dame_indice_tss_libre(j->index);
+	perro->indice_reloj = indice_array_tss;
 	llenar_descriptor_tss_perro(indice_array_tss, perro, j->index, perro->tipo);
 	uint gdt_index_base = 0;
 	if (perro->jugador->index == JUGADOR_A) {
@@ -41,7 +43,7 @@ void game_perro_reciclar_y_lanzar(perro_t *perro, uint tipo)
 		gdt_index_base = 23;
 	}
 
-	sched_agregar_tarea(perro,gdt_index_base + indice_array_tss);
+	sched_agregar_tarea(perro, gdt_index_base + indice_array_tss);
 
 	screen_pintar_perro(perro);
 

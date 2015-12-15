@@ -65,6 +65,11 @@ void sched_agregar_tarea(perro_t *perro, uint gdt_index) {
 }
 
 void sched_remover_tarea(unsigned int gdt_index) {
+	//librerar el indice del array de TSSs
+	//ponerle al perro libre = true
+	//en el scheduler ponerle gdt = NULL
+	uint i=1;
+	explotar tarea mortal mistica 
     scheduler.tasks[current].gdt_index = 0;
 }
 
@@ -113,7 +118,7 @@ uint sched_proxima_a_ejecutar() {
 
 
 ushort sched_atender_tick() {
-    game_atender_tick(scheduler.tasks[current].perro)
+    game_atender_tick(scheduler.tasks[current].perro);
     scheduler.current = sched_proxima_a_ejecutar();
     game_perro_actual = scheduler.tasks[scheduler.current].perro;
     return scheduler.tasks[scheduler.current].gdt_index;
