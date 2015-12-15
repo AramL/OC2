@@ -85,8 +85,10 @@ uint game_perro_mover(perro_t *perro, direccion dir) {
 }
 
 
-uint game_perro_cavar(perro_t *perro) {
-	return 0;
+uint game_perro_cavar(perro_t *perro){
+    if(game_parado_en_escondite(perro->x, perro->y) && game_huesos_en_posicion(perro->x, perro->y)){
+        game_sacar_hueso(perro->x, perro-y, perro);
+    }
 }
 
 uint game_perro_olfatear(perro_t *perro) {
@@ -121,13 +123,42 @@ void dame_un_perro_laputamadre() {
 }
 
 
-void atender_pedido(int eax, int ecx) {
-	if (eax == 1)
-		game_perro_mover(perro_actual(), ecx);
-	if (eax == 2)
-		game_perro_cavar(perro_actual());
-	if (eax == 3)
-		game_perro_olfatear(perro_actual());
-	if (eax == 4)
-		//game_perro_recibir_orden()
-	}
+
+void atender_pedido(int eax, int ecx){
+    if(eax == 1)
+        game_perro_mover(perro_actual(), ecx);
+    if(eax == 2)
+        game_perro_cavar(perro_actual());
+    if(eax == 3)
+        game_perro_olfatear(perro_actual());
+    if(eax == 4)
+        //game_perro_recibir_orden()
+}
+
+bool game_parado_en_escondite(uint x, uint y){
+    int *escondite;
+    escondite = game_dame_escondite(x ,y);
+    return escondite = NULL  ? true : false;
+}
+
+uint game_huesos_en_posicion(uint x, uint y){
+    int *escondite;
+    escondite = game_dame_escondite(x ,y);
+    return escondite = NULL  ? escondite[3] : 0;
+}
+
+void game_sacar_hueso(uint x, uint y, perro_t * perro){
+    int *escondite;
+    escondite = game_dame_escondite(x ,y);
+    escondite[3]--;
+    perro->huesos++;
+}
+
+int* game_dame_escondite(uint x, uint y){
+    int i;
+    for(i = 0; i < ESCONDITES_CANTIDAD; i++){
+        if(escondites[i][1] == x && escondites[i][2] == y)
+            return escondites[i];
+    }
+    return NULL;
+}
