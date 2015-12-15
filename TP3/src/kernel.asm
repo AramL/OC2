@@ -133,7 +133,7 @@ BITS 32
     mov cr0, eax
     ; Inicializar tss
     ; Inicializar tss de la tarea Idle
-    call tss_inicializar
+
     
     ; Inicializar el scheduler
 
@@ -146,27 +146,29 @@ BITS 32
     call habilitar_pic
     ; Cargar tarea inicial
     
+    call tss_inicializar
 
-    mov bx, 0x68            ; cargamos el selector de la tarea inicial 
-    ltr bx                  ; (13 << 3, TI = 0, RPL: 0, ver define.h) 
                             
     ; Habilitar interrupciones
     sti
     ;Inicializar pantalla
-    
+       
     call screen_inicializar
 
-    call dame_un_perro_laputamadre
+
+    mov bx, 0x68            ; cargamos el selector de la tarea inicial 
+    ltr bx                  ; (13 << 3, TI = 0, RPL: 0, ver define.h) 
+    ;call dame_un_perro_laputamadre
 
     ; El primer perro esta en la posición 15 de la gdt
     ; 15 << 3 = 0x78
-    xchg bx, bx ; breakpoint
-    jmp 0x78:0
+    ;xchg bx, bx ; breakpoint
+    ;jmp 0x78:0
 
 
     ; SALTAR A TAREA IDLE 
-    ;xchg bx, bx
-    ;jmp 0x70:0                  ; y saltamos a la tarea idle  
+    xchg bx, bx
+    jmp 0x70:0                  ; y saltamos a la tarea idle  
                                 ; (14 << 3, TI = 0, RPL: 0, ver define.h)
 
 

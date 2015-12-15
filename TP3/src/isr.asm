@@ -35,17 +35,17 @@ global _isr%1
 _isr%1:
 pushad
 xor eax,eax
- str cx
- shr cx,3
- push ecx
- call sched_remover_tarea
- MOV ebx,[GDT_TSS_IDLE]
- shl ebx, 3
- mov [sched_tarea_selector],ebx
- jmp far [sched_tarea_offset]
- pop ecx
- mov eax, %1
- jmp $
+str cx
+shr cx,3
+push ecx
+call sched_remover_tarea
+mov ebx, [GDT_TSS_IDLE]
+shl ebx, 3
+mov [sched_tarea_selector],ebx
+jmp far [sched_tarea_offset]
+pop ecx
+mov eax, %1
+jmp $
 popad
 iret
 %endmacro

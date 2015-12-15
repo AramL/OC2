@@ -64,8 +64,8 @@ void tss_inicializar() {
         indices_A[i]=FALSE;
         gdt[entrada_libre] = (gdt_entry) {
             (unsigned short)    TSS_KERNEL_LIMIT & 0xffff,                          /* limit[15:0]  */
-            (unsigned short)    (unsigned int) (&tss_jugadorA[i]) & 0xffff,        /* base[15:0]   */
-            (unsigned char)     ((unsigned int) (&tss_jugadorA[i]) >> 16) & 0xff,  /* base[23:16]  */
+            (unsigned short)    (unsigned int) (&tss_jugadorA[i]) & 0xffff,         /* base[15:0]   */
+            (unsigned char)     ((unsigned int) (&tss_jugadorA[i]) >> 16) & 0xff,   /* base[23:16]  */
             (unsigned char)     0x9,                                                /* type         */
             (unsigned char)     0x0,                                                /* ZERO         */
             (unsigned char)     0x0,                                                /* dpl          */
@@ -75,18 +75,18 @@ void tss_inicializar() {
             (unsigned char)     0x0,                                                /* ZERO         */
             (unsigned char)     0x0,                                                /* ZERO         */
             (unsigned char)     0x0,                                                /* g            */
-            (unsigned char)     ((unsigned int) (&tss_jugadorA[i]) >> 24) & 0xff,  /* base[31:24]  */
+            (unsigned char)     ((unsigned int) (&tss_jugadorA[i]) >> 24) & 0xff,   /* base[31:24]  */
         };
         entrada_libre++;
     }
 
-    /* GDT e indicejugador B */
+    /* GDT e indice jugador B */
     for (i = 0; i < MAX_CANT_PERROS_VIVOS; i++) {
         indices_B[i]=FALSE;
         gdt[entrada_libre] = (gdt_entry) {
             (unsigned short)    TSS_KERNEL_LIMIT & 0xffff,                          /* limit[15:0]  */
-            (unsigned short)    (unsigned int) (&tss_jugadorB[i]) & 0xffff,        /* base[15:0]   */
-            (unsigned char)     ((unsigned int) (&tss_jugadorB[i]) >> 16) & 0xff,  /* base[23:16]  */
+            (unsigned short)    (unsigned int) (&tss_jugadorB[i]) & 0xffff,         /* base[15:0]   */
+            (unsigned char)     ((unsigned int) (&tss_jugadorB[i]) >> 16) & 0xff,   /* base[23:16]  */
             (unsigned char)     0x9,                                                /* type         */
             (unsigned char)     0x0,                                                /* ZERO         */
             (unsigned char)     0x0,                                                /* dpl          */
@@ -96,7 +96,7 @@ void tss_inicializar() {
             (unsigned char)     0x0,                                                /* ZERO         */
             (unsigned char)     0x0,                                                /* ZERO         */
             (unsigned char)     0x0,                                                /* g            */
-            (unsigned char)     ((unsigned int) (&tss_jugadorB[i]) >> 24) & 0xff,  /* base[31:24]  */
+            (unsigned char)     ((unsigned int) (&tss_jugadorB[i]) >> 24) & 0xff,   /* base[31:24]  */
         };
         entrada_libre++;
     }
