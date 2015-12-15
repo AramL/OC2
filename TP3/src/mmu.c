@@ -64,7 +64,7 @@ void mmu_inicializar_pagina(uint * pagina) {
 uint mmu_inicializar_dir_kernel() {
     mmu_inicializar_page_directory((page_directory *)0x27000, 0x28000, 0x3);
     int limpiar = 0;
-    for (limpiar = 0x27000 + 0x4; limpiar < 0x28000; limpiar += 0x4)
+    for (limpiar = 0x27000; limpiar < 0x28000; limpiar += 0x4)
         mmu_inicializar_page_directory((page_directory *)limpiar, 0x0, 0x0);
     /* necesitamos mapear los primeros 4 megabytes para el kernel y area libre de memoria
      * con una sola entrada en la PD por ahora nos alcanza, vamos a necesitar una tabla de paginas con 1024 entradas
@@ -123,6 +123,9 @@ uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_
     }
 
     mmu_copiar_pagina(codigo_tarea, pagina_a_mapear);
+    uint *parametros = (uint *) 0x7FFFFF8;
+    parametros[0] = perro->jugador->x_cucha;
+    parametros[1] = perro->jugador->y_cucha;
     mmu_unmapear_pagina(pagina_a_mapear, rcr3());
 
     //hacer una PD para el perro en una pagina libre, limpiarla y hacer <esto>
@@ -159,7 +162,7 @@ void mmu_mapear_pagina(uint virtual, uint cr3, uint fisica, uint attrs) {
     if (pd[directorio].present == NULL) {
         /* Si es null significa que no hay una tabla de paginas en esa posicion*/
         uint proxima_pag = mmu_proxima_pagina_fisica_libre();
-        mmu_inicializar_page_directory(&pd[directorio], proxima_pag, 0x3);
+        mmu_inicializar_page_directory(&pd[directorio], proxima_pag, attrs);
         int tab_c = proxima_pag;
         for (; tab_c < proxima_pag + 0x1000; tab_c += 0x4)
             mmu_inicializar_page_table((page_table *)tab_c, 0, 0);

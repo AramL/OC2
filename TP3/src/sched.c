@@ -141,6 +141,7 @@ ushort sched_atender_tick() {
 	game_perro_actual = scheduler.tasks[scheduler.current].perro;
 	if(scheduler.current != 0){
 		print_dec(scheduler.current, 2, 50, 25, C_BG_BLACK | C_FG_WHITE);
+		print_dec(scheduler.tasks[scheduler.current].gdt_index, 2, 50, 26, C_BG_BLACK | C_FG_RED);
 		breakpoint();
 	}
 	return scheduler.tasks[scheduler.current].gdt_index;

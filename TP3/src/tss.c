@@ -110,6 +110,7 @@ void tss_inicializar() {
 void llenar_descriptor_tss_perro(int indice, perro_t *perro, int index_jugador, int index_tipo) {
     //llenar_descriptor(&tss, i);
     if (index_jugador == JUGADOR_A) {
+        tss_jugadorA[indice].ptl      = 0;
         tss_jugadorA[indice].unused0  = 0;
         tss_jugadorA[indice].esp0     = mmu_proxima_pagina_fisica_libre();
         tss_jugadorA[indice].ss0      = 0x50;
@@ -137,9 +138,12 @@ void llenar_descriptor_tss_perro(int indice, perro_t *perro, int index_jugador, 
         tss_jugadorA[indice].unused8  = 0;
         tss_jugadorA[indice].gs       = 0x5B;
         tss_jugadorA[indice].unused9  = 0;
+        tss_jugadorA[indice].ldt      = 0;
         tss_jugadorA[indice].unused10 = 0;
+        tss_jugadorA[indice].dtrap    = 0;
         tss_jugadorA[indice].iomap    = 0xFFFF;
     } else {
+        tss_jugadorB[indice].ptl      = 0;
         tss_jugadorB[indice].unused0  = 0;
         tss_jugadorB[indice].esp0     = mmu_proxima_pagina_fisica_libre();
         tss_jugadorB[indice].ss0      = 0x50;
@@ -167,7 +171,9 @@ void llenar_descriptor_tss_perro(int indice, perro_t *perro, int index_jugador, 
         tss_jugadorB[indice].unused8  = 0;
         tss_jugadorB[indice].gs       = 0x5B;
         tss_jugadorB[indice].unused9  = 0;
+        tss_jugadorB[indice].ldt      = 0;
         tss_jugadorB[indice].unused10 = 0;
+        tss_jugadorB[indice].dtrap    = 0;
         tss_jugadorB[indice].iomap    = 0xFFFF;
     }
 }

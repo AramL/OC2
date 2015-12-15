@@ -33,9 +33,7 @@ void game_perro_reciclar_y_lanzar(perro_t *perro, uint tipo)
 	// lo scheduleen y finalmente lo pinten en pantalla
 
 	// ~~~ completar ~~~
-	uint indice_array_tss = dame_indice_tss_libre(j->index);
-	perro->indice_reloj = indice_array_tss;
-	llenar_descriptor_tss_perro(indice_array_tss, perro, j->index, perro->tipo);
+
 	uint gdt_index_base = 0;
 	if (perro->jugador->index == JUGADOR_A) {
 		gdt_index_base = 15;
@@ -43,7 +41,12 @@ void game_perro_reciclar_y_lanzar(perro_t *perro, uint tipo)
 		gdt_index_base = 23;
 	}
 
-	sched_agregar_tarea(perro, gdt_index_base + indice_array_tss);
+
+	//uint indice_array_tss = dame_indice_tss_libre(j->index);
+	perro->indice_reloj = perro->id - gdt_index_base;
+	llenar_descriptor_tss_perro(perro->id - gdt_index_base, perro, j->index, perro->tipo);
+
+	sched_agregar_tarea(perro, perro->id);
 
 	screen_pintar_perro(perro);
 
