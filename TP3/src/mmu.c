@@ -72,7 +72,7 @@ uint mmu_inicializar_dir_kernel() {
      * Inicializamos las tablas cada tabla direcciona 4k, empezando en 0 porque tenemos identity mapping 
      */
     int p_tabla = 0;
-    for (p_tabla = 0x0; p_tabla < 0x3FFFFF; p_tabla += 0x1000)
+    for (p_tabla = 0x0; p_tabla <= 0x3FFFFF; p_tabla += 0x1000)
         mmu_mapear_pagina(p_tabla, 0x27000, p_tabla, 0x3);
 
     /*
@@ -104,7 +104,7 @@ uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_
     //Copiar el codigo del perro al lugar donde empieza 5(dependiendo de A o B)
     //puse 0x7FFFFFF por q es cacho de memoria virtual q no se va a usar en ningun momento segun el enunciado
     uint pagina_a_mapear = 0x7FFF000;
-    mmu_mapear_pagina(pagina_a_mapear,  k_cr3, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x3); //soy un genioh!
+    mmu_mapear_pagina(pagina_a_mapear,  rcr3(), mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x3); //soy un genioh!
     uint codigo_tarea;
     int codigo = index_jugador * 10 + index_tipo;
     switch (codigo) {
@@ -123,27 +123,27 @@ uint mmu_inicializar_memoria_perro(perro_t *perro, int index_jugador, int index_
     }
 
     mmu_copiar_pagina(codigo_tarea, pagina_a_mapear);
-    mmu_unmapear_pagina(pagina_a_mapear, k_cr3);
-    mmu_mapear_pagina(mmu_xy2virtual(perro->jugador->x_cucha, perro->jugador->y_cucha),  k_cr3, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x1);
-
+    mmu_unmapear_pagina(pagina_a_mapear, rcr3());
 
     //hacer una PD para el perro en una pagina libre, limpiarla y hacer <esto>
     uint pd_perro =  mmu_proxima_pagina_fisica_libre();
     mmu_inicializar_pagina((uint *)pd_perro);
     int p_tabla = 0;
 
-    for (p_tabla = 0x0; p_tabla < 0x3FFFFF; p_tabla += 0x1000)
+    for (p_tabla = 0x0; p_tabla <= 0x3FFFFF; p_tabla += 0x1000)
         mmu_mapear_pagina(p_tabla, pd_perro, p_tabla, 0x1); //, 0x3); le saque el read write por q me parece q no deberia poder escribir :D
     //  </esto>
 
+    mmu_mapear_pagina(mmu_xy2virtual(perro->jugador->x_cucha, perro->jugador->y_cucha), pd_perro, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x5);
+
     // mapear dir compartida a 0x400000
     if (index_jugador == JUGADOR_A) {
-        mmu_mapear_pagina(0x400000, pd_perro, memoria_A, 0x3);
+        mmu_mapear_pagina(0x400000, pd_perro, memoria_A, 0x7);
     } else {
-        mmu_mapear_pagina(0x400000, pd_perro, memoria_B, 0x3);
+        mmu_mapear_pagina(0x400000, pd_perro, memoria_B, 0x7);
     }
     //mapear posicion en el mapa como rw 0x401000
-    mmu_mapear_pagina(0x7FFFFFF,  pd_perro, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x3);
+    mmu_mapear_pagina(0x401000,  pd_perro, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x7);
     return pd_perro;
 }
 
