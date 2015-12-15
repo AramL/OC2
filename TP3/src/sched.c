@@ -44,10 +44,20 @@ int sched_buscar_indice_tarea(uint gdt_index) {
 }
 
 
-int sched_buscar_tarea_libre() {
+int sched_buscar_tarea_libre(uint tipo_jugador) {
 	int i = 0;
+	int offset = 0;
+	if (tipo_jugador == JUGADOR_A) {
+		i = 1;
+	} else {
+		i = 9;
+	}
+	while (scheduler.tasks[i + offset].gdt_index != NULL && offset < 8) {
+		offset++;
+	}
+	if (offset < 8) return i + offset;
 
-	return i;
+	return -1;
 }
 
 
@@ -56,11 +66,18 @@ perro_t* sched_tarea_actual() {
 	return scheduler.tasks[scheduler.current].perro;
 }
 
-void sched_agregar_tarea(perro_t *perro) {
+void sched_agregar_tarea(perro_t *perro, uint gdt_index) {
+	int tarea_libre = sched_buscar_tarea_libre(perro->jugador->index);
+	if (tarea_libre != -1) {
+		scheduler.tasks[tarea_libre].gdt_index = gdt_index;
+		scheduler.tasks[tarea_libre].perro = perro;
+	}
 
 }
 
 void sched_remover_tarea(unsigned int gdt_index) {
+	//notas varias:
+	//limpiar inidice de array de tss de jugador
 }
 
 
@@ -69,7 +86,7 @@ uint sched_proxima_a_ejecutar() {
 	uint curri = scheduler.current;
 	uint index = 0;
 	uint index_mismo_jugador = 0;
-	bool hay_perro = true;
+	uint hay_perro = TRUE;
 	uint offset = 0;
 	//if(scheduler.tasks[(curri<MAX_CANT_TAREAS_VIVAS):1?curri+1]
 	if (curri > 8) {
@@ -83,31 +100,33 @@ uint sched_proxima_a_ejecutar() {
 	while (scheduler.tasks[index + offset].gdt_index == NULL) {
 		offset++;
 		if (offset == 8) {
-			hay_perro = false;
+			hay_perro = FALSE;
 			break;
 		}
 	}
 	//hay perro del jugador actual
 	if (!hay_perro) {
-		hay_perro = true;
+		hay_perro = TRUE;
 		index = index_mismo_jugador;
 		offset = 0;
 		while (scheduler.tasks[index + offset].gdt_index == NULL) {
 			offset++;
 			if (offset == 8) {
-				hay_perro = false;
+				hay_perro = FALSE;
 				break;
 			}
 		}
 	}
 	if (!hay_perro) return GDT_TSS_IDLE;
-	return scheduler.tasks[index + offset].gdt_index;
+	//return scheduler.tasks[index + offset].gdt_index;
+	return index + offset;
 }
 
 
 ushort sched_atender_tick() {
+
 	game_atender_tick(scheduler.tasks[current].perro)
-	return sched_proxima_a_ejecutar();
+	scheduler.current = sched_proxima_a_ejecutar();
+	game_perro_actual = scheduler.tasks[scheduler.current].perro;
+	return scheduler.tasks[scheduler.current].gdt_index;
 }
-
-

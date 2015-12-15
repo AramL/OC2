@@ -41,7 +41,7 @@ extern sched_t scheduler;
 */
 
 // debe agregar una tarea al scheduler, buscando un slot libre y asociando indice de gdt y perro 
-void sched_agregar_tarea(perro_t *perro);
+void sched_agregar_tarea(perro_t *perro, uint gdt_index);
 
 // debe remover tareas del scheduler
 void sched_remover_tarea(unsigned int gdt_index);

@@ -15,6 +15,8 @@ tss tss_idle;
 
 tss tss_jugadorA[MAX_CANT_PERROS_VIVOS];
 tss tss_jugadorB[MAX_CANT_PERROS_VIVOS];
+uint indices_A[MAX_CANT_PERROS_VIVOS];
+uint indices_B[MAX_CANT_PERROS_VIVOS];
 
 int entrada_libre = 15;
 
@@ -57,8 +59,9 @@ void tss_inicializar() {
     int i = 0;
 
 
-    /* GDT jugador A */
-    for(i = 0; i < MAX_CANT_PERROS_VIVOS; i++){
+    /* GDT e indice jugador A */
+    for (i = 0; i < MAX_CANT_PERROS_VIVOS; i++) {
+        indices_A[i]=FALSE;
         gdt[entrada_libre] = (gdt_entry) {
             (unsigned short)    TSS_KERNEL_LIMIT & 0xffff,                          /* limit[15:0]  */
             (unsigned short)    (unsigned int) (&tss_jugadorA[i]) & 0xffff,        /* base[15:0]   */
@@ -77,8 +80,9 @@ void tss_inicializar() {
         entrada_libre++;
     }
 
-    /* GDT jugador B */
-    for(i = 0; i < MAX_CANT_PERROS_VIVOS; i++){
+    /* GDT e indicejugador B */
+    for (i = 0; i < MAX_CANT_PERROS_VIVOS; i++) {
+        indices_B[i]=FALSE;
         gdt[entrada_libre] = (gdt_entry) {
             (unsigned short)    TSS_KERNEL_LIMIT & 0xffff,                          /* limit[15:0]  */
             (unsigned short)    (unsigned int) (&tss_jugadorB[i]) & 0xffff,        /* base[15:0]   */
@@ -105,9 +109,9 @@ void tss_inicializar() {
 
 void llenar_descriptor_tss_perro(int indice, perro_t *perro, int index_jugador, int index_tipo) {
     //llenar_descriptor(&tss, i);
-    if(index_jugador == JUGADOR_A){
+    if (index_jugador == JUGADOR_A) {
         tss_jugadorA[indice].unused0  = 0;
-        tss_jugadorA[indice].esp0     = mmu_proxima_pagina_fisica_libre(); 
+        tss_jugadorA[indice].esp0     = mmu_proxima_pagina_fisica_libre();
         tss_jugadorA[indice].ss0      = 0x50;
         tss_jugadorA[indice].unused1  = 0;
         tss_jugadorA[indice].esp1     = 0;
@@ -135,9 +139,9 @@ void llenar_descriptor_tss_perro(int indice, perro_t *perro, int index_jugador, 
         tss_jugadorA[indice].unused9  = 0;
         tss_jugadorA[indice].unused10 = 0;
         tss_jugadorA[indice].iomap    = 0xFFFF;
-    }else{
+    } else {
         tss_jugadorB[indice].unused0  = 0;
-        tss_jugadorB[indice].esp0     = mmu_proxima_pagina_fisica_libre(); 
+        tss_jugadorB[indice].esp0     = mmu_proxima_pagina_fisica_libre();
         tss_jugadorB[indice].ss0      = 0x50;
         tss_jugadorB[indice].unused1  = 0;
         tss_jugadorB[indice].esp1     = 0;
@@ -168,9 +172,9 @@ void llenar_descriptor_tss_perro(int indice, perro_t *perro, int index_jugador, 
     }
 }
 
-void completar_tss_idle(){
+void completar_tss_idle() {
     tss_idle.unused0       = 0;
-    tss_idle.esp0          = 0x27000; 
+    tss_idle.esp0          = 0x27000;
     tss_idle.ss0           = 0x50;
     tss_idle.unused1       = 0;
     tss_idle.esp1          = 0;
@@ -180,8 +184,8 @@ void completar_tss_idle(){
     tss_idle.ss2           = 0;
     tss_idle.unused3       = 0;
     tss_idle.cr3           = k_cr3;
-    tss_idle.eip           = 0x16000; 
-    tss_idle.eflags        = 0x202; 
+    tss_idle.eip           = 0x16000;
+    tss_idle.eflags        = 0x202;
     tss_idle.esp           = 0x27000;
     tss_idle.ebp           = 0x27000;
     tss_idle.es            = 0x50;
@@ -198,4 +202,20 @@ void completar_tss_idle(){
     tss_idle.unused9       = 0;
     tss_idle.unused10      = 0;
     tss_idle.iomap         = 0xFFFF;
+}
+uint dame_indice_tss_libre(uint jugador) {
+    uint i = 0;
+    if (jugador == JUGADOR_A) {
+        while (i < MAX_CANT_PERROS_VIVOS) {
+            if (indice_A[i] == FALSE)break;
+            i++;
+        }
+    } else {
+        while (i < MAX_CANT_PERROS_VIVOS) {
+            if (indice_B[i] == FALSE)break;
+            i++;
+        }
+
+    }
+    return i;
 }

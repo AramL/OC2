@@ -29,9 +29,17 @@ extern atender_teclado
 global _isr%1
 
 _isr%1:
-    mov eax, %1
-    jmp $
-
+pushad
+xor eax,eax
+ str cx
+ shr cx,3
+ push ecx
+ call sched_remover_tarea
+ pop ecx
+ mov eax, %1
+ jmp $
+popad
+iret
 %endmacro
 
 ;;
@@ -71,6 +79,13 @@ global _isr32
         call fin_intr_pic1
         sub esp, 4
         call sched_atender_tick
+        str cx
+        shl ax, 3
+        cmp ax, cx
+        je .fin
+        mov [sched_tarea_selector], ax
+        jmp far [sched_tarea_offset]
+        .fin:
         add esp, 4
         popad  
 		iret

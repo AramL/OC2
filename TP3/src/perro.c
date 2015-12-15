@@ -9,12 +9,11 @@
 void game_perro_inicializar(perro_t *perro, jugador_t *j, uint index, uint id)
 {
 	perro->id   = id;
-    perro->index = index;
-    perro->jugador = j;
+	perro->index = index;
+	perro->jugador = j;
 	perro->libre = TRUE;
 
 //	~~~ completar si es necesario ~~~
-
 }
 
 // toma un perro ya existente libre y lo recicla seteando x e y a la cucha.
@@ -33,6 +32,19 @@ void game_perro_reciclar_y_lanzar(perro_t *perro, uint tipo)
 	// lo scheduleen y finalmente lo pinten en pantalla
 
 	// ~~~ completar ~~~
+	uint indice_array_tss = dame_indice_tss_libre(j->index);
+	llenar_descriptor_tss_perro(indice_array_tss, perro, j->index, perro->tipo);
+	uint gdt_index_base = 0;
+	if (perro->jugador->index == JUGADOR_A) {
+		gdt_index_base = 15;
+	} else {
+		gdt_index_base = 23;
+	}
+
+	sched_agregar_tarea(perro,gdt_index_base + indice_array_tss);
+
+	screen_pintar_perro(perro);
+
 
 }
 
@@ -42,16 +54,16 @@ void game_perro_termino(perro_t *perro)
 //	~~~ completar ~~~
 }
 
-// transforma código de dirección en valores x e y 
+// transforma código de dirección en valores x e y
 uint game_dir2xy(/* in */ direccion dir, /* out */ int *x, /* out */ int *y)
 {
 	switch (dir)
 	{
-		case IZQ: *x = -1; *y =  0; break;
-		case DER: *x =  1; *y =  0; break;
-		case ABA: *x =  0; *y =  1; break;
-		case ARR: *x =  0; *y = -1; break;
-    	default: return -1;
+	case IZQ: *x = -1; *y =  0; break;
+	case DER: *x =  1; *y =  0; break;
+	case ABA: *x =  0; *y =  1; break;
+	case ARR: *x =  0; *y = -1; break;
+	default: return -1;
 	}
 
 	return 0;
@@ -65,11 +77,11 @@ uint game_perro_mover(perro_t *perro, direccion dir)
 	uint res = game_dir2xy(dir, &x, &y);
 	int nuevo_x = perro->x + x;
 	int nuevo_y = perro->y + y;
-    int viejo_x = perro->x;
-    int viejo_y = perro->y;
+	int viejo_x = perro->x;
+	int viejo_y = perro->y;
 
-    // ~~~ completar ~~~
-    return nuevo_x + nuevo_y + viejo_x + viejo_y + res; // uso todas las variables para que no tire warning->error.
+	// ~~~ completar ~~~
+	return nuevo_x + nuevo_y + viejo_x + viejo_y + res; // uso todas las variables para que no tire warning->error.
 }
 
 // recibe un perro, el cual debe cavar en su posición
@@ -100,7 +112,7 @@ uint game_perro_olfatear(perro_t *perro)
 			x_actual_diff = diff_x;
 			y_actual_diff = diff_y;
 		}
-   	}
+	}
 
 	if (x_actual_diff == 0 && y_actual_diff == 0)
 		return AQUI;
@@ -109,12 +121,12 @@ uint game_perro_olfatear(perro_t *perro)
 	{
 		return x_actual_diff > 0 ? DER : IZQ;
 	}
-	else 
+	else
 	{
 		return y_actual_diff > 0 ? ABA : ARR;
 	}
 
-    return 0;
+	return 0;
 }
 
 
