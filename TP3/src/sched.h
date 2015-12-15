@@ -29,6 +29,7 @@ typedef struct sched_task_t {
 typedef struct sched_t {
     sched_task_t tasks[MAX_CANT_TAREAS_VIVAS+1];
     ushort current;
+    uint jugador;
 } sched_t;
 
 extern sched_t scheduler;

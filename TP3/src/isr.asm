@@ -70,7 +70,7 @@ global _isr32
         ; xchg bx, bx
         call fin_intr_pic1
         sub esp, 4
-        call game_atender_tick
+        call sched_atender_tick
         add esp, 4
         popad  
         iret

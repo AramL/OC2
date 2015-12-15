@@ -20,16 +20,20 @@ void wait(int pseudosecs)
 
 uint game_syscall_manejar(uint syscall, uint param1)
 {
-    // ~ completar llamando a las funciones que haga falta ~
-    return 0;
+	// ~ completar llamando a las funciones que haga falta ~
+	return 0;
 }
 
 // ~~~ debe atender la interrupción de reloj para actualizar la pantalla y terminar si es hora,
 // ~~~ recibe el perro que está corriendo actualmente
 void game_atender_tick(perro_t *perro)
 {
-	mostrar_reloj();
 
+	if (perro != NULL)
+		screen_actualizar_reloj_perro(perro);
+	mostrar_reloj();
+	ultimo_cambio--;
+	game_terminar_si_es_hora();
 
 
 }
@@ -64,29 +68,29 @@ void game_atender_tick(perro_t *perro)
 #define KB_shiftL   0x2a // 0xaa
 #define KB_shiftR   0x36 // 0xb6
 
-void atender_teclado(unsigned char tecla){
-	
+void atender_teclado(unsigned char tecla) {
+
 	switch (tecla)
 	{
-		// ~~~ completar ~~~
-		case KB_q: pintar_atender_teclado('q'); break;
+	// ~~~ completar ~~~
+	case KB_q: pintar_atender_teclado('q'); break;
 
-		case KB_a: pintar_atender_teclado('a'); break;
+	case KB_a: pintar_atender_teclado('a'); break;
 
 
-		case KB_k: pintar_atender_teclado('k'); break;
+	case KB_k: pintar_atender_teclado('k'); break;
 
-		case KB_z: pintar_atender_teclado('z'); break;
-		case KB_x: pintar_atender_teclado('x'); break;
-		case KB_c: pintar_atender_teclado('c'); break;
+	case KB_z: pintar_atender_teclado('z'); break;
+	case KB_x: pintar_atender_teclado('x'); break;
+	case KB_c: pintar_atender_teclado('c'); break;
 
-		case KB_b: pintar_atender_teclado('b'); break;
-		case KB_n: pintar_atender_teclado('n'); break;
-		case KB_m: pintar_atender_teclado('m'); break;
-		default:break;
+	case KB_b: pintar_atender_teclado('b'); break;
+	case KB_n: pintar_atender_teclado('n'); break;
+	case KB_m: pintar_atender_teclado('m'); break;
+	default: break;
 	}
-	
-	
+
+
 }
 
 
@@ -97,22 +101,22 @@ void game_atender_teclado(unsigned char tecla)
 {
 	switch (tecla)
 	{
-		// ~~~ completar ~~~
-		case KB_q: game_jugador_lanzar_perro(&jugadorA, TIPO_1, 0, 0); break;
+	// ~~~ completar ~~~
+	case KB_q: game_jugador_lanzar_perro(&jugadorA, TIPO_1, 0, 0); break;
 
-		case KB_a: game_jugador_moverse(&jugadorA, -1,  0); break;
+	case KB_a: game_jugador_moverse(&jugadorA, -1,  0); break;
 
 
-		case KB_k: game_jugador_moverse(&jugadorB,  0, -1); break;
+	case KB_k: game_jugador_moverse(&jugadorB,  0, -1); break;
 
-		case KB_z: game_jugador_dar_orden(&jugadorA, 0); break;
-		case KB_x: game_jugador_dar_orden(&jugadorA, 1); break;
-		case KB_c: game_jugador_dar_orden(&jugadorA, 2); break;
+	case KB_z: game_jugador_dar_orden(&jugadorA, 0); break;
+	case KB_x: game_jugador_dar_orden(&jugadorA, 1); break;
+	case KB_c: game_jugador_dar_orden(&jugadorA, 2); break;
 
-		case KB_b: game_jugador_dar_orden(&jugadorB, 0); break;
-		case KB_n: game_jugador_dar_orden(&jugadorB, 1); break;
-		case KB_m: game_jugador_dar_orden(&jugadorB, 2); break;
-		default: break;
+	case KB_b: game_jugador_dar_orden(&jugadorB, 0); break;
+	case KB_n: game_jugador_dar_orden(&jugadorB, 1); break;
+	case KB_m: game_jugador_dar_orden(&jugadorB, 2); break;
+	default: break;
 	}
 
 }
