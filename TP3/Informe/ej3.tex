@@ -1,18 +1,28 @@
-\section*{Ejercicio 3.}
-
+\section{Ejercicio 3.}
+\subsection*{a), b), c)}
 \noindent Para este punto programamos la función mmu\_mapear\_pagina:
 \begin{codesnippet}
 \begin{verbatim}
 void mmu_mapear_pagina(uint virtual, uint cr3, uint fisica, uint attrs) {
-    cr3 = cr3 & 0xFFFFF000;
-    uint pduint =  cr3;
-    uint posicion_DR = (virtual >> 22) & 0x3FF; 
-    pduint = pduint + (posicion_DR * 4);
-    page_directory *pd = (page_directory *)pduint;
+    cr3 &= 0xFFFFF000;
+    uint directorio = (virtual >> 22) & 0x3FF;      /* Posicion en el directorio */
+    uint tabla = (virtual >> 12) & 0x3FF;           /* Posicion en la tabla      */
+    page_directory *pd = (page_directory *) cr3;
+
+    if (pd[directorio].present == NULL) {
+        uint proxima_pag = mmu_proxima_pagina_fisica_libre();
+        mmu_inicializar_page_directory(&pd[directorio], proxima_pag, 0x3);
+        int tab_c = proxima_pag;
+        for (; tab_c < proxima_pag + 0x1000; tab_c += 0x4)
+            mmu_inicializar_page_table((page_table *)tab_c, 0, 0);
+    }
+
+    page_table *pt = (page_table *)  (pd[directorio].base_adress << 12);                  
+    mmu_inicializar_page_table(&pt[tabla], fisica, attrs);
 \end{verbatim}
 \end{codesnippet}
 
-\noindent Esta función recibe una dirección virtual, un cr3, una dirección física y los atributos. Primero conseguimos la dirección de cr3 por medio de un and contra 0xFFFFF000 y la guardamos en pduint. Luego shifteamos la dirección virtual a la derecha 22 bits para tener la posición de la entrada del directorio de páginas. Una vez que tenemos este valor se lo sumamos a pduint y casteamos el resultado a page\_directory *, donde page\_directory es el siguiente struct:
+\noindent Esta función recibe una dirección virtual, un cr3, una dirección física y los atributos. Primero conseguimos la dirección del directorio haciendo un and a cr3 con 0xFFFFF000 y lo apuntamos por pd un puntero a un directorio, page\_directory *, donde page\_directory es el siguiente struct:
 
 \begin{codesnippet}
 \begin{verbatim}
@@ -27,7 +37,7 @@ typedef struct page_directory {
     unsigned char   page_size:1;
     unsigned char   global:1;
     unsigned char   available_11_9:3;
-    unsigned int     page_base_address_31_12:20;
+    unsigned int    base_adress:20;
 } __attribute__((__packed__, aligned (4))) page_directory;
 \end{verbatim}
 \end{codesnippet}
@@ -46,7 +56,7 @@ void mmu_inicializar_page_directory(page_directory * dir, uint addr, uint attrs)
     dir->page_size   = (attrs >> 7) & 0x1;             
     dir->global = (attrs >> 8) & 0x1;
     dir->available_11_9 = (attrs >> 9) & 0x3;
-    dir->page_base_address_31_12 = addr >> 12;
+    dir->base_adress = addr >> 12;
 }
 \end{verbatim}
 \end{codesnippet}
@@ -64,31 +74,63 @@ void mmu_inicializar_page_table(page_table *tab, uint addr, uint attrs) {
     tab->page_table_attr_indx = (attrs >> 7) & 0x1;             
     tab->global = (attrs >> 8) & 0x1;
     tab->available_11_9 = (attrs >> 9) & 0x3;
-    tab->page_base_address_31_12 = addr >> 12;
+    tab->base_adress = addr >> 12;
 }
 \end{verbatim}
 \end{codesnippet}
- \noindent Ponemos todas las entradas de la page table a la que apunta, en no presente y con atributos en 0.
+ \noindent Ponemos todas las entradas de la page table a la que apunta, en no presente y con atributos en 0. Luego casteamos la entrada del directorio (que inicializamos o ya estaba inicializada) a un struct de tabla de pagina y usamos
+ la posición correspondiente para obtener la entrada en la tabla, una vez que tenemos esto mmu\_inicializar\_page\_table pone los atributos correspondientes y la dirección fisica correspondiente en la entrada de la tabla.
+
+\subsection*{d}
+
+Para habilitar paginación llamamos a la función inicial dirección de kernel que básicamente usando las funciones anteriores mappea el kernel con identity mapping de 0x0 a 0x27000. 
+
 \begin{codesnippet}
 \begin{verbatim}
-    if (pd->present == NULL) {
-        uint proxima_pag = mmu_proxima_pagina_fisica_libre();
-        mmu_inicializar_page_directory(pd, proxima_pag, 0x3);
-        int tab_c = proxima_pag;
-        for (; tab_c < proxima_pag + 0x1000; tab_c += 0x4)
-            mmu_inicializar_page_table((page_table *)tab_c, 0, 0);
-    }
+uint mmu_inicializar_dir_kernel() {
+    mmu_inicializar_page_directory((page_directory *)0x27000, 0x28000, 0x3);
+    int limpiar = 0;
+    for (limpiar = 0x27000 + 0x4; limpiar < 0x28000; limpiar += 0x4)
+        mmu_inicializar_page_directory((page_directory *)limpiar, 0x0, 0x0);
+    
+    int p_tabla = 0;
+    for (p_tabla = 0x0; p_tabla < 0x3FFFFF; p_tabla += 0x1000)
+        mmu_mapear_pagina(p_tabla, 0x27000, p_tabla, 0x3);
+
+    /*  mmu_unmapear_pagina(0x3FF000, 0x27000);  */
+
+    return 0x27000;
+}
 \end{verbatim}
 \end{codesnippet}
 
-Por último shifteamos la dirección virtual a la derecha 12 bits y lo guardamos en posicion\_DT esto nos va a servir para obtener la entrada en la tabla de páginas, luego shifteamos la entrada del directorio de página 12 bits a la izquierda para obtener la dirección base (múltiplo de 4k) y se lo sumamos a posicion\_DT, por último lo casteamos a tipo page\_table e inicializamos la página con la dirección física y los atributos que nos habian pasado usando de vuelta mmu\_inicializar\_page\_table.
+Esta devuelve el cr3 del kernel (0x270000) el cual lo movemos al cr3 del procesador en kernel.asm y activamos paginación con cr0.
 
 \begin{codesnippet}
 \begin{verbatim}
-    uint posicion_DT = (virtual >> 12) & 0x3FF;
-    uint add = pd->page_base_address_31_12 << 12;
-    page_table *pt = (page_table *)  (add + (posicion_DT * 4));                  
-    mmu_inicializar_page_table(pt, fisica, attrs);
+    mov cr3,eax
+    mov eax, cr0
+    or  eax, 0x80000000
+    mov cr0, eax
+\end{verbatim}
+\end{codesnippet}
+
+
+\subsection*{e)}
+
+Usamos una función que se comporta parecido a mapear pagina, es decir usamos el cr3 para obtener el directorio y con la parte correspondiente de la dirección virtual obtenemos la entrada a una pagina del directorio y de vuelta usando la dirección 
+virtual obtenemos la entrada en la tabla de paginas correspondiente en la cual seteamos el valor de presente en 0. Esto lo testeamos en la función anterior, donde desmapeamos la última pagina 0x3FF000. 
+
+\begin{codesnippet}
+\begin{verbatim}
+uint mmu_unmapear_pagina(uint virtual, uint cr3) {
+    cr3 &= 0xFFFFF000;
+    page_directory *pd =  (page_directory *) cr3;
+    uint directorio = (virtual >> 22) & 0x3FF;      /* Posicion en el directorio */
+    uint tabla = (virtual >> 12) & 0x3FF;           /* Posicion en la tabla      */
+    page_table *pt = (page_table *) (pd[directorio].base_adress << 12);
+    pt[tabla].present = 0;
+    return 0;
 }
 \end{verbatim}
 \end{codesnippet}

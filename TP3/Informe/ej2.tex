@@ -1,4 +1,4 @@
-\section*{Ejercicio 2.}
+\section{Ejercicio 2.}
 
 \noindent Tenemos que definir las interrupciones, para esto usamos el macro IDT\_ENTRY, este se encuentra en idt.c y lo llamamos con los siguientes valores adentro de la función idt\_inicializar, donde el primer valor es el número de la interrupción y el segundo el del dpl:
 
@@ -19,6 +19,11 @@
     IDT_ENTRY(13, 0);    /* General Protection            */
     IDT_ENTRY(14, 0);    /* Page Fault                    */
     IDT_ENTRY(16, 0);    /* x87 FPU Floating-Point Error  */
+    \end{verbatim}
+\end{codesnippet}
+
+\begin{codesnippet}
+\begin{verbatim}
     IDT_ENTRY(17, 0);    /* Alignment Check               */
     IDT_ENTRY(18, 0);    /* Machine Check                 */
     IDT_ENTRY(19, 0);    /* SIMD Floating-Point Exception */
