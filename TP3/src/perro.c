@@ -72,28 +72,23 @@ uint game_dir2xy(/* in */ direccion dir, /* out */ int *x, /* out */ int *y)
 	return 0;
 }
 
+
 // recibe una direccion y un perro, al cual debe mover en esa dirección
 // *** viene del syscall mover ***
 uint game_perro_mover(perro_t *perro, direccion dir)
 {
-	int x, y;
-	uint res = game_dir2xy(dir, &x, &y);
-	int nuevo_x = perro->x + x;
-	int nuevo_y = perro->y + y;
-	int viejo_x = perro->x;
-	int viejo_y = perro->y;
+    int x, y;
+    uint res = game_dir2xy(dir, &x, &y);
+    int nuevo_x = perro->x + x;
+    int nuevo_y = perro->y + y;
+    int viejo_x = perro->x;
+    int viejo_y = perro->y;
 
-	// ~~~ completar ~~~
-	return nuevo_x + nuevo_y + viejo_x + viejo_y + res; // uso todas las variables para que no tire warning->error.
+    // ~~~ completar ~~~
+    return nuevo_x + nuevo_y + viejo_x + viejo_y + res; // uso todas las variables para que no tire warning->error.
 }
 
-// recibe un perro, el cual debe cavar en su posición
-// *** viene del syscall cavar ***
-uint game_perro_cavar(perro_t *perro)
-{
-	// ~~~ completar ~~~
-	return 0;
-}
+
 
 // recibe un perro, devueve la dirección del hueso más cercano
 // *** viene del syscall olfatear ***
@@ -148,3 +143,25 @@ void game_perro_ver_si_en_cucha(perro_t *perro)
 		game_perro_termino(perro);
 }
 
+// devuelve algun perro que esté en la posicion pasada (hay max 2, uno por jugador)
+perro_t* game_perro_en_posicion(uint x, uint y) {
+    int i;
+    for (i = 0; i < MAX_CANT_PERROS_VIVOS; i++)
+    {
+        if (!jugadorA.perros[i].libre && jugadorA.perros[i].x == x && jugadorA.perros[i].y == y)
+            return &jugadorA.perros[i];
+        if (!jugadorB.perros[i].libre && jugadorB.perros[i].x == x && jugadorB.perros[i].y == y)
+            return &jugadorB.perros[i];
+    }
+    return NULL;
+}
+
+
+
+uint game_perro_cavar(perro_t *perro){
+    if(game_parado_en_escondite(perro->x, perro->y) && game_huesos_en_posicion(perro->x, perro->y) 
+        && (perro->huesos < 10)){
+        game_sacar_hueso(perro->x, perro->y, perro);
+    }
+    return 0;
+}

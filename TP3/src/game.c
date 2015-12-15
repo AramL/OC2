@@ -66,36 +66,7 @@ void game_inicializar() {
 
 
 
-// devuelve algun perro que esté en la posicion pasada (hay max 2, uno por jugador)
-perro_t* game_perro_en_posicion(uint x, uint y) {
-    int i;
-    for (i = 0; i < MAX_CANT_PERROS_VIVOS; i++)
-    {
-        if (!jugadorA.perros[i].libre && jugadorA.perros[i].x == x && jugadorA.perros[i].y == y)
-            return &jugadorA.perros[i];
-        if (!jugadorB.perros[i].libre && jugadorB.perros[i].x == x && jugadorB.perros[i].y == y)
-            return &jugadorB.perros[i];
-    }
-    return NULL;
-}
 
-
-uint game_perro_mover(perro_t *perro, direccion dir) {
-    return 0;
-}
-
-
-uint game_perro_cavar(perro_t *perro){
-    if(game_parado_en_escondite(perro->x, perro->y) && game_huesos_en_posicion(perro->x, perro->y) 
-        && (perro->huesos < 10)){
-        game_sacar_hueso(perro->x, perro->y, perro);
-    }
-    return 0;
-}
-
-uint game_perro_olfatear(perro_t *perro) {
-    return 0;
-}
 
 
 // termina si se agotaron los huesos o si hace tiempo que no hay ningun cambio
@@ -116,6 +87,7 @@ void game_terminar_si_es_hora() {
         }
     }
 }
+
 
 
 
