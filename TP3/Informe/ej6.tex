@@ -1,1 +1,307 @@
-\section*{Ejercicio 6.}
+\section{Ejercicio 6.}
+
+\subsection*{a), b), d), e)}
+
+Para este punto definimos una tss idle, una tss inicial y las tss para todos los jugadores por medio de
+
+\begin{codesnippet}
+\begin{verbatim}
+tss tss_inicial;
+tss tss_idle;
+
+tss tss_jugadorA[MAX_CANT_PERROS_VIVOS];
+tss tss_jugadorB[MAX_CANT_PERROS_VIVOS];
+\end{verbatim}
+\end{codesnippet}
+
+Donde la máxima cantidad es 8. Al tener esto podemos inicializar las entradas de descriptores de la gdt, desde la 13 a la 30, con 13 la tarea inicial, 14 la tarea idle
+y el resto tareas para los jugadores primero las del jugador A y luego las del jugador B. Hacemos esto con la función tss\_inicializar que vamos a llamar desde kernel.asm.
+
+\begin{codesnippet}
+\begin{verbatim}
+void tss_inicializar() {
+    gdt[GDT_TSS_TAREA_INICIAL] = (gdt_entry) {
+        (unsigned short)    TSS_KERNEL_LIMIT & 0xffff,                          
+        (unsigned short)    (unsigned int) (& tss_inicial) & 0xffff,            
+        (unsigned char)     ((unsigned int) (& tss_inicial) >> 16) & 0xff,      
+        (unsigned char)     0x9,                                                
+        (unsigned char)     0x0,                                                
+        (unsigned char)     0x0,                             /* dpl          */
+        (unsigned char)     0x1,                                                
+        (unsigned char)     (TSS_KERNEL_LIMIT >> 16) & 0xf,                     
+        (unsigned char)     0x0,                                                
+        (unsigned char)     0x0,                                                
+        (unsigned char)     0x0,                                                
+        (unsigned char)     0x0,                                                
+        (unsigned char)     ((unsigned int) (& tss_inicial) >> 24) & 0xff,      
+    };
+
+    gdt[GDT_TSS_IDLE] = (gdt_entry) {
+        (unsigned short)    TSS_KERNEL_LIMIT & 0xffff,                          
+        (unsigned short)    (unsigned int) (& tss_idle) & 0xffff,               
+        (unsigned char)     ((unsigned int) (& tss_idle) >> 16) & 0xff,         
+        (unsigned char)     0x9,                                                
+        (unsigned char)     0x0,                                                
+        (unsigned char)     0x0,                             /* dpl          */
+        (unsigned char)     0x1,                                                
+        (unsigned char)     (TSS_KERNEL_LIMIT >> 16) & 0xf,                     
+        (unsigned char)     0x0,                                                
+        (unsigned char)     0x0,                                                
+        (unsigned char)     0x0,                                                
+        (unsigned char)     0x0,                                                
+        (unsigned char)     ((unsigned int) (& tss_idle) >> 24) & 0xff,         
+    };
+
+\end{verbatim}
+\end{codesnippet}
+Ponemos los dpls de todas las tareas en 0. Esto nos va a permitir que las tareas no se llamen entre si si su CPL no es 0, lo cual va a pasar efectivamente para las tareas de los jugadores.
+Es decir el cambio de contexto va a tener que pasar durante otro nivel de privilegio que va a ser el del reloj. Como base ponemos la dirección de la tss correspondiente en memoria y como límite 
+103 bytes (cada tss ocupa 104). Luego llenamos las entradas para todas las tareas y llamamos a una función que inicializa la tss de la tarea idle (siguiente pagina).
+\begin{codesnippet}
+\begin{verbatim}
+    int i = 0;
+
+
+    /* GDT e indice jugador A */
+    for (i = 0; i < MAX_CANT_PERROS_VIVOS; i++) {
+        indices_A[i]=FALSE;
+        gdt[entrada_libre] = (gdt_entry) {
+            (unsigned short)    TSS_KERNEL_LIMIT & 0xffff,                          
+            (unsigned short)    (unsigned int) (&tss_jugadorA[i]) & 0xffff,         
+            (unsigned char)     ((unsigned int) (&tss_jugadorA[i]) >> 16) & 0xff,   
+            (unsigned char)     0x9,                                                
+            (unsigned char)     0x0,                                                
+            (unsigned char)     0x0,                         /* dpl          */
+            (unsigned char)     0x1,                                                
+            (unsigned char)     (TSS_KERNEL_LIMIT >> 16) & 0xf,                     
+            (unsigned char)     0x0,                                                
+            (unsigned char)     0x0,                                                
+            (unsigned char)     0x0,                                                
+            (unsigned char)     0x0,                                                
+            (unsigned char)     ((unsigned int) (&tss_jugadorA[i]) >> 24) & 0xff,   
+        };
+        entrada_libre++;
+    }
+
+    /* GDT e indice jugador B */
+    for (i = 0; i < MAX_CANT_PERROS_VIVOS; i++) {
+        indices_B[i]=FALSE;
+        gdt[entrada_libre] = (gdt_entry) {
+            (unsigned short)    TSS_KERNEL_LIMIT & 0xffff,                          
+            (unsigned short)    (unsigned int) (&tss_jugadorB[i]) & 0xffff,         
+            (unsigned char)     ((unsigned int) (&tss_jugadorB[i]) >> 16) & 0xff,   
+            (unsigned char)     0x9,                                                
+            (unsigned char)     0x0,                                                
+            (unsigned char)     0x0,                         /* dpl          */
+            (unsigned char)     0x1,                                                
+            (unsigned char)     (TSS_KERNEL_LIMIT >> 16) & 0xf,                     
+            (unsigned char)     0x0,                                                
+            (unsigned char)     0x0,                                                
+            (unsigned char)     0x0,                                                
+            (unsigned char)     0x0,                                                
+            (unsigned char)     ((unsigned int) (&tss_jugadorB[i]) >> 24) & 0xff,   
+        };
+        entrada_libre++;
+    }
+
+    //Inicializando la tss de Idle.
+    completar_tss_idle();
+}
+\end{verbatim}
+\end{codesnippet}
+
+
+
+\begin{codesnippet}
+\begin{verbatim}
+void completar_tss_idle() {
+    tss_idle.unused0       = 0;
+    tss_idle.esp0          = 0x27000;
+    tss_idle.ss0           = 0x50;
+    tss_idle.unused1       = 0;
+    tss_idle.esp1          = 0;
+    tss_idle.ss1           = 0;
+    tss_idle.unused2       = 0;
+    tss_idle.esp2          = 0;
+    tss_idle.ss2           = 0;
+    tss_idle.unused3       = 0;
+    tss_idle.cr3           = k_cr3;
+    tss_idle.eip           = 0x16000;
+    tss_idle.eflags        = 0x202;
+    tss_idle.esp           = 0x27000;
+    tss_idle.ebp           = 0x27000;
+    tss_idle.es            = 0x50;
+    tss_idle.unused4       = 0;
+    tss_idle.cs            = 0x40;
+    tss_idle.unused5       = 0;
+    tss_idle.ss            = 0x50;
+    tss_idle.unused6       = 0;
+    tss_idle.ds            = 0x50;
+    tss_idle.unused7       = 0;
+    tss_idle.fs            = 0x50;
+    tss_idle.unused8       = 0;
+    tss_idle.gs            = 0x50;
+    tss_idle.unused9       = 0;
+    tss_idle.unused10      = 0;
+    tss_idle.iomap         = 0xFFFF;
+}
+\end{verbatim}
+\end{codesnippet}
+
+Hacemos apuntar su cr3 al del kernel como lo pedia el enunciado y el eip en 0x16000 que es donde esta definida la tarea idle (idle.asm). Además hacemos apuntar todos sus selectores de segmento, menos cs,
+ a la decima entrada de la gdt la cual es la de datos de nivel 0 y cs a codigo de nivel 0. 
+
+\newpage 
+
+ \subsection*{c)}
+ Para este punto escribimos la siguiente función
+
+\begin{codesnippet}
+\begin{verbatim}
+void llenar_descriptor_tss_perro(int indice, perro_t *perro, int index_jugador, int index_tipo) {
+    if (index_jugador == JUGADOR_A) {
+        tss_jugadorA[indice].unused0  = 0;
+        tss_jugadorA[indice].esp0     = mmu_proxima_pagina_fisica_libre();
+        tss_jugadorA[indice].ss0      = 0x58;
+        tss_jugadorA[indice].unused1  = 0;
+        tss_jugadorA[indice].esp1     = 0;
+        tss_jugadorA[indice].ss1      = 0;
+        tss_jugadorA[indice].unused2  = 0;
+        tss_jugadorA[indice].esp2     = 0;
+        tss_jugadorA[indice].ss2      = 0;
+        tss_jugadorA[indice].unused3  = 0;
+        tss_jugadorA[indice].cr3      = mmu_inicializar_memoria_perro(perro, index_jugador, index_tipo);
+        tss_jugadorA[indice].eip      = 0x401000;
+        tss_jugadorA[indice].eflags   = 0x202;
+        tss_jugadorA[indice].esp      = 0x401000 + 0x1000 - 12;
+        tss_jugadorA[indice].ebp      = 0x401000 + 0x1000 - 12;
+        tss_jugadorA[indice].es       = 0x48;
+        tss_jugadorA[indice].unused4  = 0;
+        tss_jugadorA[indice].cs       = 0x40;
+        tss_jugadorA[indice].unused5  = 0;
+        tss_jugadorA[indice].ss       = 0x58;
+        tss_jugadorA[indice].unused6  = 0;
+        tss_jugadorA[indice].ds       = 0x58;
+        tss_jugadorA[indice].unused7  = 0;
+        tss_jugadorA[indice].fs       = 0x58;
+        tss_jugadorA[indice].unused8  = 0;
+        tss_jugadorA[indice].gs       = 0x58;
+        tss_jugadorA[indice].unused9  = 0;
+        tss_jugadorA[indice].unused10 = 0;
+        tss_jugadorA[indice].iomap    = 0xFFFF;
+ \end{verbatim}
+ \end{codesnippet}
+Esta función toma como parametros un indice (indice en tss\_jugadorX) un puntero a un perro, el index del jugador, si es A o B y el tipo de perro. Además, a diferencia de la inicial y la idle los selectores de segmento de las tareas perros apuntan a codigo y nivel 3. Es decir su CPL va a ser 3 y no 0, y como las entradas de la GDT de sus descriptores tienen 0  evitan que pueda ser posible que un perro salte a otro perro sin pasar por el reloj. Eip esta siempre fijo, ya que su esquema de paginación va a ser el que defina donde esta la tarea al igual que su pila, donde el -12 es porque pushea su dirección de retorno y los eflags. Cada perro tiene su cr3 que es dado pro  mmu\_inicializar\_memoria\_perro (Ver punto 4). 
+
+\subsection*{f)}
+Para este punto pusimos todas las funciones que definimos en los puntos anteriores como extern en kernel.asm, llamamos a tss\_inicializar y luego agregamos las siguientes instrucciones:
+
+\begin{codesnippet}
+\begin{verbatim}
+    mov bx, 0x68            
+    ltr bx                  
+    ;=====================
+    jmp 0x70:0               
+
+\end{verbatim}
+\end{codesnippet}
+
+Es decir, cargamos al task register, por medio de un registro en este caso bx (o una dirección en memoria) el selector de la tarea inicial que es 0x68 equivalente a la entrada 13 de la gdt. Luego simplemente hacemos un jmp (far) con el selector igual a la entrada
+14, es decir 0x70 en hexadecimal, de la tarea idle. 
+
+
+\subsection*{g)}
+Para la syscall 46 escribimos lo siguiente en isr.asm
+
+\begin{codesnippet}
+\begin{verbatim}
+global _isr46:
+    _isr46:
+        pushad
+        call fin_intr_pic1
+        push ecx
+        push eax
+        call game_atender_pedido
+        popad
+        iret 
+\end{verbatim}
+\end{codesnippet}
+
+Pusheamos convención C 32 bits, primero ecx y luego eax, ecx lo vamos a usar solo para una de las 4 llamadas posibles que va a hacer la funcion game\_atender\_pedido. En los otros casos no se usa. La función atender pedido es la siguiente
+y hace lo que se espera, llamar a las funciones correspondientes acorden a la orden dada por el perro, game perro actual es una variable global que guarda el puntero al perro que mando la orden. La función olfatear vino dada por la cátedra asi que no
+la implementamos. Y para devolver la última orden dada por el jugador (eax == 4) usamos el struct del perro que apunta a un jugador con la última orden dada
+
+\begin{codesnippet}
+\begin{verbatim}
+uint game_atender_pedido(int eax, int ecx){
+    if(eax == 1)
+        game_perro_mover(game_perro_actual, ecx);
+    if(eax == 2)
+        game_perro_cavar(game_perro_actual);
+    if(eax == 3)
+        game_perro_olfatear(game_perro_actual);
+    if(eax == 4)
+        return  (game_perro_actual->jugador)->index ? jugadorB.orden : jugadorA.orden;
+    return 0;
+}
+\end{verbatim}
+\end{codesnippet}
+
+Perro cavar ejecuta el siguiente codigo
+
+\begin{codesnippet}
+\begin{verbatim}
+uint game_perro_cavar(perro_t *perro){
+    if(game_parado_en_escondite(perro->x, perro->y) 
+       && game_huesos_en_posicion(perro->x, perro->y) 
+       && (perro->huesos < 10))
+    {
+        game_sacar_hueso(perro->x, perro->y, perro);
+    }
+    return 0;
+}
+\end{verbatim}
+\end{codesnippet}
+
+Donde parado en escondite, huesos en posicion y sacar huesos son las siguientes funciones
+
+\begin{codesnippet}
+\begin{verbatim}
+uint game_parado_en_escondite(uint x, uint y){
+    int *escondite;
+    escondite = game_dame_escondite(x ,y);
+    return escondite != NULL ? 1 : 0;
+}
+
+uint game_huesos_en_posicion(uint x, uint y){
+    int *escondite;
+    escondite = game_dame_escondite(x ,y);
+    return escondite != NULL ? escondite[3] : 0;
+}
+
+void game_sacar_hueso(uint x, uint y, perro_t * perro){
+    int *escondite;
+    escondite = game_dame_escondite(x ,y);
+    escondite[3]--;
+    perro->huesos++;
+}
+\end{verbatim}
+\end{codesnippet}
+
+Devuelven lo que se espera, parado en escondite llama a dame escondite que de haber un escondite en la posición devuelveu n puntero al escondite, huesos en posicion usa tambien la funcion dame escondite y en caso de ser no null devuelve los huesos en la posicion
+y de lo contrario 0, y game sacar hueso usa el puntero ese para restarle los huesos al escondite y sumarselos al perro correspondiente. Además nos fijamos que el perro tenga menos de 10 huesos para cavar. La función dame escondite es la siguiente:
+
+\begin{codesnippet}
+\begin{verbatim}
+int* game_dame_escondite(uint x, uint y){
+    int i;
+    for(i = 0; i < ESCONDITES_CANTIDAD; i++){
+        if(escondites[i][1] == x && escondites[i][2] == y)
+            return escondites[i];
+    }
+    return NULL;
+}
+\end{verbatim}
+\end{codesnippet}
+
+La cual recorre el arreglo de escondites mirando su subarreglo (x, y, huesos) y si la posición es la que se le paso por parametro devuelve la dirección del escondite.
