@@ -54,7 +54,6 @@ void game_perro_reciclar_y_lanzar(perro_t *perro, uint tipo)
 void game_perro_termino(perro_t *perro)
 {
 //~~~ completar ~~~
-
 sched_remover_tarea(perro->id);
 }
 

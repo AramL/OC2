@@ -59,7 +59,6 @@ void tss_inicializar();
 void completar_tss_idle();
 void llenar_descriptor_tss_perro(int indice, perro_t *perro, int index_jugador, int index_tipo);
 uint dame_indice_tss_libre(uint jugador);
-uint indices_A[MAX_CANT_PERROS_VIVOS];
-uint indices_B[MAX_CANT_PERROS_VIVOS];
+
 
 #endif  /* !__TSS_H__ */
