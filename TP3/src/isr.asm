@@ -98,7 +98,7 @@ global _isr33
         call fin_intr_pic1
         in al, 0x60
         push eax
-        call atender_teclado
+        call game_atender_teclado
         ;xchg bx, bx     
         pop eax
         popad  

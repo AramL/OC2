@@ -63,20 +63,23 @@ void sched_agregar_tarea(perro_t *perro, uint gdt_index) {
     }
 
 }
-
+//Pre: existe el gdt_index
 void sched_remover_tarea(unsigned int gdt_index) {
 	//librerar el indice del array de TSSs
 	//ponerle al perro libre = true
 	//en el scheduler ponerle gdt = NULL
 	uint i=1;
-	explotar tarea mortal mistica 
+	while(scheduler.tasks[i].gdt_index != gdt_index){
+		i++;
+	}
+
     scheduler.tasks[current].gdt_index = 0;
 }
 
 
 uint sched_proxima_a_ejecutar() {
 
-        uint curri = scheduler.current;
+    uint curri = scheduler.current;
     uint index = 0;
     uint index_mismo_jugador = 0;
     uint hay_perro = TRUE;
