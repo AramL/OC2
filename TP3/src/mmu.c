@@ -47,7 +47,7 @@ void mmu_copiar_pagina(uint src, uint dst) {
     uint i = 0;
     while ( i < 1024) {
         destination[i] = source[i];
-        i += sizeof(uint);
+        i++;
     }
 }
 
