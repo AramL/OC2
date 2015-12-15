@@ -20,8 +20,8 @@ void sched_inicializar() {
 	scheduler.tasks[0].gdt_index = GDT_TSS_IDLE;
 	scheduler.tasks[0].perro = NULL;
 	for (i = 1; i < MAX_CANT_TAREAS_VIVAS + 1; i++) {
-		scheduler.tasks[0].gdt_index = NULL;
-		scheduler.tasks[0].perro = NULL;
+		scheduler.tasks[i].gdt_index = NULL;
+		scheduler.tasks[i].perro = NULL;
 	}
 	scheduler.current = 0;
 }
@@ -95,6 +95,10 @@ uint sched_proxima_a_ejecutar() {
 	uint index_mismo_jugador = 0;
 	uint hay_perro = TRUE;
 	uint offset = 0;
+	if(scheduler.current == 0){
+		//breakpoint();
+		return 0;
+	}
 	//if(scheduler.tasks[(curri<MAX_CANT_TAREAS_VIVAS):1?curri+1]
 	if (curri > 8) {
 		index = 9;
@@ -124,7 +128,7 @@ uint sched_proxima_a_ejecutar() {
 			}
 		}
 	}
-	if (!hay_perro) return GDT_TSS_IDLE;
+	if (!hay_perro) return 0;
 	//return scheduler.tasks[index + offset].gdt_index;
 	return index + offset;
 

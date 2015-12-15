@@ -155,17 +155,17 @@ BITS 32
     mov bx, 0x68            ; cargamos el selector de la tarea inicial 
     ltr bx                  ; (13 << 3, TI = 0, RPL: 0, ver define.h) 
                             
+    ;Inicializar pantalla
+    call screen_inicializar
+    ;xchg bx, bx
+    ;call dame_un_perro_laputamadre
+
     ; Habilitar interrupciones
     sti
-    ;Inicializar pantalla
-    xchg bx, bx
-    call screen_inicializar
-    xchg bx, bx
-    ;call dame_un_perro_laputamadre
 
     ; El primer perro esta en la posición 15 de la gdt
     ; 15 << 3 = 0x78
-    xchg bx, bx ; breakpoint
+    ;xchg bx, bx ; breakpoint
     ;jmp 0x78:0
 
 
@@ -173,7 +173,7 @@ BITS 32
     ;xchg bx, bx
     jmp 0x70:0                  ; y saltamos a la tarea idle  
                                 ; (14 << 3, TI = 0, RPL: 0, ver define.h)
-
+    xchg bx, bx
 
     ;call screen_pintar_puntajes
     ; Saltar a la primera tarea: Idle

@@ -34,7 +34,6 @@ global _isr%1
 
 _isr%1:
 pushad
-xor eax,eax
  str cx
  shr cx,3
  push ecx
@@ -44,8 +43,6 @@ xor eax,eax
  mov [sched_tarea_selector],ebx
  jmp far [sched_tarea_offset]
  pop ecx
- mov eax, %1
- jmp $
 popad
 iret
 %endmacro
@@ -59,6 +56,7 @@ iret
 ;; Rutina de atención de las EXCEPCIONES
 ;; -------------------------------------------------------------------------- ;;
 ISR 0
+ISR 1
 ISR 2
 ISR 3
 ISR 4
@@ -72,6 +70,7 @@ ISR 11
 ISR 12
 ISR 13
 ISR 14
+ISR 15
 ISR 16
 ISR 17
 ISR 18
@@ -83,9 +82,7 @@ ISR 19
 global _isr32
     _isr32:
         pushad
-        ; xchg bx, bx
         call fin_intr_pic1
-        sub esp, 4
         call sched_atender_tick
         str cx
         shl ax, 3
@@ -94,7 +91,6 @@ global _isr32
         mov [sched_tarea_selector], ax
         jmp far [sched_tarea_offset]
         .fin:
-        add esp, 4
         popad  
         iret
 ;;

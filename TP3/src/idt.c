@@ -60,6 +60,7 @@ idt_descriptor IDT_DESC = {
 void idt_inicializar() {
     // Excepciones
     IDT_ENTRY(0, 0);     /* Divide error                  */
+    IDT_ENTRY(1, 0);
     IDT_ENTRY(2, 0);     /* NMI Interrupt                 */
     IDT_ENTRY(3, 0);     /* Breakpoint - INT 3            */
     IDT_ENTRY(4, 0);     /* Overflow                      */
@@ -73,12 +74,13 @@ void idt_inicializar() {
     IDT_ENTRY(12, 0);    /* Stack-Segment Fault           */
     IDT_ENTRY(13, 0);    /* General Protection            */
     IDT_ENTRY(14, 0);    /* Page Fault                    */
+    IDT_ENTRY(15, 0);
     IDT_ENTRY(16, 0);    /* x87 FPU Floating-Point Error  */
     IDT_ENTRY(17, 0);    /* Alignment Check               */
     IDT_ENTRY(18, 0);    /* Machine Check                 */
     IDT_ENTRY(19, 0);    /* SIMD Floating-Point Exception */
     IDT_ENTRY(32, 0);    /* User defined  */                
     IDT_ENTRY(33, 0);    /* User defined   */         
-    IDT_ENTRY(46, 0);            
+    IDT_ENTRY(46, 3);            
 }
     
