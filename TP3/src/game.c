@@ -53,7 +53,7 @@ void game_inicializar() {
 
 
 // devuelve la cantidad de huesos que hay en la posición pasada como parametro
-uint game_huesos_en_posicion(uint x, uint y) {
+/*uint game_huesos_en_posicion(uint x, uint y) {
     int i;
     for (i = 0; i < ESCONDITES_CANTIDAD; i++)
     {
@@ -61,7 +61,7 @@ uint game_huesos_en_posicion(uint x, uint y) {
             return escondites[i][2];
     }
     return 0;
-}
+}*/
 
 
 
@@ -86,9 +86,11 @@ uint game_perro_mover(perro_t *perro, direccion dir) {
 
 
 uint game_perro_cavar(perro_t *perro){
-    if(game_parado_en_escondite(perro->x, perro->y) && game_huesos_en_posicion(perro->x, perro->y)){
-        game_sacar_hueso(perro->x, perro-y, perro);
+    if(game_parado_en_escondite(perro->x, perro->y) && game_huesos_en_posicion(perro->x, perro->y) 
+        && (perro->huesos < 10)){
+        game_sacar_hueso(perro->x, perro->y, perro);
     }
+    return 0;
 }
 
 uint game_perro_olfatear(perro_t *perro) {
@@ -107,7 +109,7 @@ void game_terminar_si_es_hora() {
         break;
     }
     if (!hay_huesos || ultimo_cambio == 0) {
-        if (jugadorA->puntos > jugadorB->puntos) {
+        if (jugadorA.puntos > jugadorB.puntos) {
             screen_stop_game_show_winner(&jugadorA);
         } else {
             screen_stop_game_show_winner(&jugadorB);
@@ -124,27 +126,31 @@ void dame_un_perro_laputamadre() {
 
 
 
-void atender_pedido(int eax, int ecx){
+void game_atender_pedido(int eax, int ecx){
     if(eax == 1)
-        game_perro_mover(perro_actual(), ecx);
+        ;
+        //game_perro_mover(perro_actual(), ecx);
     if(eax == 2)
-        game_perro_cavar(perro_actual());
+        ;
+        //game_perro_cavar(perro_actual());
     if(eax == 3)
-        game_perro_olfatear(perro_actual());
+        ;
+        //game_perro_olfatear(perro_actual());
     if(eax == 4)
+        ;
         //game_perro_recibir_orden()
 }
 
-int game_parado_en_escondite(uint x, uint y){
+uint game_parado_en_escondite(uint x, uint y){
     int *escondite;
     escondite = game_dame_escondite(x ,y);
-    return escondite = NULL  ? true : false;
+    return escondite != NULL ? 1 : 0;
 }
 
 uint game_huesos_en_posicion(uint x, uint y){
     int *escondite;
     escondite = game_dame_escondite(x ,y);
-    return escondite = NULL  ? escondite[3] : 0;
+    return escondite != NULL ? escondite[3] : 0;
 }
 
 void game_sacar_hueso(uint x, uint y, perro_t * perro){

@@ -33,6 +33,8 @@ typedef struct sched_t {
 } sched_t;
 
 extern sched_t scheduler;
+extern uint* indices_A;
+extern uint* indices_B;
 
 /*
 ================================================================================

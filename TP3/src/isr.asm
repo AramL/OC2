@@ -17,10 +17,13 @@ extern fin_intr_pic1
 ;; Sched
 extern sched_atender_tick
 extern sched_tarea_actual
+extern sched_remover_tarea
 
 extern screen_pintar
 extern game_atender_tick
-extern atender_teclado
+extern game_atender_teclado
+extern game_atender_pedido
+
 ;;
 ;; Definición de MACROS
 ;; -------------------------------------------------------------------------- ;;
@@ -112,7 +115,7 @@ global _isr46:
         call fin_intr_pic1
         push ecx
         push eax
-        call atender_pedido
+        call game_atender_pedido
         popad
         iret 
 
