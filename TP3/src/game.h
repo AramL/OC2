@@ -160,4 +160,5 @@ void game_terminar_si_es_hora();
 
 void dame_un_perro_laputamadre();
 
+void atender_pedido(int eax, int ecx);
 #endif  /* !__GAME_H__ */

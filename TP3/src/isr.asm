@@ -88,7 +88,7 @@ global _isr32
         .fin:
         add esp, 4
         popad  
-		iret
+        iret
 ;;
 ;; Rutina de atención del TECLADO
 ;; -------------------------------------------------------------------------- ;;
@@ -107,10 +107,12 @@ global _isr33
 ;; Rutinas de atención de las SYSCALLS
 ;; -------------------------------------------------------------------------- ;;
 global _isr46:
-_isr46:
-	pushad
-	call fin_intr_pic1
-    mov eax,0x42
-    popad
-    iret 
+    _isr46:
+        pushad
+        call fin_intr_pic1
+        push ecx
+        push eax
+        call atender_pedido
+        popad
+        iret 
 

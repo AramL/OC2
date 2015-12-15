@@ -80,6 +80,19 @@ perro_t* game_perro_en_posicion(uint x, uint y) {
 }
 
 
+uint game_perro_mover(perro_t *perro, direccion dir){
+    return 0;
+}
+
+
+uint game_perro_cavar(perro_t *perro){
+    return 0;
+}
+
+uint game_perro_olfatear(perro_t *perro){
+    return 0;
+}
+
 
 // termina si se agotaron los huesos o si hace tiempo que no hay ningun cambio
 void game_terminar_si_es_hora() {
@@ -90,4 +103,16 @@ void game_terminar_si_es_hora() {
 
 void dame_un_perro_laputamadre(){
     llenar_descriptor_tss_perro(0, &jugadorA.perros[0], 0, 0);
+}
+
+
+void atender_pedido(int eax, int ecx){
+    if(eax == 1)
+        game_perro_mover(perro_actual(), ecx);
+    if(eax == 2)
+        game_perro_cavar(perro_actual());
+    if(eax == 3)
+        game_perro_olfatear(perro_actual());
+    if(eax == 4)
+        //game_perro_recibir_orden()
 }

@@ -14,7 +14,7 @@ sched_t scheduler;
 /*
 typedef struct sched_task_t {
     unsigned int gdt_index;
-	perro_t *perro;
+    perro_t *perro;
 } sched_task_t;
 
 // el scheduler posee un arreglo de tareas (cada una puede estar libre o asignada)
@@ -28,19 +28,19 @@ en current, los indices q sean del 1 al 8 van a ser del jugador A,
 y del 9 al 16 del jugador B
 */
 void sched_inicializar() {
-	uint i = 1;
-	scheduler.tasks[0].gdt_index = GDT_TSS_IDLE;
-	scheduler.tasks[0].perro = NULL;
-	for (i = 1; i < MAX_CANT_TAREAS_VIVAS + 1; i++) {
-		scheduler.tasks[0].gdt_index = NULL;
-		scheduler.tasks[0].perro = NULL;
-	}
-	scheduler.current = 0;
+    uint i = 1;
+    scheduler.tasks[0].gdt_index = GDT_TSS_IDLE;
+    scheduler.tasks[0].perro = NULL;
+    for (i = 1; i < MAX_CANT_TAREAS_VIVAS + 1; i++) {
+        scheduler.tasks[0].gdt_index = NULL;
+        scheduler.tasks[0].perro = NULL;
+    }
+    scheduler.current = 0;
 }
 
 
 int sched_buscar_indice_tarea(uint gdt_index) {
-	return MAX_CANT_TAREAS_VIVAS;
+    return MAX_CANT_TAREAS_VIVAS;
 }
 
 
@@ -58,12 +58,13 @@ int sched_buscar_tarea_libre(uint tipo_jugador) {
 	if (offset < 8) return i + offset;
 
 	return -1;
+
 }
 
 
 
 perro_t* sched_tarea_actual() {
-	return scheduler.tasks[scheduler.current].perro;
+    return scheduler.tasks[scheduler.current].perro;
 }
 
 void sched_agregar_tarea(perro_t *perro, uint gdt_index) {
@@ -83,7 +84,7 @@ void sched_remover_tarea(unsigned int gdt_index) {
 
 uint sched_proxima_a_ejecutar() {
 
-	uint curri = scheduler.current;
+		uint curri = scheduler.current;
 	uint index = 0;
 	uint index_mismo_jugador = 0;
 	uint hay_perro = TRUE;
@@ -120,11 +121,11 @@ uint sched_proxima_a_ejecutar() {
 	if (!hay_perro) return GDT_TSS_IDLE;
 	//return scheduler.tasks[index + offset].gdt_index;
 	return index + offset;
+
 }
 
 
 ushort sched_atender_tick() {
-
 	game_atender_tick(scheduler.tasks[current].perro)
 	scheduler.current = sched_proxima_a_ejecutar();
 	game_perro_actual = scheduler.tasks[scheduler.current].perro;
