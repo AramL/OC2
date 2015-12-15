@@ -24,6 +24,9 @@ extern game_atender_tick
 ;extern GDT_TSS_IDLE
 extern game_atender_teclado
 extern game_atender_pedido
+extern pintar_pantalla_debug;
+extern atender_interrupcion_debug;
+
 %define GDT_TSS_IDLE 14
 ;;
 ;; Definición de MACROS
@@ -84,7 +87,7 @@ global _isr32
     _isr32:
         pushad
         call fin_intr_pic1
-        call sched_atender_tick
+	call sched_atender_tick
         str cx
         shl ax, 3
         cmp ax, cx
@@ -102,10 +105,18 @@ global _isr33
     _isr33:
         pushad
         call fin_intr_pic1
-        in al, 0x60
+	push eax
+	;xchg bx, bx	
+	call atender_interrupcion_debug
+	pop eax
+	;xchg bx, bx	
+	cmp eax,1	
+	je .continuar        
+	in al, 0x60
         push eax
         call game_atender_teclado
         pop eax
+.continuar:	
         popad  
     iret
 ;;
@@ -132,5 +143,7 @@ global _isr46:
         pop ebx
         pop edx
         pop ecx
-        iret 
+        iret 	
+
+
 

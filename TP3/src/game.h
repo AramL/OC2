@@ -71,7 +71,7 @@ typedef struct jugador_t
 extern jugador_t jugadorA, jugadorB;
 uint indices_A[MAX_CANT_PERROS_VIVOS];
 uint indices_B[MAX_CANT_PERROS_VIVOS];
-
+uint debug_mode;
 /*
 ================================================================================
 // ~~~ auxiliares dadas, sugeridas o requeridas (segun disponga enunciado) ~~~
@@ -159,7 +159,8 @@ perro_t* game_perro_en_posicion(uint x, uint y);
 // termina si se agotaron los huesos o si hace tiempo que no hay ningun cambio
 void game_terminar_si_es_hora();
 
-
+void atender_debug();
+uint atender_interrupcion_debug(uint rax);
 
 void dame_un_perro_laputamadre();
 uint game_atender_pedido(int eax, int ecx);

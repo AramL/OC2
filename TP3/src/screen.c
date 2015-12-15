@@ -294,3 +294,14 @@ void mostrar_reloj() {
 void pintar_atender_teclado(unsigned char c){
 	screen_pintar_rect(c, C_FG_WHITE, 0, 78, 1, 1);	
 	}
+
+void pintar_mensaje(uchar c[], uchar color, uint fila, uint columna,int tam){
+
+	int i = 0;
+	for(i=0;i<tam;i++){
+ 		screen_pintar_rect(c[i], C_FG_WHITE, fila, columna+i, 1, 1);	
+	}
+	
+}
+
+

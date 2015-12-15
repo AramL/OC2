@@ -30,6 +30,7 @@ typedef struct ca_s {
 } ca;
 
 
+
 struct perro_t;
 typedef struct perro_t perro_t;
 
@@ -91,6 +92,7 @@ void pintar_atender_teclado(unsigned char);
 
 void print_dec(uint numero, int size, uint x, uint y, unsigned short attr);
 
-
+//void pintar_pantalla_debug();
+void pintar_mensaje(uchar c[], uchar color, uint fila, uint columna,int tam);
 
 #endif  /* !__SCREEN_H__ */
