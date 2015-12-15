@@ -142,7 +142,7 @@ int* game_dame_escondite(uint x, uint y){
     int i;
     for(i = 0; i < ESCONDITES_CANTIDAD; i++){
         if(escondites[i][1] == x && escondites[i][2] == y)
-            return escondite[i];
+            return escondites[i];
     }
     return NULL;
 }
