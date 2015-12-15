@@ -96,13 +96,14 @@ uint game_perro_mover(perro_t *perro, direccion dir)
     uint dir_fisica = mmu_xy2fisica(nuevo_x, nuevo_y);
     uint dir_virtual = mmu_xy2virtual(nuevo_x, nuevo_y);
 
-    mmu_mapear_pagina(0x7FFFFFF, rcr3(), dir_fisica, 0x3);
-    mmu_copiar_pagina(0x401000, 0x7FFFFFF);
+    breakpoint();
+    mmu_mapear_pagina(0x7FFF000, rcr3(), dir_fisica, 0x3);
+    mmu_copiar_pagina(0x401000, 0x7FFF000);
 
     mmu_mapear_pagina(0x401000, rcr3(), dir_fisica, 0x7);
 	mmu_mapear_pagina(dir_virtual, rcr3(), dir_fisica, 0x5);
 
-    mmu_unmapear_pagina(0x7FFFFFF, rcr3());
+    mmu_unmapear_pagina(0x7FFF000, rcr3());
 
     screen_borrar_perro(perro);
     perro->x = nuevo_x;

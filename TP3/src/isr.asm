@@ -92,7 +92,6 @@ global _isr32
         shl ax, 3
         cmp ax, cx
         je .fin
-        xchg bx, bx
         mov [sched_tarea_selector], ax
         jmp far [sched_tarea_offset]
         .fin:
@@ -122,8 +121,8 @@ global _isr33
 ;;
 ;; Rutinas de atención de las SYSCALLS
 ;; -------------------------------------------------------------------------- ;;
-global _isr46:
-    _isr46:
+global _isr70:
+    _isr70:
         push ecx
         push edx
         push ebx
