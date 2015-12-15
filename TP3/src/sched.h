@@ -22,7 +22,7 @@
 // el perro al cual está asociada. Si el indice es null significará que está libre.
 typedef struct sched_task_t {
     unsigned int gdt_index;
-	perro_t *perro;
+    perro_t *perro;
 } sched_task_t;
 
 // el scheduler posee un arreglo de tareas (cada una puede estar libre o asignada)
@@ -53,4 +53,4 @@ perro_t* sched_tarea_actual();
 // para pasar a la siguiente tarea (devuelve su indice en la gdt)
 ushort sched_atender_tick();
 
-#endif	/* !__SCHED_H__ */
+#endif  /* !__SCHED_H__ */
