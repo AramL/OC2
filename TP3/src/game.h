@@ -32,18 +32,18 @@ struct jugador_t;
 typedef struct perro_t
 {
 
-	// ~~~ para ser completado ~~~
+  // ~~~ para ser completado ~~~
     uint index;  // indice de 0 a 15
     struct jugador_t *jugador;
 
-	uint id;     // id unica tarea
-	uint tipo;   // raza del perro
+    uint id;     // id unica tarea
+    uint tipo;   // raza del perro
     uint libre;  // libre: -true- slot disponible para lanzar perro  / -false- ya hay un perro vivo
 
     uint x;
     uint y;
 
-	uint huesos;
+    uint huesos;
     uint indice_reloj;
 
 } perro_t;
@@ -61,8 +61,8 @@ typedef struct jugador_t
     uint x_cucha, y_cucha;
 
     // posicion, puntos, ordenes, etc.
-	// completar si es necesario.
-	int x, y;  // posicion
+    // completar si es necesario.
+    int x, y;  // posicion
     uint puntos;
 
 } jugador_t;
@@ -155,5 +155,9 @@ perro_t* game_perro_en_posicion(uint x, uint y);
 
 // termina si se agotaron los huesos o si hace tiempo que no hay ningun cambio
 void game_terminar_si_es_hora();
+
+
+
+void dame_un_perro_laputamadre();
 
 #endif  /* !__GAME_H__ */
