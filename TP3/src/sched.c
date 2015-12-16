@@ -71,19 +71,24 @@ void sched_remover_tarea(unsigned short gdt_index) {
     //ponerle al perro libre = true
     //en el scheduler ponerle gdt = NULL
 
-    print_dec(gdt_index, 2, 50, 25, C_BG_BLACK | C_FG_WHITE);
-    breakpoint();
+    
+
     uint i = 1;
-    while (scheduler.tasks[i].gdt_index != gdt_index) {
+    while (scheduler.tasks[i].gdt_index != gdt_index &&) {
+        print_dec(scheduler.tasks[i].gdt_index, 2, 50, 15, C_BG_BLACK | C_FG_WHITE);
+        print_dec(gdt_index, 2, 50, 25, C_BG_BLACK | C_FG_WHITE);
+        print_dec(i, 2, 50, 35, C_BG_BLACK | C_FG_WHITE);
         i++;
-        print_dec(i, 2, 100, 25, C_BG_BLACK | C_FG_WHITE);
+        //breakpoint();
     }
+
+    print_dec(i, 2, 50, 38, C_BG_BLACK | C_FG_WHITE);
 
     perro_t *p = scheduler.tasks[i].perro;
     if (p->jugador->index == JUGADOR_A) {
         indices_A[gdt_index - 15] = NULL;
     } else {
-        indices_A[gdt_index - 15 - 8] = NULL;
+        indices_B[gdt_index - 15 - 8] = NULL;
     }
     screen_borrar_perro(p);
     p->libre = TRUE;
@@ -181,11 +186,11 @@ uint sched_proxima_a_ejecutar() {
 
     }*/
 
-    if (index == 2) {
+    /*if (index == 2) {
         print_dec(20, 2, 40, 25, C_BG_BLACK | C_FG_WHITE);
     } else {
         print_dec(10, 2, 40, 25, C_BG_BLACK | C_FG_WHITE);
-    }
+    }*/
     if (!hay_perro) return 0;
     //return scheduler.tasks[index + offset].gdt_index;
     //if(index+offset == 1)breakpoint();

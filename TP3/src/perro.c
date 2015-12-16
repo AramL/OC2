@@ -54,10 +54,9 @@ void game_perro_reciclar_y_lanzar(perro_t *perro, uint tipo)
 }
 
 // el perro descargó sus huesos o realizó una acción no válida y caputó, hay que sacarlo del sistema.
-void game_perro_termino(perro_t *perro)
-{
+void game_perro_termino(perro_t *perro){
 //~~~ completar ~~~
-sched_remover_tarea(perro->id);
+sched_remover_tarea(perro->index);
 }
 
 // transforma código de dirección en valores x e y
