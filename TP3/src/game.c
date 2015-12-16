@@ -26,7 +26,7 @@ int ultimo_cambio = MAX_SIN_CAMBIOS;
 void ASSERT_OR_ERROR(uint value, char* error_msg) {
     if (!value) {
         print(error_msg, 5, 5, C_BG_LIGHT_GREY | C_FG_BLACK);
-        breakpoint();
+        //breakpoint();
     }
 }
 
@@ -122,7 +122,7 @@ void game_sacar_hueso(uint x, uint y, perro_t * perro){
 int* game_dame_escondite(uint x, uint y){
     int i;
     for(i = 0; i < ESCONDITES_CANTIDAD; i++){
-        if(escondites[i][1] == x && escondites[i][2] == y)
+        if(escondites[i][0] == x && escondites[i][1] == y)
             return escondites[i];
     }
     return NULL;

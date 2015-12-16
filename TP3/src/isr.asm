@@ -36,7 +36,7 @@ extern atender_interrupcion_debug;
 global _isr%1
 
 _isr%1:
-xchg bx, bx
+;xchg bx, bx
 pushad
  str cx
  shr cx,3
@@ -142,6 +142,7 @@ global _isr70:
         pop ebx
         pop edx
         pop ecx
+        ;xchg bx, bx
         iret 	
 
 

@@ -96,7 +96,7 @@ uint game_perro_mover(perro_t *perro, direccion dir)
     uint dir_fisica = mmu_xy2fisica(nuevo_x, nuevo_y);
     uint dir_virtual = mmu_xy2virtual(nuevo_x, nuevo_y);
 
-    breakpoint();
+    //breakpoint();
     mmu_mapear_pagina(0x7FFF000, rcr3(), dir_fisica, 0x3);
     mmu_copiar_pagina(0x401000, 0x7FFF000);
 
@@ -158,16 +158,19 @@ uint game_perro_olfatear(perro_t *perro)
 // chequea si el perro está en la cucha y suma punto al jugador o lo manda a dormir
 void game_perro_ver_si_en_cucha(perro_t *perro)
 {
-	if (perro->x != perro->jugador->x_cucha || perro->y != perro->jugador->y_cucha)
+	if (perro->x != perro->jugador->x_cucha || perro->y != perro->jugador->y_cucha){
 		return;
+	}
 
-	if (perro->huesos == 0)
+	if (perro->huesos == 0){
 		return;
+	}
 
-	game_jugador_anotar_punto(perro->jugador);
-	perro->huesos--;
-	if (perro->huesos == 0)
-		game_perro_termino(perro);
+	while(perro->huesos > 0){
+		game_jugador_anotar_punto(perro->jugador);
+		perro->huesos--;
+	}
+	game_perro_termino(perro);
 }
 
 // devuelve algun perro que esté en la posicion pasada (hay max 2, uno por jugador)
