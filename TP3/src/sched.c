@@ -74,7 +74,7 @@ void sched_remover_tarea(unsigned short gdt_index) {
     
 
     uint i = 1;
-    while (scheduler.tasks[i].gdt_index != gdt_index &&) {
+    while (scheduler.tasks[i].gdt_index != gdt_index) {
         print_dec(scheduler.tasks[i].gdt_index, 2, 50, 15, C_BG_BLACK | C_FG_WHITE);
         print_dec(gdt_index, 2, 50, 25, C_BG_BLACK | C_FG_WHITE);
         print_dec(i, 2, 50, 35, C_BG_BLACK | C_FG_WHITE);
