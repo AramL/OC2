@@ -38,6 +38,7 @@ global _isr%1
 _isr%1:
 ;xchg bx, bx
 pushad
+ ;xor ecx, ecx
  str cx
  shr cx,3
  push ecx
@@ -87,7 +88,8 @@ global _isr32
     _isr32:
         pushad
         call fin_intr_pic1
-    call sched_atender_tick
+        call sched_atender_tick
+        ;xor ecx, ecx
         str cx
         shl ax, 3
         cmp ax, cx

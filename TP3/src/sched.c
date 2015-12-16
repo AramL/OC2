@@ -66,7 +66,7 @@ void sched_agregar_tarea(perro_t *perro, uint gdt_index) {
 
 }
 //Pre: existe el gdt_index (preguntarlo, despues)
-void sched_remover_tarea(unsigned int gdt_index) {
+void sched_remover_tarea(unsigned short gdt_index) {
     //librerar el indice del array de TSSs
     //ponerle al perro libre = true
     //en el scheduler ponerle gdt = NULL
