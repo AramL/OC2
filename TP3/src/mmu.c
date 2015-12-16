@@ -163,9 +163,16 @@ void mmu_mapear_pagina(uint virtual, uint cr3, uint fisica, uint attrs) {
         /* Si es null significa que no hay una tabla de paginas en esa posicion*/
         uint proxima_pag = mmu_proxima_pagina_fisica_libre();
         mmu_inicializar_page_directory(&pd[directorio], proxima_pag, attrs);
-        int tab_c = proxima_pag;
-        for (; tab_c < proxima_pag + 0x1000; tab_c += 0x4)
+        /*int tab_c = proxima_pag;
+        for (; tab_c < proxima_pag + 0x1000; tab_c += 0x4){
             mmu_inicializar_page_table((page_table *)tab_c, 0, 0);
+        }*/
+        page_table * tab = (page_table *) proxima_pag;
+        int i;
+        for(i = 0; i < 1024; i++){
+            mmu_inicializar_page_table(&tab[i], 0, 0);
+        }
+
     }
 
     page_table *pt = (page_table *)  (pd[directorio].base_adress << 12);                   /* Muevo a la derecha 12 bits y limpio la parte alta */
