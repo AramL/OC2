@@ -162,7 +162,7 @@ void llenar_descriptor_tss_perro(int indice, perro_t *perro, int index_jugador, 
     if (index_jugador == JUGADOR_A) {
         tss_jugadorA[indice].unused0  = 0;
         tss_jugadorA[indice].esp0     = mmu_proxima_pagina_fisica_libre();
-        tss_jugadorA[indice].ss0      = 0x58;
+        tss_jugadorA[indice].ss0      = 0x5B;
         tss_jugadorA[indice].unused1  = 0;
         tss_jugadorA[indice].esp1     = 0;
         tss_jugadorA[indice].ss1      = 0;
@@ -175,17 +175,17 @@ void llenar_descriptor_tss_perro(int indice, perro_t *perro, int index_jugador, 
         tss_jugadorA[indice].eflags   = 0x202;
         tss_jugadorA[indice].esp      = 0x401000 + 0x1000 - 12;
         tss_jugadorA[indice].ebp      = 0x401000 + 0x1000 - 12;
-        tss_jugadorA[indice].es       = 0x48;
+        tss_jugadorA[indice].es       = 0x5B;
         tss_jugadorA[indice].unused4  = 0;
-        tss_jugadorA[indice].cs       = 0x40;
+        tss_jugadorA[indice].cs       = 0x4B;
         tss_jugadorA[indice].unused5  = 0;
-        tss_jugadorA[indice].ss       = 0x58;
+        tss_jugadorA[indice].ss       = 0x5B;
         tss_jugadorA[indice].unused6  = 0;
-        tss_jugadorA[indice].ds       = 0x58;
+        tss_jugadorA[indice].ds       = 0x5B;
         tss_jugadorA[indice].unused7  = 0;
-        tss_jugadorA[indice].fs       = 0x58;
+        tss_jugadorA[indice].fs       = 0x5B;
         tss_jugadorA[indice].unused8  = 0;
-        tss_jugadorA[indice].gs       = 0x58;
+        tss_jugadorA[indice].gs       = 0x5B;
         tss_jugadorA[indice].unused9  = 0;
         tss_jugadorA[indice].unused10 = 0;
         tss_jugadorA[indice].iomap    = 0xFFFF;
