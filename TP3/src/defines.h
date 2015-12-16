@@ -32,7 +32,7 @@ typedef unsigned int   uint;
 #define TSS_KERNEL_LIMIT        103 //por que cada tss son 104 bytes
 /* Indices en la gdt */
 /* -------------------------------------------------------------------------- */
-#define GDT_COUNT 30
+#define GDT_COUNT 32
 
 #define GDT_IDX_NULL_DESC              0
 #define GDT_IDX_CS_CERO_DESC           8

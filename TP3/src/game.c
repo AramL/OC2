@@ -13,12 +13,13 @@ TRABAJO PRACTICO 3 - System Programming - ORGANIZACION DE COMPUTADOR II - FCEN
 
 
 int escondites[ESCONDITES_CANTIDAD][3] = { // TRIPLAS DE LA FORMA (X, Y, HUESOS)
-    {76,  25, 50}, {12, 15, 50}, {9, 10, 100}, {47, 21, 100} ,
-    {34,  11, 50}, {75, 38, 50}, {40, 21, 100}, {72, 17, 100}
+    {76,  25, 50}, {12, 15, 50}, {50, 50, 100}, {47, 21, 100} ,
+    {34,  11, 50}, {60, 60, 50}, {40, 21, 100}, {72, 17, 100}
 };
 
 jugador_t jugadorA;
 jugador_t jugadorB;
+uint debug_mode;
 
 perro_t *game_perro_actual  ;
 int ultimo_cambio = MAX_SIN_CAMBIOS;
@@ -81,12 +82,6 @@ void game_terminar_si_es_hora() {
         }
     }
 }
-
-
-void dame_un_perro_laputamadre() {
-    llenar_descriptor_tss_perro(0, &jugadorA.perros[0], 0, 0);
-}
-
 
 uint game_atender_pedido(int eax, int ecx){
     if(eax == 1)
