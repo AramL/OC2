@@ -1,5 +1,48 @@
 \section{Ejercicio 7.}
 
+\subsection{b)}
+
+Para la función proxima a ejecutar definimos una funcion auxiliar que nos daba el proximo perro (indice de la tarea) del jugador siguiente y de no haberlo buscabamos en los perros del jugador actual y en caso de que los dos no tuviesen perros corriendo defaulteabamos a la tarea idle. El código es el siguiente.
+
+\begin{codesnippet}
+\begin{verbatim}
+uint sched_proxima_a_ejecutar() {
+    uint prox_jugador = (scheduler.current <= 8);
+    uint prox_task = sched_proximo_perro_jugador(prox_jugador);
+
+    if (!prox_task) {
+        prox_jugador = !prox_jugador;
+        prox_task = sched_proximo_perro_jugador(prox_jugador);
+        if (!prox_task)
+            return 0;
+    }
+    ultimo_index[prox_jugador] = prox_task;
+    return prox_task;
+}
+\end{verbatim}
+\end{codesnippet}
+
+y la función sched_proximo_perro_jugador es 
+
+\begin{codesnippet}
+\begin{verbatim}
+uint sched_proximo_perro_jugador(uint jugador) {
+    uint index = ultimo_index[jugador];
+    do {
+        index++;
+        if (index > (8 << jugador))
+            index -= 8;
+        if (scheduler.tasks[index].gdt_index != NULL)
+            return index;
+    } while (index != ultimo_index[jugador]);
+    return 0;
+}
+\end{verbatim}
+\end{codesnippet}
+
+Donde básicamente loopeamos desde la ultima tarea ejecutada (sin considerarla) en adelante, si no encontramos tareas en ese intervalo, restamos 8 y empezamos desde el principio hasta la ultima tarea ejecutada inclusive, en caso de no encontrar una tarea 
+libre devolvemos 0. notar que 8 << jugador da el valor correcto en el que restamos 8, si el jugador es el A, es deicr el 0, restamos 8 cuando index sea igual a 9, y si es el jugadorB es decir el 1, el shift hace que 8 sea 16 y restamos cuando index es 17. 
+
 \subsection*{g)}
 
 \noindent Para este punto, se agrego las variables $debugMode$ y $debugView$. La primera indica si se entro en modo debug, y la segunda indica si en este momento se esta mostrando informacion en la pantalla. \\
