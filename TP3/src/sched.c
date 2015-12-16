@@ -70,9 +70,13 @@ void sched_remover_tarea(unsigned short gdt_index) {
     //librerar el indice del array de TSSs
     //ponerle al perro libre = true
     //en el scheduler ponerle gdt = NULL
+
+    print_dec(gdt_index, 2, 50, 25, C_BG_BLACK | C_FG_WHITE);
+    breakpoint();
     uint i = 1;
     while (scheduler.tasks[i].gdt_index != gdt_index) {
         i++;
+        print_dec(i, 2, 100, 25, C_BG_BLACK | C_FG_WHITE);
     }
 
     perro_t *p = scheduler.tasks[i].perro;
