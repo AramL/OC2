@@ -72,9 +72,6 @@ extern jugador_t jugadorA, jugadorB;
 uint indices_A[MAX_CANT_PERROS_VIVOS];
 uint indices_B[MAX_CANT_PERROS_VIVOS];
 uint debug_mode;
-uint debug_view;
-short pantalla[80 * 50];
-int dirty;     
 /*
 ================================================================================
 // ~~~ auxiliares dadas, sugeridas o requeridas (segun disponga enunciado) ~~~
@@ -163,7 +160,7 @@ perro_t* game_perro_en_posicion(uint x, uint y);
 void game_terminar_si_es_hora();
 
 void atender_debug();
-
+uint atender_interrupcion_debug(uint rax);
 
 void dame_un_perro_laputamadre();
 uint game_atender_pedido(int eax, int ecx);
@@ -173,9 +170,4 @@ int* game_dame_escondite(uint x, uint y);
 perro_t* game_perro_en_posicion_j(jugador_t *j, uint x, uint y);
 uint game_huesos_en_posicion_cavar(uint x, uint y);
 
-int estoy_debug();
-int estoy_view();
-void game_guardar_pantalla();
-void game_restaurar_pantalla();
-void game_imprimir_info_debug();
 #endif  /* !__GAME_H__ */
