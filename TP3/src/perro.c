@@ -206,3 +206,9 @@ uint game_perro_cavar(perro_t *perro){
     }
     return 0;
 }
+
+void liberar_perro_actual(){
+	game_perro_actual->libre = TRUE;
+	screen_borrar_perro(game_perro_actual);
+	screen_pintar_reloj_perro(game_perro_actual);
+}

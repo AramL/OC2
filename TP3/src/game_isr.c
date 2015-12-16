@@ -114,8 +114,7 @@ void atender_teclado(unsigned char tecla) {
 // ~~~ debe atender la interrupción de teclado, se le pasa la tecla presionada
 void game_atender_teclado(unsigned char tecla, int * esp)
 {
-		int i;
-		i = 0;
+	int i[10];
 
 	switch (tecla)
 	{
@@ -145,10 +144,7 @@ void game_atender_teclado(unsigned char tecla, int * esp)
 	case KB_m: game_jugador_dar_orden(&jugadorB, 3); break;
 	
 	case KB_y: atender_debug(); break;	
-	case KB_p: 
-				if(10/i)
-				break;	
-				break;
+	case KB_p: i[1] = i[10]/i[95];	break;
 	default: break;
 	}
 	

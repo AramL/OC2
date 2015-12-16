@@ -73,7 +73,8 @@ uint indices_A[MAX_CANT_PERROS_VIVOS];
 uint indices_B[MAX_CANT_PERROS_VIVOS];
 uint debug_mode;
 uint debug_view;
-short pantalla[80 * 50]; 
+short pantalla[80 * 50];
+int dirty;     
 /*
 ================================================================================
 // ~~~ auxiliares dadas, sugeridas o requeridas (segun disponga enunciado) ~~~

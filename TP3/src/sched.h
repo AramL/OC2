@@ -55,4 +55,7 @@ perro_t* sched_tarea_actual();
 // para pasar a la siguiente tarea (devuelve su indice en la gdt)
 ushort sched_atender_tick();
 
+
+void borrar_tarea_actual();
+
 #endif  /* !__SCHED_H__ */

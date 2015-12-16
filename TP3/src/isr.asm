@@ -30,7 +30,10 @@ extern game_imprimir_info_debug
 extern game_guardar_pantalla 
 extern debug_mode
 extern debug_view
-
+extern dirty;
+extern borrar_tarea_actual;
+extern liberar_perro_actual;
+	
 %define GDT_TSS_IDLE 14
 ;;
 ;; Definición de MACROS
@@ -104,12 +107,18 @@ global _isr32
     _isr32:
         pushad
         call fin_intr_pic1
-        xchg bx, bx
+       ;xchg bx, bx
         cmp dword [debug_mode],0
         je .continuar
 		
 		cmp dword [debug_view], 1
 		je .fin
+		cmp dword [dirty], 0
+		je .continuar
+		call liberar_perro_actual
+		call borrar_tarea_actual
+		mov dword [dirty],0
+	
 .continuar:
 		call sched_atender_tick
         str cx
@@ -139,36 +148,16 @@ global _isr33
         pop esp
         popad  
     iret
-;;
-;; Rutinas de atención de las SYSCALLS
-;; -------------------------------------------------------------------------- ;;
-global _isr46:
-    _isr46:
-        push ecx
-        push edx
-        push ebx
-        push esp
-        push ebp
-        push esi
-        push edi
-        push ecx
-        push eax
-        call game_atender_pedido
-        jmp 0x70:0
-        add esp, 8
-        pop edi
-        pop esi
-        pop ebp
-        pop esp
-        pop ebx
-        pop edx
-        pop ecx
-        iret 	
-
 
 get_eip:
 	mov eax, [esp]
 	ret
+
+;;
+;; Rutinas de atención de las SYSCALLS
+;; -------------------------------------------------------------------------- ;;
+
+
 	
 	
 	global _isr70:
