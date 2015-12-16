@@ -127,3 +127,78 @@ int* game_dame_escondite(uint x, uint y){
     }
     return NULL;
 }
+
+void game_restaurar_pantalla(){
+	short *dst = (short *)0xB8000;
+	int i;
+	for(i = 0; i < 80 * 50; i++){
+		dst[i] = pantalla[i];
+	}
+}
+
+void game_guardar_pantalla(){
+	short *src = (short *)0xB8000;
+	int i;
+	for(i = 0; i < 80 * 50; i++){
+		pantalla[i] = src[i];
+	}
+}
+
+void game_imprimir_info_debug(uint s5, uint s4, uint s3, uint s2, uint s1, uint eip, uint flags){
+	debug_view = 1;
+	screen_pintar_rect(' ', C_BG_BLACK | C_FG_WHITE, 7, 25, 36, 30);
+	screen_pintar_rect(' ', C_BG_LIGHT_GREY | C_FG_WHITE, 8, 26, 34, 28);
+	screen_pintar_linea_h(' ', C_BG_RED | C_FG_WHITE, 8, 26, 28);
+
+	char *reg[9] = {"eax", "ebx", "ecx", "edx", "esi", "edi", "ebp", "esp", "eip"};
+	char *segsel[7] = {"cs", "ds", "es", "fs", "gs", "ss", "eflags"};
+	char *cr[4] = {"cr0", "cr2", "cr3", "cr4"};
+	int fila = 10;
+	int i;
+	for(i = 0; i < 9; i++){
+		print(reg[i], 27, fila, C_BG_LIGHT_GREY | C_FG_BLACK);
+		fila += 2;
+	}
+	for(i = 0; i < 7; i++){
+		print(segsel[i], 28, fila, C_BG_LIGHT_GREY | C_FG_BLACK);
+		fila += 2;
+	}
+	fila = 10;
+	for(i = 0; i < 4; i++){
+		print(cr[i], 41, fila, C_BG_LIGHT_GREY | C_FG_BLACK);
+		fila += 2;
+	}
+	print("stack", 41, 27, C_BG_LIGHT_GREY | C_FG_BLACK);
+
+	print_hex(s1, 8, 41, 30, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(s2, 8, 41, 31, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(s3, 8, 41, 32, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(s4, 8, 41, 33, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(s5, 8, 41, 34, C_BG_LIGHT_GREY | C_FG_WHITE);
+
+
+	print_hex(reax(), 8, 31, 10, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(rebx(), 8, 31, 12, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(recx(), 8, 31, 14, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(redx(), 8, 31, 16, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(resi(), 8, 31, 18, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(redi(), 8, 31, 20, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(rebp(), 8, 31, 22, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(resp(), 8, 31, 24, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(eip, 8, 31, 26, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(rcs(), 8, 31, 28, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(rds(), 8, 31, 30, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(res(), 8, 31, 32, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(rfs(), 8, 31, 34, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(rgs(), 8, 31, 36, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(rss(), 8, 31, 38, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(flags, 8, 34, 40, C_BG_LIGHT_GREY | C_FG_WHITE);
+
+	print_hex(rcr0(), 8, 45, 10, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(rcr2(), 8, 45, 12, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(rcr3(), 8, 45, 14, C_BG_LIGHT_GREY | C_FG_WHITE);
+	print_hex(rcr4(), 8, 45, 16, C_BG_LIGHT_GREY | C_FG_WHITE);
+
+
+
+}
