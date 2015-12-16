@@ -79,7 +79,9 @@ void game_atender_tick(perro_t *perro)
 #define KB_shiftR   0x36 // 0xb6
 
 #define KB_y        0x15 // 0x96
+#define KB_y        0x15 // 0x96
 
+#define KB_p        0x19 // 0x96
 
 void atender_teclado(unsigned char tecla) {
 
@@ -140,7 +142,7 @@ void game_atender_teclado(unsigned char tecla)
 	case KB_m: game_jugador_dar_orden(&jugadorB, 3); break;
 	
 	case KB_y: atender_debug(); break;	
-
+	case KB_p: __asm__ ("int3"); break;
 	default: break;
 	}
 
@@ -149,13 +151,24 @@ void game_atender_teclado(unsigned char tecla)
 
 
 void atender_debug(){
-    if(debug_mode==2){
-      debug_mode = 0;
-    } else if (debug_mode==0) {
-	debug_mode = 1;
-    } else {
-      debug_mode++;
-    }
+    //breakpoint();
+    
+    if(debug_mode == 0){
+		debug_mode = 1;
+	} else if(debug_view == 0){
+		debug_mode = 0;
+	} else {
+		game_restaurar_pantalla();
+		debug_view = 0;
+	}
+	
+	//borrar luego
+	print(debug_mode==1 ? "debug  on": "debug off", 70, 5, C_BG_LIGHT_GREY | C_FG_BLACK);
+	
+	print(debug_view==1 ? "view  on": "view off", 70, 6, C_BG_LIGHT_GREY | C_FG_BLACK);
+	
+	
+    	
 }
 
 uint atender_interrupcion_debug(uint rax){
