@@ -12,7 +12,6 @@
 
 
 extern uint debug_mode;
-extern uint debug_view;
 
 //char hex[16] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
 
@@ -80,7 +79,6 @@ void game_atender_tick(perro_t *perro)
 #define KB_shiftR   0x36 // 0xb6
 
 #define KB_y        0x15 // 0x96
-#define KB_p        0x19 // 0x96
 
 
 void atender_teclado(unsigned char tecla) {
@@ -112,9 +110,8 @@ void atender_teclado(unsigned char tecla) {
 
 
 // ~~~ debe atender la interrupción de teclado, se le pasa la tecla presionada
-void game_atender_teclado(unsigned char tecla, int * esp)
+void game_atender_teclado(unsigned char tecla)
 {
-	int i[10]={0,0,0,0,0,0,0,0,0};
 
 	switch (tecla)
 	{
@@ -123,7 +120,7 @@ void game_atender_teclado(unsigned char tecla, int * esp)
 	case KB_q: game_jugador_lanzar_perro(&jugadorA, TIPO_1, jugadorA.x_cucha, jugadorA.y_cucha); break;
 	case KB_e: game_jugador_lanzar_perro(&jugadorA, TIPO_2, jugadorA.x_cucha, jugadorA.y_cucha); break;
 	case KB_u: game_jugador_lanzar_perro(&jugadorB, TIPO_1, jugadorB.x_cucha, jugadorB.y_cucha); break;
-	case KB_o:game_jugador_lanzar_perro(&jugadorB, TIPO_2, jugadorB.x_cucha, jugadorB.y_cucha); break;
+	case KB_o: game_jugador_lanzar_perro(&jugadorB, TIPO_2, jugadorB.x_cucha, jugadorB.y_cucha); break;
 
 	case KB_w: game_jugador_moverse(&jugadorA,0,  -1); break;
 	case KB_a: game_jugador_moverse(&jugadorA, -1,  0); break;
@@ -144,39 +141,42 @@ void game_atender_teclado(unsigned char tecla, int * esp)
 	case KB_m: game_jugador_dar_orden(&jugadorB, 3); break;
 	
 	case KB_y: atender_debug(); break;	
-	case KB_p: i[1] = i[10]/i[95];	break;
+
 	default: break;
 	}
-	
-	
-
 
 }
 
 
 
 void atender_debug(){
-    		
-    if(debug_mode == 0){
-		debug_mode = 1;
-	} else if(debug_view == 0){
-		debug_mode = 0;
-	} else {
-		game_restaurar_pantalla();
-		debug_view = 0;
+    if(debug_mode==2){
+      debug_mode = 0;
+    } else if (debug_mode==0) {
+	debug_mode = 1;
+    } else {
+      debug_mode++;
+    }
+}
+
+uint atender_interrupcion_debug(uint rax){
+	//screen_pintar_rect(' ',C_FG_BLACK   | C_FG_WHITE, 6, 26, 30, 25);	
+	//int intValue = 182;	
+	uchar urax[50] = {'r','a','x','='};	   		
+	int i = 5;	
+	while(rax!=0){
+	    urax[i++] = rax%10+'0';
+	    rax/=10; 			
 	}
-		
-}
 
-
-
-int estoy_debug(){
-	return debug_mode;
-}
-
-
-int estoy_view(){
-	return debug_view;
+	//uchar c[4] = {'h','o','l','a'};
+	//uchar rax[10] = sprintf("%08x",rax);
+	if(debug_mode==2){
+		//screen_pintar_rect(' ', C_BG_RED   | C_FG_WHITE, 6, 26, 30, 25);			
+		pintar_mensaje(urax,C_FG_WHITE,7,27,i+5);		
+		return 1;	
+	} 
+		return 0;
 }
 
 

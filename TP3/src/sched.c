@@ -172,8 +172,3 @@ ushort sched_atender_tick() {
     return scheduler.tasks[scheduler.current].gdt_index;
 
 }
-
-void borrar_tarea_actual(){
-	scheduler.tasks[scheduler.current].gdt_index = 0;
-	scheduler.current = 0;				
-	}

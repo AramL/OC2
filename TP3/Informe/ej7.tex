@@ -1,1 +1,9 @@
 \section{Ejercicio 7.}
+
+\subsection*{e)}
+
+\noindent Para este punto, se agrego las variables $debugMode$ y $debugView$. La primera indica si se entro en modo debug, y la segunda indica si en este momento se esta mostrando informacion en la pantalla. \\
+
+\noindent Luego se cambiaron tanto la rutina de atencion de interrupciones de teclado, para agregar la tecla Y, la cual setea estas variables, como el macro para la atencion de excepciones. Este se modifico para que en caso de encontrarse en modo debug, se cree una copia de la pantalla en una matriz, y luego se proceda a mostrar la informacion de la excepcion requerida por el enunciado. \\
+
+\noindent Para la rutina de atencion de interrupciones del reloj, se modifico para que en caso de encontrarse en debug, no se ejecute el salto de tarea sino que se espera hasta que se desactive el mismo.
