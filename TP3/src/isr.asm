@@ -87,7 +87,7 @@ global _isr32
     _isr32:
         pushad
         call fin_intr_pic1
-	call sched_atender_tick
+    call sched_atender_tick
         str cx
         shl ax, 3
         cmp ax, cx
@@ -104,20 +104,20 @@ global _isr33
     _isr33:
         pushad
         call fin_intr_pic1
-	push eax
-	;xchg bx, bx	
-	call atender_interrupcion_debug
-	pop eax
-	;xchg bx, bx	
-	cmp eax,1	
-	je .continuar        
-	in al, 0x60
         push eax
-        call game_atender_teclado
+        ;xchg bx, bx    
+        call atender_interrupcion_debug
         pop eax
-.continuar:	
+        ;xchg bx, bx    
+        cmp eax,1   
+        je .continuar        
+        in al, 0x60
+            push eax
+            call game_atender_teclado
+            pop eax
+        .continuar: 
         popad  
-    iret
+        iret
 ;;
 ;; Rutinas de atención de las SYSCALLS
 ;; -------------------------------------------------------------------------- ;;
@@ -143,7 +143,7 @@ global _isr70:
         pop edx
         pop ecx
         ;xchg bx, bx
-        iret 	
+        iret    
 
 
 
