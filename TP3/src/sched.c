@@ -92,7 +92,7 @@ void sched_remover_tarea(unsigned int gdt_index) {
 
 uint sched_proxima_a_ejecutar() {
 
-    uint curri = scheduler.current;
+    //uint curri = scheduler.current;
     uint index = 0;
     uint index_mismo_jugador = 0;
     uint hay_perro = FALSE;
@@ -116,7 +116,7 @@ uint sched_proxima_a_ejecutar() {
         index++;
     }
 
-    print_dec(index, 2, 50, 25, C_BG_BLACK | C_FG_WHITE);
+    //print_dec(index, 2, 50, 25, C_BG_BLACK | C_FG_WHITE);
 
     if (hay_perro) {
         //breakpoint();
@@ -126,7 +126,7 @@ uint sched_proxima_a_ejecutar() {
         index = 1;
     }
 
-    while (index < curri &&  !hay_perro) {
+    while (index < ultimo_index_A &&  !hay_perro) {
         if (scheduler.tasks[index + offset].gdt_index != NULL) {
             hay_perro = TRUE;
             break;
