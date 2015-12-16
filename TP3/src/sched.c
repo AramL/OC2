@@ -12,7 +12,7 @@ definicion de funciones del scheduler
 sched_t scheduler;
 
 int ultimo_index_A = 0;
-int ultimo_index_B = 0;
+int ultimo_index_B = 7;
 /*
 en current, los indices q sean del 1 al 8 van a ser del jugador A,
 y del 9 al 16 del jugador B
@@ -75,14 +75,15 @@ void sched_remover_tarea(unsigned short gdt_index) {
 
     uint i = 1;
     while (scheduler.tasks[i].gdt_index != gdt_index) {
-        print_dec(scheduler.tasks[i].gdt_index, 2, 50, 15, C_BG_BLACK | C_FG_WHITE);
-        print_dec(gdt_index, 2, 50, 25, C_BG_BLACK | C_FG_WHITE);
-        print_dec(i, 2, 50, 35, C_BG_BLACK | C_FG_WHITE);
+        /*  print_dec(scheduler.tasks[i].gdt_index, 2, 50, 15, C_BG_BLACK | C_FG_WHITE);
+            print_dec(gdt_index, 2, 50, 25, C_BG_BLACK | C_FG_WHITE);
+            print_dec(i, 2, 50, 35, C_BG_BLACK | C_FG_WHITE);
+         */
         i++;
         //breakpoint();
     }
 
-    print_dec(i, 2, 50, 38, C_BG_BLACK | C_FG_WHITE);
+    //  print_dec(i, 2, 50, 38, C_BG_BLACK | C_FG_WHITE);
 
     perro_t *p = scheduler.tasks[i].perro;
     if (p->jugador->index == JUGADOR_A) {
@@ -105,55 +106,84 @@ uint sched_proxima_a_ejecutar() {
     uint index = 0;
     uint index_mismo_jugador = 0;
     uint hay_perro = FALSE;
-    uint offset = 0;
+    // uint offset = 0;
 
     //si es jugador B
     /*if (curri < 8) {
         index = ultimo_index_B+1;
         index_mismo_jugador = 1;
     } else {*/
-    index = ultimo_index_A + 1;
+    
 
 
+    if(scheduler.current > 8){
 
-    while (index < 9 && !hay_perro) {
-        if (scheduler.tasks[index + offset].gdt_index != NULL ) {
-            hay_perro = TRUE;
-            break;
+        index = ultimo_index_A + 1;
+
+        while (index < 9 && !hay_perro) {
+            if (scheduler.tasks[index].gdt_index != NULL ) {
+                hay_perro = TRUE;
+                break;
+
+            }
+            index++;
+        }
+
+        if (!hay_perro) {
+            index = 1;
+        }
+
+        while (index < ultimo_index_A &&  !hay_perro) {
+            if (scheduler.tasks[index].gdt_index != NULL) {
+                hay_perro = TRUE;
+                break;
+            }
+            index++;
+            index_mismo_jugador++;
 
         }
-        index++;
-    }
 
-    //print_dec(index, 2, 50, 25, C_BG_BLACK | C_FG_WHITE);
-
-    if (hay_perro) {
-        //breakpoint();
-    }
-
-    if (!hay_perro) {
-        index = 1;
-    }
-
-    while (index < ultimo_index_A &&  !hay_perro) {
-        if (scheduler.tasks[index + offset].gdt_index != NULL) {
+        if (!hay_perro && scheduler.tasks[ultimo_index_A].gdt_index != NULL) {
+            index = ultimo_index_A;
             hay_perro = TRUE;
-            break;
         }
-        index++;
-        index_mismo_jugador++;
+        if (hay_perro) {
+            ultimo_index_A = index;
+        }
 
+    }else{
+        index = ultimo_index_B + 1;
+        while (index < 17 && !hay_perro) {
+            if (scheduler.tasks[index].gdt_index != NULL ) {
+                hay_perro = TRUE;
+                break;
+
+            }
+            index++;
+        }
+
+        if (!hay_perro) {
+            index = 9;
+        }
+
+        while (index < ultimo_index_B &&  !hay_perro) {
+            if (scheduler.tasks[index].gdt_index != NULL) {
+                hay_perro = TRUE;
+                break;
+            }
+            index++;
+            index_mismo_jugador++;
+
+        }
+
+        if (!hay_perro && scheduler.tasks[ultimo_index_B].gdt_index != NULL) {
+            index = ultimo_index_B;
+            hay_perro = TRUE;
+        }
+        if (hay_perro) {
+            ultimo_index_B = index;
+        }
     }
-
-
-    if (!hay_perro && scheduler.tasks[ultimo_index_A].gdt_index != NULL) {
-        index = ultimo_index_A;
-        hay_perro = 1;
-    }
-    if (hay_perro) {
-        ultimo_index_A = index;
-    }
-
 
     //index_mismo_jugador = 9;
 //  }
