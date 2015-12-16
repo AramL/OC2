@@ -114,6 +114,9 @@ void atender_teclado(unsigned char tecla) {
 // ~~~ debe atender la interrupción de teclado, se le pasa la tecla presionada
 void game_atender_teclado(unsigned char tecla)
 {
+	
+	print_dec(tecla,3, 70, 10, C_BG_LIGHT_GREY | C_FG_BLACK);
+	//breakpoint();
 	switch (tecla)
 	{
 	// ~~~ completar ~~~
@@ -142,6 +145,8 @@ void game_atender_teclado(unsigned char tecla)
 	case KB_m: game_jugador_dar_orden(&jugadorB, 3); break;
 	
 	case KB_y: atender_debug(); break;	
+	
+	
 	case KB_p: __asm__ ("int3"); break;
 	default: break;
 	}
@@ -160,6 +165,7 @@ void atender_debug(){
 	} else {
 		game_restaurar_pantalla();
 		debug_view = 0;
+		debug_mode=0;
 	}
 	
 	//borrar luego
