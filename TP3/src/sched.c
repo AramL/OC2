@@ -13,6 +13,7 @@ sched_t scheduler;
 
 int ultimo_index_A = 0;
 int ultimo_index_B = 7;
+int ultimo_index[2] = {1, 9};
 /*
 en current, los indices q sean del 1 al 8 van a ser del jugador A,
 y del 9 al 16 del jugador B
@@ -100,14 +101,40 @@ void sched_remover_tarea(unsigned short gdt_index) {
 }
 
 
+static uint sched_proximo_perro_jugador(uint jugador) {
+    uint index = ultimo_index[jugador];
+    do {
+        index++;
+        if (index > (8 << jugador))
+            index -= 8;
+        if (scheduler.tasks[index].gdt_index != NULL)
+            break;
+    } while (index != ultimo_index[jugador]);
+    return index;
+}
+
 uint sched_proxima_a_ejecutar() {
+    uint prox_jugador = (scheduler.current <= 8); 
+    uint prox_task = sched_proximo_perro_jugador(prox_jugador);
+    if (scheduler.tasks[prox_task].gdt_index == NULL) {
+        prox_jugador = !prox_jugador;
+        prox_task = sched_proximo_perro_jugador(prox_jugador);
+        // No se si es necesario pero vuelvo a la idle si no hay ninguna
+        if (scheduler.tasks[prox_task].gdt_index == NULL)
+            return 0;
+    }   
+    ultimo_index[prox_jugador] = prox_task;
+    return prox_task;
+}
+
+/*uint sched_proxima_a_ejecutar() {
 
     uint index = 0;
     uint hay_perro = FALSE;
 
 
 
-    if(scheduler.current > 8){
+    if(scheduler.current > 8 || sched_buscar_tarea_libre(1) == -1 ) {
 
         index = 1;
         while (index < 9 && !hay_perro) {
@@ -122,7 +149,6 @@ uint sched_proxima_a_ejecutar() {
         if (!hay_perro && scheduler.tasks[ultimo_index_A].gdt_index != NULL) {
             hay_perro = TRUE;
             index = ultimo_index_A;
-            //break;
         }
         
         if (hay_perro) {
@@ -143,7 +169,6 @@ uint sched_proxima_a_ejecutar() {
         if (!hay_perro && scheduler.tasks[ultimo_index_B].gdt_index != NULL) {
             hay_perro = TRUE;
             index = ultimo_index_B;
-            //break;
         }
         
         if (hay_perro) {
@@ -155,7 +180,7 @@ uint sched_proxima_a_ejecutar() {
 
     return index;
 
-}
+}*/
 
 
 ushort sched_atender_tick() {
