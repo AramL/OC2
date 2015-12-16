@@ -1,1 +1,11 @@
 \section{Ejercicio 4.}
+a)
+La idea es que los perros de cada jugador tengan una memoria compartida enntre si.
+Para eso lo que hicimos fue, pedir al inicio esa memoria para cada jugador asi la tenemos reservada a la hora de crear cada uno de los perros.
+uint mmu_inicializar() {
+    memoria_A = mmu_proxima_pagina_fisica_libre();
+    memoria_B = mmu_proxima_pagina_fisica_libre();
+}
+b)
+Inicialmente, lo primero e importante que habia que hacer
+

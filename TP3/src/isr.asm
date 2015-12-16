@@ -94,10 +94,6 @@ global _isr32
         shl ax, 3
         cmp ax, cx
         je .fin
-<<<<<<< HEAD
-        ;xchg bx, bx
-=======
->>>>>>> dfe741421eba09159497bdb8b76c2c3b75d82289
         mov [sched_tarea_selector], ax
         jmp far [sched_tarea_offset]
         .fin:

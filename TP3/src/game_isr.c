@@ -140,7 +140,8 @@ void game_atender_teclado(unsigned char tecla)
 	case KB_n: game_jugador_dar_orden(&jugadorB, 2); break;
 	case KB_m: game_jugador_dar_orden(&jugadorB, 3); break;
 	
-	case KB_y: atender_debug(); break;	
+	//case KB_y:  atender_debug(); break;	
+	case KB_y: __asm__("int3"); break;	
 
 	default: break;
 	}
