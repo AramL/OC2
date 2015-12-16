@@ -45,7 +45,7 @@ pushad
 cmp dword [debug_mode], 0
 je .seguir
 call game_guardar_pantalla
-call get_eip
+	mov eax, [esp]
     pushf 									
     push eax
     call game_imprimir_info_debug
@@ -167,7 +167,5 @@ global _isr70:
         iret    
 
 
-get_eip:
-	mov eax, [esp]
-	ret
+
 

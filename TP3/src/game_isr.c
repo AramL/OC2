@@ -169,9 +169,9 @@ void atender_debug(){
 	}
 	
 	//borrar luego
-	print(debug_mode==1 ? "debug  on": "debug off", 70, 5, C_BG_LIGHT_GREY | C_FG_BLACK);
+	//print(debug_mode==1 ? "debug  on": "debug off", 70, 5, C_BG_LIGHT_GREY | C_FG_BLACK);
 	
-	print(debug_view==1 ? "view  on": "view off", 70, 6, C_BG_LIGHT_GREY | C_FG_BLACK);
+	//print(debug_view==1 ? "view  on": "view off", 70, 6, C_BG_LIGHT_GREY | C_FG_BLACK);
 	
 	
     	
