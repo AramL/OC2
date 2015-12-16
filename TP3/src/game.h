@@ -54,7 +54,6 @@ extern int escondites[ESCONDITES_CANTIDAD][3];
 extern int ultimo_cambio;
 extern perro_t *game_perro_actual;
 
-
 typedef struct jugador_t
 {
     uint index;    // 0 o 1
@@ -69,9 +68,8 @@ typedef struct jugador_t
 } jugador_t;
 
 extern jugador_t jugadorA, jugadorB;
-uint indices_A[MAX_CANT_PERROS_VIVOS];
-uint indices_B[MAX_CANT_PERROS_VIVOS];
-uint debug_mode;
+extern uint debug_mode;
+
 /*
 ================================================================================
 // ~~~ auxiliares dadas, sugeridas o requeridas (segun disponga enunciado) ~~~

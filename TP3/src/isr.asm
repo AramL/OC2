@@ -38,7 +38,6 @@ global _isr%1
 _isr%1:
 ;xchg bx, bx
 pushad
- ;xor ecx, ecx
  str cx
  shr cx,3
  push ecx
@@ -128,23 +127,22 @@ global _isr70:
         push ecx
         push edx
         push ebx
-        push esp
         push ebp
         push esi
         push edi
+
         push ecx
         push eax
         call game_atender_pedido
         jmp 0x70:0
         add esp, 8
+
         pop edi
         pop esi
         pop ebp
-        pop esp
         pop ebx
         pop edx
         pop ecx
-        ;xchg bx, bx
         iret    
 
 

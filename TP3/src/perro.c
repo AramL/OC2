@@ -41,16 +41,12 @@ void game_perro_reciclar_y_lanzar(perro_t *perro, uint tipo)
         gdt_index_base = 23;
     }
 
-
-    //uint indice_array_tss = dame_indice_tss_libre(j->index);
     perro->indice_reloj = perro->id - gdt_index_base;
     llenar_descriptor_tss_perro(perro->id - gdt_index_base, perro, j->index, perro->tipo);
 
     sched_agregar_tarea(perro, perro->id);
 
     screen_pintar_perro(perro);
-
-
 }
 
 // el perro descargó sus huesos o realizó una acción no válida y caputó, hay que sacarlo del sistema.
@@ -171,6 +167,7 @@ void game_perro_ver_si_en_cucha(perro_t *perro)
         game_jugador_anotar_punto(perro->jugador);
         perro->huesos--;
     }
+  
     game_perro_termino(perro);
 }
 

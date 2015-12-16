@@ -30,7 +30,6 @@ extern screen_inicializar
 extern resetear_pic
 extern habilitar_pic
 extern llenar_descriptor_tss_perro
-extern dame_un_perro_laputamadre
 
 extern sched_inicializar
 extern game_inicializar

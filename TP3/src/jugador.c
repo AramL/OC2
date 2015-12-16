@@ -3,12 +3,10 @@
 #include "mmu.h"
 #include "screen.h"
 
-
 #define POS_INIT_A_X                      1
 #define POS_INIT_A_Y                      1
 #define POS_INIT_B_X         MAPA_ANCHO - 2
 #define POS_INIT_B_Y          MAPA_ALTO - 2
-
 
 void game_jugador_inicializar(jugador_t *j) {
     static int index = 0;
@@ -30,21 +28,17 @@ void game_jugador_inicializar(jugador_t *j) {
     j->orden = 0;
 
     int i;
-    for (i = 0; i < MAX_CANT_PERROS_VIVOS; i++)
-    {
+    for (i = 0; i < MAX_CANT_PERROS_VIVOS; i++) {
         uint gdt_index = 15 + j->index * 8; // CAMBIAR POR ALGO VALIDO (no gracias)
         game_perro_inicializar(&j->perros[i], j, i, gdt_index + i /** 8 */);
     }
 
 }
 
-
 // debe devolver el proximo perro del arreglo que no esté siendo usado actualmente
 perro_t* game_jugador_dame_perro_libre(jugador_t *j) {
-    int i = 0;
-
-    for (; i < MAX_CANT_PERROS_VIVOS; i++)
-    {
+    int i;
+    for (i = 0; i < MAX_CANT_PERROS_VIVOS; i++) {
         if (j->perros[i].libre == TRUE)
             return &j->perros[i];
     }
@@ -52,16 +46,13 @@ perro_t* game_jugador_dame_perro_libre(jugador_t *j) {
     return NULL;
 }
 
-
 // debe encargarse de buscar un perro libre, configurarlo, y inicializar su mapeo de memoria, tss, y lugar en el sched
 void game_jugador_lanzar_perro(jugador_t *j, uint tipo, int x, int y) {
     if (game_perro_en_posicion(x, y) != NULL)
         return;
-
     perro_t *perro = game_jugador_dame_perro_libre(j);
     if (perro == NULL)
         return;
-
     game_perro_reciclar_y_lanzar(perro, tipo);
 }
 
@@ -91,11 +82,7 @@ void game_jugador_anotar_punto(jugador_t *j) {
         screen_stop_game_show_winner(j);
 }
 
-
 // guarda la orden en el jugador para que los perros puedan preguntarla luego (mediante un syscall)
 void game_jugador_dar_orden(jugador_t *jugador, int orden) {
     jugador->orden =  orden << 16 | jugador->y << 8 | jugador->x;
 }
-
-
-
