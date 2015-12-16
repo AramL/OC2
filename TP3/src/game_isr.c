@@ -114,7 +114,7 @@ void atender_teclado(unsigned char tecla) {
 // ~~~ debe atender la interrupción de teclado, se le pasa la tecla presionada
 void game_atender_teclado(unsigned char tecla, int * esp)
 {
-	int i[10];
+	int i[10]={0,0,0,0,0,0,0,0,0};
 
 	switch (tecla)
 	{
