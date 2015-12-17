@@ -81,7 +81,7 @@ void mmu_inicializar_page_table(page_table *tab, uint addr, uint attrs) {
  \noindent Ponemos todas las entradas de la page table a la que apunta, en no presente y con atributos en 0. Luego casteamos la entrada del directorio (que inicializamos o ya estaba inicializada) a un struct de tabla de pagina y usamos
  la posición correspondiente para obtener la entrada en la tabla, una vez que tenemos esto mmu\_inicializar\_page\_table pone los atributos correspondientes y la dirección fisica correspondiente en la entrada de la tabla.
 
-\subsection*{d}
+\subsection*{d)}
 
 Para habilitar paginación llamamos a la función inicial dirección de kernel que básicamente usando las funciones anteriores mappea el kernel con identity mapping de 0x0 a 0x27000. 
 

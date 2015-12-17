@@ -4,7 +4,7 @@
 	
 	Para la lista de tareas definimos una array de 17 elementos, donde el elemento 0 era el de la tarea IDLE. Los indices del 1 al 8 corresponden a los perros del jugador A y por ultimo los indices del 9 al 16 corresponden al del jugador B.
 
-	Iniciamos los valores para el indice del a tarea IDLE, y dejamos nulos los valores de indice de gdt y el puntero a perro, luego se va a usar para saber si hay un perro corriendo en ese indice a partir del valor nulo o no del indice de gdt
+	Iniciamos los valores para el indice de la tarea IDLE, y dejamos nulos los valores de indice de gdt y el puntero a perro, luego se va a usar para saber si hay un perro corriendo en ese indice a partir del valor nulo o no del indice de gdt
 \begin{codesnippet}
 \begin{verbatim}
     scheduler.tasks[0].gdt_index = GDT_TSS_IDLE;
@@ -58,12 +58,12 @@ uint sched_proximo_perro_jugador(uint jugador) {
 \end{codesnippet}
 
 Donde básicamente loopeamos desde la ultima tarea ejecutada (sin considerarla) en adelante, si no encontramos tareas en ese intervalo, restamos 8 y empezamos desde el principio hasta la ultima tarea ejecutada inclusive, en caso de no encontrar una tarea 
-libre devolvemos 0. notar que 8 $<<$ jugador da el valor correcto en el que restamos 8, si el jugador es el A, es deicr el 0, restamos 8 cuando index sea igual a 9, y si es el jugadorB es decir el 1, el shift hace que 8 sea 16 y restamos cuando index es 17. 
+libre devolvemos 0. notar que 8 $<<$ jugador da el valor correcto en el que restamos 8, si el jugador es el A, es decir el 0, restamos 8 cuando index sea igual a 9, y si es el jugadorB es decir el 1, el shift hace que 8 sea 16 y restamos cuando index es 17. 
 
 
 
 \subsection{c) y e)}
- Se setea la terea que se esta ejecutando como la nueva tarea a ser ejecutada. 
+ Se setea la tarea que se esta ejecutando como la nueva tarea a ser ejecutada. 
 \begin{codesnippet}
 \begin{verbatim}
 	scheduler.current = sched_proxima_a_ejecutar();
@@ -112,9 +112,10 @@ Asi como tambien el jmp a la tarea idle, usando 0x70 como selector, dado que 0x7
         iret    
    \end{verbatim}
 \end{codesnippet}
+
+Para mover el perro  habia que chequear que la nueva posicion fuese valida
   \begin{codesnippet}
 \begin{verbatim}
-Para mover el perro  habia que chequear que la nueva posicion fuese valida
 
  int x, y;
     game_dir2xy(dir, &x, &y);
@@ -129,8 +130,8 @@ Para mover el perro  habia que chequear que la nueva posicion fuese valida
    \end{verbatim}
 \end{codesnippet}
  
-Ahora se tiene que hacer el proceso de mover el perro en si, mapeamos la nueva direccion y copiamos entero al codigo del perro y su pila
-y cambiamos en paginacion la traduccion de la direcion 0x401000 a la nueva posicion escrita. y por ultimo mapear la posicion del perro solo como lectura.
+Se tiene que hacer el proceso de mover el perro en si, mapeamos la nueva direccion y copiamos entero al codigo del perro y su pila
+, luego cambiamos en paginacion la traduccion de la direcion 0x401000 a la nueva posicion escrita. y por ultimo mapear la posicion del perro solo como lectura.
   \begin{codesnippet}
 \begin{verbatim}
     uint dir_fisica = mmu_xy2fisica(nuevo_x, nuevo_y);
@@ -146,7 +147,7 @@ y cambiamos en paginacion la traduccion de la direcion 0x401000 a la nueva posic
    \end{verbatim}
 \end{codesnippet}
  
- Refrescamos en la pantalla la nueva posicion del perro, y me fijo si esta en la cucha
+ Refrescamos en la pantalla la nueva posicion del perro, y nos fijamos si esta en la cucha
   \begin{codesnippet}
 \begin{verbatim}
     screen_borrar_perro(perro);
@@ -158,7 +159,7 @@ y cambiamos en paginacion la traduccion de la direcion 0x401000 a la nueva posic
        \end{verbatim}
 \end{codesnippet}
    
-Nos fijamos si esta en la cucha, en caso de ser asi, anota los puntos y luego termina la tarea del perro
+En caso de estarlo, anota los puntos y luego termina la tarea del perro
   \begin{codesnippet}
 \begin{verbatim}
    void game_perro_ver_si_en_cucha(perro_t *perro)
@@ -203,7 +204,7 @@ void game_perro_termino(perro_t *perro){
  \end{verbatim}
 \end{codesnippet}
 
-para sacar al perro q ya termino, buscamos el indice dentro de la lista de tareas a partir del gdt\_index recibido,
+Para sacar al perro que ya termino, buscamos el indice dentro de la lista de tareas a partir del gdt\_index recibido,
 borra al perro de la pantalla, libera al perro y saca al perro del scheduler
 \begin{codesnippet}
 \begin{verbatim}
@@ -246,7 +247,7 @@ void game_guardar_pantalla() {
 \end{verbatim}
 \end{codesnippet}
 
-\noindent Para la rutina de atencion de interrupciones del reloj, se modifico para que en caso de encontrarse en debug, no se ejecute el salto de tarea sino que se espera hasta que se desactive el mismo.
+\noindent La rutina de atencion de interrupciones del reloj, se modifico para que en caso de encontrarse en debug, no se ejecute el salto de tarea sino que se espera hasta que se desactive el mismo.
 \begin{codesnippet}
 \begin{verbatim}
         cmp dword [debug_mode],0

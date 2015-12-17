@@ -10,7 +10,7 @@ GDT_IDX_DS_TRES_DESC
 \end{verbatim}
 \end{codesnippet}
 
-\noindent Excepto el dpl y el tipo todos estos segmentos tienen un limite de 0x1E400, con base en 0x0000, ya que esto nos da 0x1F400 que son 500mb de memoria, esto es porque tenemos la granularidad en $1$ es decir contamos de a $4$k.
+\noindent Excepto el dpl y el tipo, todos estos segmentos tienen un limite de 0x1E400, con base en 0x0000, ya que esto nos da 0x1F400 que son 500mb de memoria, esto es porque tenemos la granularidad en $1$ es decir contamos de a $4$k.
 
 \noindent Para pasar a modo protegido usamos el siguiente codigo.
 \begin{codesnippet}

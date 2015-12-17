@@ -1,7 +1,7 @@
 \section{Ejercicio 4.}
 a)
 La idea es que los perros de cada jugador tengan una memoria compartida enntre si.
-Para eso lo que hicimos fue, pedir al inicio esa memoria para cada jugador asi la tenemos reservada a la hora de crear cada uno de los perros.
+Para eso lo que hicimos fue, pedir al inicio esa memoria para cada jugador, asi la tenemos reservada a la hora de crear cada uno de los perros.
 \begin{codesnippet}
 \begin{verbatim}
 uint mmu_inicializar() {
@@ -12,7 +12,7 @@ uint mmu_inicializar() {
 \end{codesnippet}
 
 b)
-Este proceso consta de dos partes, por un lado "Poner el perro donde corresponde" y asegurarse de que inicie correctamente. Y por el otro, dejarle definido a dicho perro su esquema de memoria.
+Este proceso consta de dos partes, por un lado Poner el perro donde corresponde, como dice el enunciado, y luego asegurarse de que inicie correctamente. Y por otro lado, dejarle definido a dicho perro su esquema de memoria.
 Inicialmente, lo primero e importante que habia que hacer es copiar el codigo del perro a ejecutarse en memoria, para eso elegimos la direccion 0x7FFF000 que es la ultima pagina libre para mapear en el kernel a la parte fisica en el mapa.
 \begin{codesnippet}
 \begin{verbatim}
@@ -63,7 +63,7 @@ Los perros pedian por parametro el x e y, entonces tomamos la posicion de memori
 	    \end{verbatim}
 \end{codesnippet}
 
-El valor 0x7FFFFF8,  equivale a una posicion de la pila del perro, pero se restó del valor base de la pila por que se envia la direccion de retorno y las direccion de x e y que vamos a escribirle a la tarea perro para que las tome como parametro, que segun la convencion C de 32bits asi es como se envian los parametros a funciones.
+El valor 0x7FFFFF8,  equivale a una posicion de la pila del perro, pero se restó del valor base de la pila por que se envia la direccion de retorno y las direccion de x e y que vamos a escribirle a la tarea perro para que las tome como parametro. 
 \begin{codesnippet}
 \begin{verbatim}
 	parametros[0] = perro->jugador->x_cucha;
@@ -72,7 +72,7 @@ El valor 0x7FFFFF8,  equivale a una posicion de la pila del perro, pero se rest�
 \end{codesnippet}
 
 
-y desmapeamos del kernel la pagina donde esta el codigo del perro y su pila
+Luego desmapeamos del kernel la pagina donde esta el codigo del perro y su pila
 \begin{codesnippet}
 \begin{verbatim}
     mmu_unmapear_pagina(pagina_a_mapear, rcr3());
@@ -99,7 +99,7 @@ Hacemos identity mapping del kernel y el area libre:
     \end{verbatim}
 \end{codesnippet}
 
-Mapeamos la direccion virtual mapa a la direccion fisica, con permiso de lectura solo para q se pueda saber q esta ahi, pero no escribirse a si mismo.
+Mapeamos la direccion virtual a la direccion fisica, con permiso de lectura solo para q se pueda saber q esta ahi, pero no escribirse a si mismo.
 \begin{codesnippet}
 \begin{verbatim}
     mmu_mapear_pagina(mmu_xy2virtual(perro->jugador->x_cucha, perro->jugador->y_cucha),

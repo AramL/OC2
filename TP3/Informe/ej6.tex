@@ -54,7 +54,7 @@ void tss_inicializar() {
 
 \end{verbatim}
 \end{codesnippet}
-Ponemos los dpls de todas las tareas en 0. Esto nos va a permitir que las tareas no se llamen entre si si su CPL no es 0, lo cual va a pasar efectivamente para las tareas de los jugadores.
+Ponemos los dpls de todas las tareas en 0. Esto nos va a permitir que las tareas no se llamen unas a otras, si su CPL no es 0, lo cual va a pasar efectivamente para las tareas de los jugadores.
 Es decir el cambio de contexto va a tener que pasar durante otro nivel de privilegio que va a ser el del reloj. Como base ponemos la dirección de la tss correspondiente en memoria y como límite 
 103 bytes (cada tss ocupa 104). Luego llenamos las entradas para todas las tareas y llamamos a una función que inicializa la tss de la tarea idle (siguiente pagina).
 \begin{codesnippet}
@@ -227,9 +227,8 @@ global _isr46:
 \end{verbatim}
 \end{codesnippet}
 
-Pusheamos convención C 32 bits, primero ecx y luego eax, ecx lo vamos a usar solo para una de las 4 llamadas posibles que va a hacer la funcion game\_atender\_pedido. En los otros casos no se usa. La función atender pedido es la siguiente
-y hace lo que se espera, llamar a las funciones correspondientes acorden a la orden dada por el perro, game perro actual es una variable global que guarda el puntero al perro que mando la orden. La función olfatear vino dada por la cátedra asi que no
-la implementamos. Y para devolver la última orden dada por el jugador (eax == 4) usamos el struct del perro que apunta a un jugador con la última orden dada
+Pusheamos por convención C 32 bits, primero ecx y luego eax. El ecx lo vamos a usar solo para una de las 4 llamadas posibles que va a hacer la funcion game\_atender\_pedido. En los otros casos no se usa. La función atender pedido es la siguiente
+y hace lo que se espera, llamar a las funciones correspondientes acorden a la orden dada por el perro, game perro actual es una variable global que guarda el puntero al perro que mando la orden. La función olfatear esta dada por la cátedra. Para devolver la última orden dada por el jugador (eax == 4) usamos el struct del perro que apunta a un jugador con la última orden dada
 
 \begin{codesnippet}
 \begin{verbatim}
@@ -247,7 +246,7 @@ uint game_atender_pedido(int eax, int ecx){
 \end{verbatim}
 \end{codesnippet}
 
-Perro cavar ejecuta el siguiente codigo
+Perro\_cavar ejecuta el siguiente codigo
 
 \begin{codesnippet}
 \begin{verbatim}
@@ -263,7 +262,7 @@ uint game_perro_cavar(perro_t *perro){
 \end{verbatim}
 \end{codesnippet}
 
-Donde parado en escondite, huesos en posicion y sacar huesos son las siguientes funciones
+Donde parado\_en\_escondite, huesos\_en\_posicion y sacar\_huesos son las siguientes funciones
 
 \begin{codesnippet}
 \begin{verbatim}
@@ -288,8 +287,8 @@ void game_sacar_hueso(uint x, uint y, perro_t * perro){
 \end{verbatim}
 \end{codesnippet}
 
-Devuelven lo que se espera, parado en escondite llama a dame escondite que de haber un escondite en la posición devuelveu n puntero al escondite, huesos en posicion usa tambien la funcion dame escondite y en caso de ser no null devuelve los huesos en la posicion
-y de lo contrario 0, y game sacar hueso usa el puntero ese para restarle los huesos al escondite y sumarselos al perro correspondiente. Además nos fijamos que el perro tenga menos de 10 huesos para cavar. La función dame escondite es la siguiente:
+Devuelven lo que se espera, parado\_en\_escondite llama a dame\_escondite que de haber un escondite en la posición devuelve  un puntero al escondite, huesos\_en\_posicion usa tambien la funcion dame\_escondite y en caso de ser no null devuelve los huesos en la posicion
+y de lo contrario 0, y game\_sacar\_hueso usa el puntero ese para restarle los huesos al escondite y sumarselos al perro correspondiente. Además nos fijamos que el perro tenga menos de 10 huesos para cavar. La función dame\_escondite es la siguiente:
 
 \begin{codesnippet}
 \begin{verbatim}

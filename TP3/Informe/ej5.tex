@@ -1,6 +1,6 @@
 \section{Ejercicio 5.}
 
-\noindent Completamos el codigo para las interrupciones ISR32, ISR33 y ISR46 que son las interrupciones de reloj, de teclado y la interrupcion 46 respectivamente .
+\noindent Completamos el codigo para las interrupciones ISR32, ISR33 y isr70 que son las interrupciones de reloj, de teclado y la interrupcion 46 respectivamente .
 
 
 \begin{codesnippet}
@@ -8,15 +8,26 @@
 _isr32:
         pushad
         call fin_intr_pic1
-        sub esp, 4
-        call game_atender_tick
-        add esp, 4
+        cmp dword [debug_mode],0
+        je .continuar
+        cmp dword [debug_view], 1
+        je .fin
+.continuar:        
+        call sched_atender_tick
+        str cx
+        shl ax, 3
+        cmp ax, cx
+        je .fin
+        mov [sched_tarea_selector], ax
+        jmp far [sched_tarea_offset]
+        .fin:
+        
         popad  
-        iret
+        iret 
 		\end{verbatim}
 \end{codesnippet}
 
-\noindent Este codigo  guarda el estado de los registros, llama a la funcion \texttt{fin\_intr\_pic1} , alinea la pila y luego llama a \texttt{game\_atender\_tick} , que es una funcion que va atender esta interrupcion.\\
+\noindent Este codigo  guarda el estado de los registros, llama a la funcion \texttt{fin\_intr\_pic1} ,  luego llama a \texttt{sched\_atender\_tick} , que es una funcion que va atender esta interrupcion. Luego salta a la tarea Idle.\\
 \\
 Analogamente la interrupcion para teclado:
 
@@ -37,33 +48,49 @@ Analogamente la interrupcion para teclado:
 \noindent Donde \texttt{atender\_teclado} va a ser la funcion que atienda la interrupcion de teclado. Esta funcion recibe por parametro el codigo de caracter que esta siendo presionado, el cual pusheamos a la pila.
 \\
 \\
-La interrupcion 46 solo va a mover al registro eax el valor hexadecimal 0x42.
-
+La interrupcion 70 llama a la funcion \texttt{game\_atender\_teclado} enviandoles los parametros por pila.
 \begin{codesnippet}
 \begin{verbatim}
-_isr46:
-    pushad
-    call fin_intr_pic1
-    mov eax,0x42
-    popad
-    iret    
+_isr70:
+        push ecx
+        push edx
+        push ebx
+        push ebp
+        push esi
+        push edi
+
+        push ecx
+        push eax
+        call game_atender_pedido
+        jmp 0x70:0
+        add esp, 8
+
+        pop edi
+        pop esi
+        pop ebp
+        pop ebx
+        pop edx
+        pop ecx
+        iret    
     \end{verbatim}
 \end{codesnippet}
 
 \newpage
 
-\noindent Luego completamos las funciones \texttt{game\_atender\_tick} y \texttt{atender\_teclado}.
+\noindent Luego completamos las funciones \texttt{sched\_atender\_tick} y \texttt{atender\_teclado}.
 
 \begin{codesnippet}
 \begin{verbatim}
-void game_atender_tick(perro_t *perro)
-{
-    mostrar_reloj();
+ushort sched_atender_tick() {    
+    game_atender_tick(scheduler.tasks[scheduler.current].perro);
+    scheduler.current = sched_proxima_a_ejecutar();
+    game_perro_actual = scheduler.tasks[scheduler.current].perro;
+    return scheduler.tasks[scheduler.current].gdt_index;
 }
 \end{verbatim}
 \end{codesnippet}
 
-\noindent Esta funcion, asi misma llama a la funcion \texttt{mostrar\_reloj} que esta defininida en screen.c
+\noindent Dentro de la funcion \texttt{game\_atender\_tick} , se llama a la funcion \texttt{mostrar\_reloj} que esta defininida en screen.c
 
 \begin{codesnippet}
 \begin{verbatim}
@@ -81,22 +108,32 @@ void mostrar_reloj() {
 \noindent Esta funcion usa la variable global \texttt{contador\_reloj} la cual se inicializa en 0, e itera por los caracteres definidos en el array \texttt{reloj}, luego llama a la funcion \texttt{screen\_pintar\_rect} la cual pinta en pantalla el caracter seleccionado, de color blanco en la posicion (0,79), en un cuadrado de 1x1.
 \\
 \\
-La funcion \texttt{atender\_teclado} tambien definida en screen.h, es basicamente un switch el cual dependiendo de que caracter llega por parametro, llama a la funcion \texttt{pintar\_atender\_teclado} con el codigo ascii correspondiente a esa tecla.
+La funcion \texttt{atender\_teclado} tambien definida en screen.h, es basicamente un switch el cual dependiendo de que caracter llega por parametro, llama a la funcion \texttt{pintar\_atender\_teclado} con el codigo ascii correspondiente a esa tecla. En caso de presionarse la $Y$, se entra en llama a la rutina de atencion de debug.
 
 \begin{codesnippet}
 \begin{verbatim}
 void atender_teclado(unsigned char tecla){
    switch (tecla) {
-        case KB_q: pintar_atender_teclado('q'); break;
-        case KB_a: pintar_atender_teclado('a'); break;
-        case KB_k: pintar_atender_teclado('k'); break;
-        case KB_z: pintar_atender_teclado('z'); break;
-        case KB_x: pintar_atender_teclado('x'); break;
-        case KB_c: pintar_atender_teclado('c'); break;
-        case KB_b: pintar_atender_teclado('b'); break;
-        case KB_n: pintar_atender_teclado('n'); break;
-        case KB_m: pintar_atender_teclado('m'); break;
-        default:break;
+        case KB_q: game_jugador_lanzar_perro(&jugadorA, TIPO_1, jugadorA.x_cucha, jugadorA.y_cucha); break;
+        case KB_e: game_jugador_lanzar_perro(&jugadorA, TIPO_2, jugadorA.x_cucha, jugadorA.y_cucha); break;
+        case KB_u: game_jugador_lanzar_perro(&jugadorB, TIPO_1, jugadorB.x_cucha, jugadorB.y_cucha); break;
+        case KB_o: game_jugador_lanzar_perro(&jugadorB, TIPO_2, jugadorB.x_cucha, jugadorB.y_cucha); break;
+        case KB_w: game_jugador_moverse(&jugadorA,0,  -1); break;
+        case KB_a: game_jugador_moverse(&jugadorA, -1,  0); break;
+        case KB_s: game_jugador_moverse(&jugadorA, 0,  1); break;
+        case KB_d: game_jugador_moverse(&jugadorA, 1,  0); break;
+        case KB_i: game_jugador_moverse(&jugadorB,  0, -1); break;
+        case KB_j: game_jugador_moverse(&jugadorB,  -1, 0); break;
+        case KB_k: game_jugador_moverse(&jugadorB,  0, 1); break;
+        case KB_l: game_jugador_moverse(&jugadorB,  1, 0); break;
+        case KB_z: game_jugador_dar_orden(&jugadorA, 1); break;
+        case KB_x: game_jugador_dar_orden(&jugadorA, 2); break;
+        case KB_c: game_jugador_dar_orden(&jugadorA, 3); break;
+        case KB_b: game_jugador_dar_orden(&jugadorB, 1); break;
+        case KB_n: game_jugador_dar_orden(&jugadorB, 2); break;
+        case KB_m: game_jugador_dar_orden(&jugadorB, 3); break;
+        case KB_y: atender_debug(); break;	
+	
     }
 }
 
