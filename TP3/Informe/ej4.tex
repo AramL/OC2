@@ -2,10 +2,128 @@
 a)
 La idea es que los perros de cada jugador tengan una memoria compartida enntre si.
 Para eso lo que hicimos fue, pedir al inicio esa memoria para cada jugador asi la tenemos reservada a la hora de crear cada uno de los perros.
+\begin{codesnippet}
+\begin{verbatim}
 uint mmu_inicializar() {
     memoria_A = mmu_proxima_pagina_fisica_libre();
     memoria_B = mmu_proxima_pagina_fisica_libre();
 }
-b)
-Inicialmente, lo primero e importante que habia que hacer
+    \end{verbatim}
+\end{codesnippet}
 
+b)
+Este proceso consta de dos partes, por un lado "Poner el perro donde corresponde" y asegurarse de que inicie correctamente. Y por el otro, dejarle definido a dicho perro su esquema de memoria.
+Inicialmente, lo primero e importante que habia que hacer es copiar el codigo del perro a ejecutarse en memoria, para eso elegimos la direccion 0x7FFF000 que es la ultima pagina libre para mapear en el kernel a la parte fisica en el mapa.
+\begin{codesnippet}
+\begin{verbatim}
+	uint pagina_a_mapear = 0x7FFF000;
+    mmu_mapear_pagina(pagina_a_mapear,  rcr3(), 
+    	mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x3); 
+    \end{verbatim}
+\end{codesnippet}
+
+Luego tomamos el codigo del perro correspondiente:    
+\begin{codesnippet}
+\begin{verbatim}
+  uint codigo_tarea;
+    int codigo = index_jugador * 10 + index_tipo;
+    switch (codigo) {
+    case (JUGADOR_A*10+ TIPO_1):
+        codigo_tarea = 0x10000;
+        break;
+    case (JUGADOR_A*10+ TIPO_2):
+        codigo_tarea = 0x11000;
+        break;
+    case (JUGADOR_B*10+ TIPO_1):
+        codigo_tarea = 0x12000;
+        break;
+    case (JUGADOR_B*10+ TIPO_2):
+        codigo_tarea = 0x13000;
+        break;
+    }
+    \end{verbatim}
+\end{codesnippet}
+
+
+copiamos el codigo del a tarea que tomamos.
+\begin{codesnippet}
+\begin{verbatim}
+    mmu_copiar_pagina(codigo_tarea, pagina_a_mapear);
+        \end{verbatim}
+\end{codesnippet}
+
+
+La memoria ahi copiada puesta va a ser el codigo del perro desde el inicio de la pagina hasta que se termina el codigo. Al final de esa pagina se va a usar como base para la pila de esa misma tarea.
+
+Ahora, como esto es en 32 bits, la convencion C dice que los parametros se pasaban por pila.
+Los perros pedian por parametro el x e y, entonces tomamos la posicion de memoria que nosotros mapeamos para copiar el codigo
+\begin{codesnippet}
+\begin{verbatim}
+	uint *parametros = (uint *) 0x7FFFFF8;
+	    \end{verbatim}
+\end{codesnippet}
+
+El valor 0x7FFFFF8,  equivale a una posicion de la pila del perro, pero se restó del valor base de la pila por que se envia la direccion de retorno y las direccion de x e y que vamos a escribirle a la tarea perro para que las tome como parametro, que segun la convencion C de 32bits asi es como se envian los parametros a funciones.
+\begin{codesnippet}
+\begin{verbatim}
+	parametros[0] = perro->jugador->x_cucha;
+	parametros[1] = perro->jugador->y_cucha; 
+    \end{verbatim}
+\end{codesnippet}
+
+
+y desmapeamos del kernel la pagina donde esta el codigo del perro y su pila
+\begin{codesnippet}
+\begin{verbatim}
+    mmu_unmapear_pagina(pagina_a_mapear, rcr3());
+    \end{verbatim}
+\end{codesnippet}
+
+
+
+A partir de aca nos encargamos de definir todo el esquema de memoria incial del perro.
+Para eso hay que inicializar una page directory. Pedimos una pagina libre para usarla como page directory y la limpiamos.
+\begin{codesnippet}
+\begin{verbatim}
+ 	uint pd_perro =  mmu_proxima_pagina_fisica_libre();
+  	mmu_inicializar_pagina((uint *)pd_perro);
+    \end{verbatim}
+\end{codesnippet}
+
+
+Hacemos identity mapping del kernel y el area libre:
+\begin{codesnippet}
+\begin{verbatim}
+	for (p_tabla = 0x0; p_tabla <= 0x3FFFFF; p_tabla += 0x1000)
+        mmu_mapear_pagina(p_tabla, pd_perro, p_tabla, 0x1);
+    \end{verbatim}
+\end{codesnippet}
+
+Mapeamos la direccion virtual mapa a la direccion fisica, con permiso de lectura solo para q se pueda saber q esta ahi, pero no escribirse a si mismo.
+\begin{codesnippet}
+\begin{verbatim}
+    mmu_mapear_pagina(mmu_xy2virtual(perro->jugador->x_cucha, perro->jugador->y_cucha),
+    	 pd_perro, mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x5);
+    \end{verbatim}
+\end{codesnippet}
+
+Mapeamos la memoria compartida del perro con los otros perros, dependiendo del jugador, usando la variable global que habiamos iniciado anteriormente:
+\begin{codesnippet}
+\begin{verbatim}
+    // mapear dir compartida a 0x400000
+    if (index_jugador == JUGADOR_A) {
+        mmu_mapear_pagina(0x400000, pd_perro, memoria_A, 0x7);
+    } else {
+        mmu_mapear_pagina(0x400000, pd_perro, memoria_B, 0x7);
+    }
+    \end{verbatim}
+\end{codesnippet}
+
+
+   Y por ultimo le mapeamos al perro la direccion 0x401000 virtual a donde va a estar fisicamente su codigo, asi, luego cuando se mueva por el mapa, se va mover su codigo y su pila, y se va a remapear la nueva posicion a 0x401000, asi el perro siempre busca a la misma direccion su siguiente instruccion y su pila.
+   \begin{codesnippet}
+\begin{verbatim}
+    mmu_mapear_pagina(0x401000,  pd_perro, 
+    	mmu_xy2fisica(perro->jugador->x_cucha, perro->jugador->y_cucha), 0x7);
+    \end{verbatim}
+\end{codesnippet}

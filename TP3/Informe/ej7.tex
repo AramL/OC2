@@ -1,4 +1,21 @@
 \section{Ejercicio 7.}
+\subsection{a)}
+	Para el funcionamiento del scheduler lo que usamos fue una variable global scheduler que contenia una lista de tareas, que consistian en punteros a perro y el indice de la gdt de la tarea. Y el indice de esa lista correspondiente a la tarea que se esté ejecutando en ese momento.
+	
+	Para la lista de tareas definimos una array de 17 elementos, donde el elemento 0 era el de la tarea IDLE. Los indices del 1 al 8 corresponden a los perros del jugador A y por ultimo los indices del 9 al 16 corresponden al del jugador B.
+
+	Iniciamos los valores para el indice del a tarea IDLE, y dejamos nulos los valores de indice de gdt y el puntero a perro, luego se va a usar para saber si hay un perro corriendo en ese indice a partir del valor nulo o no del indice de gdt
+\begin{codesnippet}
+\begin{verbatim}
+    scheduler.tasks[0].gdt_index = GDT_TSS_IDLE;
+    scheduler.tasks[0].perro = NULL;
+    for (i = 1; i < MAX_CANT_TAREAS_VIVAS + 1; i++) {
+        scheduler.tasks[i].gdt_index = NULL;
+        scheduler.tasks[i].perro = NULL;
+    }
+    scheduler.current = 0;
+\end{verbatim}
+\end{codesnippet}
 
 \subsection{b)}
 
@@ -22,7 +39,7 @@ uint sched_proxima_a_ejecutar() {
 \end{verbatim}
 \end{codesnippet}
 
-y la función sched_proximo_perro_jugador es 
+y la función sched\_proximo\_perro\_jugador es 
 
 \begin{codesnippet}
 \begin{verbatim}
@@ -41,7 +58,170 @@ uint sched_proximo_perro_jugador(uint jugador) {
 \end{codesnippet}
 
 Donde básicamente loopeamos desde la ultima tarea ejecutada (sin considerarla) en adelante, si no encontramos tareas en ese intervalo, restamos 8 y empezamos desde el principio hasta la ultima tarea ejecutada inclusive, en caso de no encontrar una tarea 
-libre devolvemos 0. notar que 8 << jugador da el valor correcto en el que restamos 8, si el jugador es el A, es deicr el 0, restamos 8 cuando index sea igual a 9, y si es el jugadorB es decir el 1, el shift hace que 8 sea 16 y restamos cuando index es 17. 
+libre devolvemos 0. notar que 8 $<<$ jugador da el valor correcto en el que restamos 8, si el jugador es el A, es deicr el 0, restamos 8 cuando index sea igual a 9, y si es el jugadorB es decir el 1, el shift hace que 8 sea 16 y restamos cuando index es 17. 
+
+
+
+\subsection{c) y e)}
+ Se setea la terea que se esta ejecutando como la nueva tarea a ser ejecutada. 
+\begin{codesnippet}
+\begin{verbatim}
+	scheduler.current = sched_proxima_a_ejecutar();
+    game_perro_actual = scheduler.tasks[scheduler.current].perro;
+    \end{verbatim}
+\end{codesnippet}
+
+En la interrupcion de reloj se agrego el siguiente codigo, tomando la proxima tarea a ejecutar y haciendo la conmutacion de tareas
+  \begin{codesnippet}
+\begin{verbatim}
+        call sched_atender_tick
+        ;xor ecx, ecx
+        str cx
+        shl ax, 3
+        cmp ax, cx
+        je .fin
+        mov [sched_tarea_selector], ax
+        jmp far [sched_tarea_offset]
+            \end{verbatim}
+\end{codesnippet}
+
+\subsection{d)}
+Se cambio un poco el codigo de la interrupcion para poder devolver EAX como resultado,
+Asi como tambien el jmp a la tarea idle, usando 0x70 como selector, dado que 0x70 = 1110000b, si tomamos la parte del indice nos queda 1110 que equivale a 14 en decimal, el indice de la gdt de la tarea IDLE
+  \begin{codesnippet}
+\begin{verbatim}
+  push ecx
+        push edx
+        push ebx
+        push ebp
+        push esi
+        push edi
+
+        push ecx
+        push eax
+        call game_atender_pedido
+        jmp 0x70:0
+        add esp, 8
+
+        pop edi
+        pop esi
+        pop ebp
+        pop ebx
+        pop edx
+        pop ecx
+        iret    
+   \end{verbatim}
+\end{codesnippet}
+  \begin{codesnippet}
+\begin{verbatim}
+Para mover el perro  habia que chequear que la nueva posicion fuese valida
+
+ int x, y;
+    game_dir2xy(dir, &x, &y);
+    int nuevo_x = perro->x + x;
+    int nuevo_y = perro->y + y;
+
+    if(!game_es_posicion_valida(nuevo_x, nuevo_y))
+        return 0;
+
+    if(game_perro_en_posicion_j(perro->jugador, nuevo_x, nuevo_y) != NULL)
+        return 0;
+   \end{verbatim}
+\end{codesnippet}
+ 
+Ahora se tiene que hacer el proceso de mover el perro en si, mapeamos la nueva direccion y copiamos entero al codigo del perro y su pila
+y cambiamos en paginacion la traduccion de la direcion 0x401000 a la nueva posicion escrita. y por ultimo mapear la posicion del perro solo como lectura.
+  \begin{codesnippet}
+\begin{verbatim}
+    uint dir_fisica = mmu_xy2fisica(nuevo_x, nuevo_y);
+    uint dir_virtual = mmu_xy2virtual(nuevo_x, nuevo_y);
+
+    mmu_mapear_pagina(0x7FFF000, rcr3(), dir_fisica, 0x3);
+    mmu_copiar_pagina(0x401000, 0x7FFF000);
+
+    mmu_mapear_pagina(0x401000, rcr3(), dir_fisica, 0x7);
+    mmu_mapear_pagina(dir_virtual, rcr3(), dir_fisica, 0x5);
+
+    mmu_unmapear_pagina(0x7FFF000, rcr3());
+   \end{verbatim}
+\end{codesnippet}
+ 
+ Refrescamos en la pantalla la nueva posicion del perro, y me fijo si esta en la cucha
+  \begin{codesnippet}
+\begin{verbatim}
+    screen_borrar_perro(perro);
+    perro->x = nuevo_x;
+    perro->y = nuevo_y;
+    screen_pintar_perro(perro);
+     game_perro_ver_si_en_cucha(perro);
+    return 1;
+       \end{verbatim}
+\end{codesnippet}
+   
+Nos fijamos si esta en la cucha, en caso de ser asi, anota los puntos y luego termina la tarea del perro
+  \begin{codesnippet}
+\begin{verbatim}
+   void game_perro_ver_si_en_cucha(perro_t *perro)
+{
+    if (perro->x != perro->jugador->x_cucha || perro->y != perro->jugador->y_cucha){
+        return;
+    }
+
+    if (perro->huesos == 0){
+        return;
+    }
+
+    while(perro->huesos > 0){
+        game_jugador_anotar_punto(perro->jugador);
+        perro->huesos--;
+
+    }
+  
+    game_perro_termino(perro);
+}
+       \end{verbatim}
+\end{codesnippet}
+\begin{codesnippet}
+\begin{verbatim}
+void game_jugador_anotar_punto(jugador_t *j) {
+    ultimo_cambio = MAX_SIN_CAMBIOS;
+
+    j->puntos++;
+
+    screen_pintar_puntajes();
+
+    if (j->puntos == 999)
+        screen_stop_game_show_winner(j);
+}
+ \end{verbatim}
+\end{codesnippet}
+\begin{codesnippet}
+\begin{verbatim}
+void game_perro_termino(perro_t *perro){
+    sched_remover_tarea(perro->id);
+}
+ \end{verbatim}
+\end{codesnippet}
+
+para sacar al perro q ya termino, buscamos el indice dentro de la lista de tareas a partir del gdt\_index recibido,
+borra al perro de la pantalla, libera al perro y saca al perro del scheduler
+\begin{codesnippet}
+\begin{verbatim}
+void sched_remover_tarea(unsigned short gdt_index) {
+
+    uint i = 1;
+    while (scheduler.tasks[i].gdt_index != gdt_index)
+        i++;
+    perro_t *p = scheduler.tasks[i].perro;
+    screen_borrar_perro(p);
+    p->libre = TRUE;
+    screen_pintar_reloj_perro(p);
+    scheduler.tasks[i].gdt_index = NULL;
+    if (i == scheduler.current)
+        scheduler.current = NULL;
+}
+ \end{verbatim}
+\end{codesnippet}
 
 \subsection*{g)}
 

@@ -52,7 +52,7 @@ void game_perro_reciclar_y_lanzar(perro_t *perro, uint tipo)
 // el perro descargó sus huesos o realizó una acción no válida y caputó, hay que sacarlo del sistema.
 void game_perro_termino(perro_t *perro){
 //~~~ completar ~~~
-    sched_remover_tarea(perro->index);
+    sched_remover_tarea(perro->id);
     /* Saltar a la idle??? */
 
 }

@@ -40,7 +40,6 @@ extern game_guardar_pantalla
 global _isr%1
 
 _isr%1:
-;xchg bx, bx
 pushad
 cmp dword [debug_mode], 0
 je .seguir
