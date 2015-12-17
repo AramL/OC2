@@ -98,7 +98,7 @@ uint sched_proxima_a_ejecutar() {
             return 0;
     }
     ultimo_index[prox_jugador] = prox_task;
-    print_dec(prox_task, 2, 50, 38, C_BG_BLACK | C_FG_WHITE);
+    //print_dec(prox_task, 2, 50, 38, C_BG_BLACK | C_FG_WHITE);
     return prox_task;
 }
 
