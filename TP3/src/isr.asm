@@ -26,6 +26,10 @@ extern game_atender_teclado
 extern game_atender_pedido
 extern pintar_pantalla_debug;
 extern atender_interrupcion_debug;
+extern debug_mode
+extern debug_view
+extern game_imprimir_info_debug
+extern game_guardar_pantalla 
 
 %define GDT_TSS_IDLE 14
 ;;
@@ -38,6 +42,21 @@ global _isr%1
 _isr%1:
 ;xchg bx, bx
 pushad
+cmp dword [debug_mode], 0
+je .seguir
+call game_guardar_pantalla
+	mov eax, [esp]
+    pushf 									
+    push eax
+    call game_imprimir_info_debug
+    popf
+   mov ebx,GDT_TSS_IDLE
+
+shl ebx,3
+mov [sched_tarea_selector],ebx
+jmp far [sched_tarea_offset]						
+    jmp .final
+.seguir:	
  str cx
  shr cx,3
  push ecx
@@ -47,6 +66,7 @@ pushad
  mov [sched_tarea_selector],ebx
  jmp far [sched_tarea_offset]
  pop ecx
+ .final:
 popad
 iret
 %endmacro
@@ -87,6 +107,12 @@ global _isr32
     _isr32:
         pushad
         call fin_intr_pic1
+        cmp dword [debug_mode],0
+        je .continuar
+        cmp dword [debug_view], 1
+		je .fin
+		.continuar:
+        
         call sched_atender_tick
         ;xor ecx, ecx
         str cx
@@ -96,6 +122,7 @@ global _isr32
         mov [sched_tarea_selector], ax
         jmp far [sched_tarea_offset]
         .fin:
+        
         popad  
         iret
 ;;
@@ -105,13 +132,7 @@ global _isr33
     _isr33:
         pushad
         call fin_intr_pic1
-        push eax
-        ;xchg bx, bx    
-        call atender_interrupcion_debug
-        pop eax
-        ;xchg bx, bx    
-        cmp eax,1   
-        je .continuar        
+        ;xchg bx, bx         
         in al, 0x60
             push eax
             call game_atender_teclado
@@ -144,6 +165,7 @@ global _isr70:
         pop edx
         pop ecx
         iret    
+
 
 
 
